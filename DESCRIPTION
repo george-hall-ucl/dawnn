@@ -1,0 +1,15 @@
+Package: dawnn
+Title: Differential Abundance with Neural Networks
+Version: 1.0.0
+Authors@R: 
+    person(given = "George",
+           family = "Hall",
+           role = c("aut", "cre"),
+           email = "george.hall@ucl.ac.uk",
+           comment = c(ORCID = "0000-0002-4828-0668"))
+Description: Dawnn detects regions of differential abundance in single-cell transcriptomic data by applying a pre-trained neural network model.
+License: use_gpl3_license()
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

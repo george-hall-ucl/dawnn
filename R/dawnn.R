@@ -9,6 +9,7 @@ library(Seurat)
 #' @param data Vector of numbers to which for which to estimate the parameters.
 #' @return A list containing the two parameters of the fitted beta ditribution.
 #' @examples
+#' \dontrun{
 #' set.seed(123)
 #' beta_sample <- rbeta(10000, shape1 = 2, shape2 = 5)
 #' beta_method_of_moments(beta_sample)
@@ -17,6 +18,7 @@ library(Seurat)
 #' #
 #' # $beta
 #' # [1] 4.942666
+#' }
 beta_method_of_moments <- function(data) {
     sample_mean <- mean(data)
     sample_var <- var(data)
@@ -45,7 +47,9 @@ beta_method_of_moments <- function(data) {
 #' @return A data frame containing the labels of the k nearest neighbors of
 #' each cell.
 #' @examples
+#' \dontrun{
 #' generate_neighbor_labels(cell_object, "pca")
+#' }
 generate_neighbor_labels <- function(cells, reduced_dim, k = 1000,
                                      verbose = TRUE,
                                      label_names = "synth_labels",
@@ -78,7 +82,9 @@ generate_neighbor_labels <- function(cells, reduced_dim, k = 1000,
 #' @param model_path String containing the path to the model's .hdf5 file.
 #' @return The loaded model.
 #' @examples
+#' \dontrun{
 #' nn_model <- load_model_from_python("/path/to/the/model.hdf5")
+#' }
 load_model_from_python <- function(model_path) {
     # Need to have tensorflow installed in the reticulate environment. Check
     # whether it is installed:
@@ -117,8 +123,10 @@ load_model_from_python <- function(model_path) {
 #' @return A vector containing a null distribution of Dawnn's model outputs for
 #' shuffled sample labels.
 #' @examples
+#' \dontrun{
 #' generate_null_dist(cells = cell_object, reduced_dim = "pca", model =
 #' nn_model, label_names = "synth_labels", enforce_05 = TRUE, verbosity = 1)
+#' }
 generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_05, verbosity) {
     null_dist <- c()
     for (i in 1:3) {
@@ -157,8 +165,10 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
 #' probability of observing at least such an extreme score for a cell given the
 #' beta distribution fitted to the null distribution of scores.
 #' @examples
+#' \dontrun{
 #' generate_p_vals_pc1(scores = score_vect, null_dist = null_scores, two_sided
 #' = TRUE)
+#' }
 generate_p_vals_pc1 <- function(scores, null_dist, two_sided = TRUE) {
     null_MoM_est <- beta_method_of_moments(null_dist)
     null_MoM_alpha <- null_MoM_est$alpha
@@ -204,8 +214,10 @@ generate_p_vals_pc1 <- function(scores, null_dist, two_sided = TRUE) {
 #' not change unless you have good reason (optional, default "beta")
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @examples
+#' \dontrun{
 #' determine_if_region_da_pc1(p_vals = p_value_vector, null_dist = null_scores,
 #' alpha = 0.2, assume_independence = FALSE, method = "beta")
+#' }
 determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
                                        assume_independence = FALSE,
                                        method = "beta") {
@@ -275,9 +287,11 @@ determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
 #' abundance; dawnn_da_verdict (Boolean output of Dawnn indicating whether it
 #' considers a cell to be in a region of differential abundance).
 #' @examples
+#' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", nn_model =
 #' "my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, two_sided =
 #' FALSE, alpha = 0.2, versboity = 0)
+#' }
 #' @export
 run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
                       reduced_dim = NULL, recalculate_graph = TRUE,

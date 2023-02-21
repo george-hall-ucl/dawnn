@@ -1,9 +1,3 @@
-library(reticulate)
-library(tensorflow)
-library(keras)
-
-library(Seurat)
-
 #' Estimate the parameters of a beta distribution using the method of moments.
 #'
 #' @param data Vector of numbers to which for which to estimate the parameters.

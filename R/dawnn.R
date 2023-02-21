@@ -41,7 +41,7 @@ beta_method_of_moments <- function(data) {
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell (optional, default =
 #' "synth_labels").
-#' @param recalulate_graph Boolean whether to recalculate the KNN graph. If
+#' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
 #' FALSE, then the one stored in the `cells` object will be used (optional,
 #' default = TRUE).
 #' @return A data frame containing the labels of the k nearest neighbors of
@@ -157,7 +157,7 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
 #' distribution and returns p-values of the observed outputs.
 #'
 #' @param scores Numeric vector containing observed output of Dawnn.
-#' @param null_distribution Numeric vector containing null distribution of scores.
+#' @param null_dist Numeric vector containing null distribution of scores.
 #' @param two_sided Boolean whether to use 1-(a calculated p-value) for a score
 #' greater than the mode of the beta distribution fitted to the null
 #' distribution (optional, default TRUE).
@@ -205,7 +205,7 @@ generate_p_vals_pc1 <- function(scores, null_dist, two_sided = TRUE) {
 #' @param null_dist Numeric vector containing the null distribution of scores.
 #' @param alpha Numeric target false discovery rate supplied to the Benjamini–Yekutieli
 #' procedure (optional, default 0.1, i.e. 10%).
-#' @param scores assume_independence Boolean whether to assume that the score
+#' @param assume_independence Boolean whether to assume that the score
 #' for each cell is independent. Intended for testing purposes, do not change
 #' unless you have good reason (optional, default FALSE)
 #' @param method Whether to determine differential abundance using p-values
@@ -270,7 +270,7 @@ determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
 #' @param nn_model String containing the path to the model's .hdf5 file.
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
-#' @param recalulate_graph Boolean whether to recalculate the KNN graph. If
+#' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
 #' FALSE, then the one stored in the `cells` object will be used (optional,
 #' default = TRUE).
 #' @param two_sided Boolean whether to use 1-(a calculated p-value) for a score

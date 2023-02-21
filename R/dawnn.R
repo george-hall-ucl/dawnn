@@ -87,7 +87,7 @@ load_model_from_python <- function(model_path) {
         # conda_env_name <- "r-reticulate"
         # conda_create(conda_env_name)
         # conda_install(conda_env_name, "tensorflow")
-        error("Tensorflow not installed in reticulate environment. Please install following https://rstudio.github.io/reticulate/articles/python_packages.html.")
+        stop("Tensorflow not installed in reticulate environment. Please install following https://rstudio.github.io/reticulate/articles/python_packages.html.")
     }
 
     tensorflow <- import("tensorflow")
@@ -245,7 +245,7 @@ determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
     } else if (method == "perturbation") {
         da_verdict <- scores > max(null_dist)
     } else {
-        error(paste("Unknown DA-calling method:", method))
+        stop(paste("Unknown DA-calling method:", method))
     }
 
     return(da_verdict)

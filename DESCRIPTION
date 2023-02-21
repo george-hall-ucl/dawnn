@@ -8,7 +8,7 @@ Authors@R:
            email = "george.hall@ucl.ac.uk",
            comment = c(ORCID = "0000-0002-4828-0668"))
 Description: Dawnn detects regions of differential abundance in single-cell transcriptomic data by applying a pre-trained neural network model.
-License: use_gpl3_license()
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

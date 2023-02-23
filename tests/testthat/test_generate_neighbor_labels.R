@@ -34,4 +34,5 @@ test_that("generate_neighbor_labels", {
                          ncol = 5))
 
     expect_equal(actual, expected)
+    expect_equal(class(actual), c("matrix", "array"))
 })

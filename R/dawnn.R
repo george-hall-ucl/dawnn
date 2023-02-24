@@ -255,6 +255,31 @@ determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
 }
 
 
+#' Download the neural network model used by Dawnn.
+#'
+#' @description `download_model()' downloads the neural network model used by
+#' Dawnn, which is too large to be bundled with the package. This function must
+#' be used once before run_dawnn() can be executed. After this, the path to the
+#' model can be passed to this function.
+#'
+#' @param model_url String url from which to download the model (optional,
+#' default to hard-coded URL).
+#' @param model_file_path String path at which to save the downloaded model.
+#' @return Absolute path to the downloaded model.
+#' @examples
+#' \dontrun{
+#' model_path <- download_model(model_url = "http://example.com/model.h5")
+#' cells <- run_dawnn(cells, nn_model = model_path, [...])
+#' }
+#' @export
+download_model <- function(model_url = "http://example.com/hard/coded/path",
+                           model_file_path = "dawnn_nn_model.h5") {
+    system(paste0("wget -O ", model_file_path, " '", model_url, "'"))
+
+    return(normalizePath(model_file_path))
+}
+
+
 #' Identify which cells are in regions of differential abundance using Dawnn.
 #'
 #' @description `run_dawnn()` is the main function used to run Dawnn. It takes

@@ -128,7 +128,7 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
         shuffled_neighbor_labels <- generate_neighbor_labels(cells, reduced_dim,
                                                              label_names = "shuffled_labels",
                                                              verbose = verbosity > 0)
-        shuffled_scores <- model %>% predict(shuffled_neighbor_labels,
+        shuffled_scores <- predict(model, shuffled_neighbor_labels,
                                              verbose = ifelse(verbosity == 2, 1, 0))
         null_dist <- c(null_dist, shuffled_scores)
     }
@@ -327,8 +327,8 @@ run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
                                                 verbose = verbosity > 0)
 
     if (verbosity > 0) {message("Generating scores.")}
-    scores <- nn_model %>% predict(neighbor_labels,
-                                   verbose = ifelse(verbosity == 2, 1, 0))
+    scores <- predict(nn_model, neighbor_labels,
+                      verbose = ifelse(verbosity == 2, 1, 0))
     cells$dawnn_scores <- scores
     cells$dawnn_lfc <- log2(scores/(1-scores))
 

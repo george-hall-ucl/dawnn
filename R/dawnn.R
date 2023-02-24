@@ -278,9 +278,9 @@ download_model <- function(model_url = "http://example.com/hard/coded/path",
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
-#' @param nn_model String containing the path to the model's .hdf5 file.
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
+#' @param nn_model String containing the path to the model's .hdf5 file.
 #' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
 #' FALSE, then the one stored in the `cells` object will be used (optional,
 #' default = TRUE).
@@ -305,10 +305,10 @@ download_model <- function(model_url = "http://example.com/hard/coded/path",
 #' FALSE, alpha = 0.2, versboity = 0, seed = 42)
 #' }
 #' @export
-run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
-                      reduced_dim = NULL, recalculate_graph = TRUE,
-                      two_sided = TRUE, alpha = 0.1, verbosity = 2,
-                      seed = 123) {
+run_dawnn <- function(cells, label_names, reduced_dim,
+                      nn_model = "final_model_dawnn.h5",
+                      recalculate_graph = TRUE, two_sided = TRUE,
+                      alpha = 0.1, verbosity = 2, seed = 123) {
     set.seed(seed)
 
     if (class(nn_model)[1] == "character") {

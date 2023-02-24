@@ -7,8 +7,8 @@
 run_dawnn(
   cells,
   label_names,
+  reduced_dim,
   nn_model = "final_model_dawnn.h5",
-  reduced_dim = NULL,
   recalculate_graph = TRUE,
   two_sided = TRUE,
   alpha = 0.1,
@@ -22,10 +22,10 @@ run_dawnn(
 \item{label_names}{String containing the name of the meta.data slot in
 `cells' containing the labels of each cell.}
 
-\item{nn_model}{String containing the path to the model's .hdf5 file.}
-
 \item{reduced_dim}{String containing the name of the dimensionality
 reduction to use.}
+
+\item{nn_model}{String containing the path to the model's .hdf5 file.}
 
 \item{recalculate_graph}{Boolean whether to recalculate the KNN graph. If
 FALSE, then the one stored in the \code{cells} object will be used (optional,

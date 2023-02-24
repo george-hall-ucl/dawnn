@@ -9,8 +9,7 @@ generate_neighbor_labels(
   reduced_dim,
   k = 1000,
   verbose = TRUE,
-  label_names = "synth_labels",
-  recalculate_graph = TRUE
+  label_names = "synth_labels"
 )
 }
 \arguments{
@@ -27,10 +26,6 @@ a very good reason) (optional, default 1000).}
 \item{label_names}{String containing the name of the meta.data slot in
 `cells' containing the labels of each cell (optional, default =
 "synth_labels").}
-
-\item{recalculate_graph}{Boolean whether to recalculate the KNN graph. If
-FALSE, then the one stored in the \code{cells} object will be used (optional,
-default = TRUE).}
 }
 \value{
 A data frame containing the labels of the k nearest neighbors of

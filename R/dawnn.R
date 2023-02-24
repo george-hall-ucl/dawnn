@@ -35,9 +35,6 @@ beta_method_of_moments <- function(data) {
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell (optional, default =
 #' "synth_labels").
-#' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
-#' FALSE, then the one stored in the `cells` object will be used (optional,
-#' default = TRUE).
 #' @return A data frame containing the labels of the k nearest neighbors of
 #' each cell.
 #' @examples
@@ -46,14 +43,7 @@ beta_method_of_moments <- function(data) {
 #' }
 generate_neighbor_labels <- function(cells, reduced_dim, k = 1000,
                                      verbose = TRUE,
-                                     label_names = "synth_labels",
-                                     recalculate_graph = TRUE) {
-
-    if (recalculate_graph) {
-        if (verbose) {message("Finding neighbors.")}
-        cells <- FindNeighbors(cells, dims = 1:50, return.neighbor = TRUE,
-                               k.param = k+1, reduction = reduced_dim)
-    }
+                                     label_names = "synth_labels") {
 
     if (verbose) {message("Creating adjacency matrix.")}
     graph_name <- names(cells@neighbors)[1]
@@ -137,7 +127,6 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
         }
         shuffled_neighbor_labels <- generate_neighbor_labels(cells, reduced_dim,
                                                              label_names = "shuffled_labels",
-                                                             recalculate_graph = FALSE,
                                                              verbose = verbosity > 0)
         shuffled_scores <- model %>% predict(shuffled_neighbor_labels,
                                              verbose = ifelse(verbosity == 2, 1, 0))
@@ -326,10 +315,15 @@ run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
         nn_model <- load_model_from_python(nn_model)
     }
 
+    if (recalculate_graph) {
+        if (verbosity > 0) {message("Finding neighbors.")}
+        cells <- FindNeighbors(cells, dims = 1:50, return.neighbor = TRUE,
+                               k.param = 1001, reduction = reduced_dim)
+    }
+
     if (verbosity > 0) {message("Generating neighbor labels.")}
     neighbor_labels <- generate_neighbor_labels(cells, reduced_dim,
                                                 label_names = label_names,
-                                                recalculate_graph = recalculate_graph,
                                                 verbose = verbosity > 0)
 
     if (verbosity > 0) {message("Generating scores.")}

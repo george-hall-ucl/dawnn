@@ -277,6 +277,7 @@ determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
 #' procedure (optional, default 0.1, i.e. 10%).
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
+#' @param seed Integer random seed (optional, default 123).
 #' @return Seurat dataset `cells' with added metadata: dawnn_scores (output of
 #' Dawnn's model for each cell); dawnn_lfc (estimated log2-fold change in the
 #' neighbourhood of each cell); dawnn_p_vals (p-values associated with the
@@ -287,12 +288,14 @@ determine_if_region_da_pc1 <- function(p_vals, scores, null_dist, alpha = 0.1,
 #' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", nn_model =
 #' "my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, two_sided =
-#' FALSE, alpha = 0.2, versboity = 0)
+#' FALSE, alpha = 0.2, versboity = 0, seed = 42)
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
                       reduced_dim = NULL, recalculate_graph = TRUE,
-                      two_sided = TRUE, alpha = 0.1, verbosity = 2) {
+                      two_sided = TRUE, alpha = 0.1, verbosity = 2,
+                      seed = 123) {
+    set.seed(seed)
 
     if (class(nn_model)[1] == "character") {
         nn_model <- load_model_from_python(nn_model)

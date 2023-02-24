@@ -1,7 +1,7 @@
 library(Seurat)
 
 test_that("generate_neighbor_labels", {
-    cells <- readRDS("../../data/five_cell_seurat.RDS")
+    cells <- readRDS("../data/five_cell_seurat.rds")
     # cells$label is c("Condition1", "Condition2", "Condition1",
     #                  "Condition2", "Condition1")
 

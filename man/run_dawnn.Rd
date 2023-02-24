@@ -12,7 +12,8 @@ run_dawnn(
   recalculate_graph = TRUE,
   two_sided = TRUE,
   alpha = 0.1,
-  verbosity = 2
+  verbosity = 2,
+  seed = 123
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ procedure (optional, default 0.1, i.e. 10\%).}
 
 \item{verbosity}{Integer how much output to print. 0: silent; 1: normal
 output; 2: display messages from predict() function.}
+
+\item{seed}{Integer random seed (optional, default 123).}
 }
 \value{
 Seurat dataset `cells' with added metadata: dawnn_scores (output of
@@ -57,6 +60,6 @@ abundance.
 \dontrun{
 run_dawnn(cells = dataset, label_names = "condition", nn_model =
 "my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, two_sided =
-FALSE, alpha = 0.2, versboity = 0)
+FALSE, alpha = 0.2, versboity = 0, seed = 42)
 }
 }

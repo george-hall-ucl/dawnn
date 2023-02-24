@@ -118,7 +118,7 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
     null_dist <- c()
     for (i in 1:3) {
         if (enforce_05) {
-            num_cells <- length(cells@meta.data[[label_names]])
+            num_cells <- ncol(cells)
             labels <- c(rep("Condition1", round(num_cells/2)),
                         rep("Condition2", num_cells - round(num_cells/2)))
             cells$shuffled_labels <- sample(labels)

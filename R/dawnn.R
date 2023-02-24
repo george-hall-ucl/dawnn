@@ -121,9 +121,9 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
             num_cells <- length(cells@meta.data[[label_names]])
             labels <- c(rep("Condition1", round(num_cells/2)),
                         rep("Condition2", num_cells - round(num_cells/2)))
-            cells@meta.data$shuffled_labels <- sample(labels)
+            cells$shuffled_labels <- sample(labels)
         } else {
-            cells@meta.data$shuffled_labels <- sample(cells@meta.data[[label_names]])
+            cells$shuffled_labels <- sample(cells@meta.data[[label_names]])
         }
         shuffled_neighbor_labels <- generate_neighbor_labels(cells, reduced_dim,
                                                              label_names = "shuffled_labels",
@@ -329,8 +329,8 @@ run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
     if (verbosity > 0) {message("Generating scores.")}
     scores <- nn_model %>% predict(neighbor_labels,
                                    verbose = ifelse(verbosity == 2, 1, 0))
-    cells@meta.data$dawnn_scores <- scores
-    cells@meta.data$dawnn_lfc <- log2(scores/(1-scores))
+    cells$dawnn_scores <- scores
+    cells$dawnn_lfc <- log2(scores/(1-scores))
 
     if (verbosity > 0) {message("Generating null distribution.")}
     null_dist <- generate_null_dist(cells, reduced_dim, nn_model, label_names, enforce_05 = T,
@@ -338,10 +338,10 @@ run_dawnn <- function(cells, label_names, nn_model = "final_model_dawnn.h5",
 
     if (verbosity > 0) {message("Generating p-values.")}
     p_vals <- generate_p_vals_pc1(scores, null_dist, two_sided = two_sided)
-    cells@meta.data$dawnn_p_vals <- p_vals
+    cells$dawnn_p_vals <- p_vals
 
     if (verbosity > 0) {message("Determining significance.")}
-    cells@meta.data$dawnn_da_verdict <- determine_if_region_da_pc1(p_vals, scores, null_dist, alpha = 0.1, assume_independence = FALSE, method = "beta")
+    cells$dawnn_da_verdict <- determine_if_region_da_pc1(p_vals, scores, null_dist, alpha = 0.1, assume_independence = FALSE, method = "beta")
 
     return(cells)
 }

@@ -16,7 +16,6 @@ test_that("generate_neighbor_labels", {
     cells@neighbors$RNA.nn@nn.idx <- mat
 
     actual <- generate_neighbor_labels(cells, reduced_dim = "foo",
-                                       recalculate_graph = FALSE,
                                        label_names = "label", verbose = FALSE)
     # Should be:
     #      [,1] [,2] [,3] [,4] [,5]

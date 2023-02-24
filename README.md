@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="misc/dawnn_logo.png" width="150">
+  <img src="dawnn_logo.png" width="150">
   <br><br>
   Dawnn is a method to detect differential abundance in a single-cell
   transcriptomic dataset.

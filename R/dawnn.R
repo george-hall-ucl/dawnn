@@ -95,8 +95,6 @@ load_model_from_python <- function(model_path) {
 #' and returns the estimates of P(Condition_1) for each shuffled dataset.
 #'
 #' @param cells Seurat object containing the dataset.
-#' @param reduced_dim String containing the name of the dimensionality
-#' reduction to use.
 #' @param model Loaded neural network model to use.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
@@ -108,10 +106,10 @@ load_model_from_python <- function(model_path) {
 #' shuffled sample labels.
 #' @examples
 #' \dontrun{
-#' generate_null_dist(cells = cell_object, reduced_dim = "pca", model =
-#' nn_model, label_names = "synth_labels", enforce_05 = TRUE, verbosity = 1)
+#' generate_null_dist(cells = cell_object, model = nn_model, label_names =
+#' "synth_labels", enforce_05 = TRUE, verbosity = 1)
 #' }
-generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_05, verbosity) {
+generate_null_dist <- function(cells, model, label_names, enforce_05, verbosity) {
     null_dist <- c()
     for (i in 1:3) {
         if (enforce_05) {
@@ -329,7 +327,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     cells$dawnn_lfc <- log2(scores/(1-scores))
 
     if (verbosity > 0) {message("Generating null distribution.")}
-    null_dist <- generate_null_dist(cells, reduced_dim, nn_model, label_names, enforce_05 = T,
+    null_dist <- generate_null_dist(cells, nn_model, label_names, enforce_05 = T,
                                     verbosity = verbosity)
 
     if (verbosity > 0) {message("Generating p-values.")}

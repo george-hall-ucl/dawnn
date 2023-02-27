@@ -4,20 +4,10 @@
 \alias{generate_null_dist}
 \title{Generate a null distribution of P(Condition_1) estimates.}
 \usage{
-generate_null_dist(
-  cells,
-  reduced_dim,
-  model,
-  label_names,
-  enforce_05,
-  verbosity
-)
+generate_null_dist(cells, model, label_names, enforce_05, verbosity)
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
-
-\item{reduced_dim}{String containing the name of the dimensionality
-reduction to use.}
 
 \item{model}{Loaded neural network model to use.}
 
@@ -40,7 +30,7 @@ and returns the estimates of P(Condition_1) for each shuffled dataset.
 }
 \examples{
 \dontrun{
-generate_null_dist(cells = cell_object, reduced_dim = "pca", model =
-nn_model, label_names = "synth_labels", enforce_05 = TRUE, verbosity = 1)
+generate_null_dist(cells = cell_object, model = nn_model, label_names =
+"synth_labels", enforce_05 = TRUE, verbosity = 1)
 }
 }

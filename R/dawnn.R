@@ -176,10 +176,10 @@ generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
 
 #' Determine whether each cell is in a region of differential abundance.
 #'
-#' @description `determine_if_region_da()` takes vectors of p-values, observed
-#' scores, and the null distribution of scores and uses the Benjamini–Yekutieli
-#' procedure to determine whether a cell is in a region of differential
-#' abundance.
+#' @description `determine_if_region_da()` takes vectors of p-values,
+#' observed scores, and the null distribution of scores and uses the
+#' Benjamini–Yekutieli procedure to determine whether a cell is in a region of
+#' differential abundance.
 #'
 #' @param p_vals Numeric vector of p-values.
 #' @param scores Numeric vector containing observed output of Dawnn.
@@ -200,8 +200,8 @@ generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
 #' alpha = 0.2, assume_independence = FALSE, method = "beta")
 #' }
 determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1,
-                                   assume_independence = FALSE,
-                                   method = "beta") {
+                                       assume_independence = FALSE,
+                                       method = "beta") {
     if (method == "beta") {
         num_cells <- length(p_vals)
         if (assume_independence == FALSE) {

@@ -27,8 +27,8 @@ beta_method_of_moments <- function(data) {
 #' Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 #'
 #' @param cells Seurat object containing the dataset.
-#' @param k Integer number of neighbors to use (should be left as 1000 unless you have
-#' a very good reason) (optional, default 1000).
+#' @param k Integer number of neighbors to use (should be left as 1000 unless
+#' you have a very good reason) (optional, default 1000).
 #' @param verbose Boolean verbosity (optional, default = TRUE).
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell (optional, default =
@@ -42,14 +42,18 @@ beta_method_of_moments <- function(data) {
 generate_neighbor_labels <- function(cells, k = 1000, verbose = TRUE,
                                      label_names = "synth_labels") {
 
-    if (verbose) {message("Creating adjacency matrix.")}
+    if (verbose) {
+        message("Creating adjacency matrix.")
+    }
     graph_name <- names(cells@neighbors)[1]
     if (length(names(cells@neighbors)) > 1) {
         message(paste("Multiple available graph names. Choosing the first one:",
                       graph_name))
     }
     nhbor_labels_mtx <- apply(cells@neighbors[[graph_name]]@nn.idx, 1,
-                              function(x) {cells@meta.data[[label_names]][x][-1]})
+                              function(x) {
+                                  cells@meta.data[[label_names]][x][-1]
+                              })
     nhbor_labels_df <- data.frame(nhbor_labels_mtx)
     nhbor_labels_binary_df <- nhbor_labels_df == "Condition1"
     nhbor_labels_binary_mtx <- apply(nhbor_labels_binary_df, 1, as.numeric)

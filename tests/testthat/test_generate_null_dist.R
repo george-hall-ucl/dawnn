@@ -1,11 +1,7 @@
 library(Seurat)
 
 test_that("generate_null_distribution returns vector of correct length", {
-    cells <- readRDS("../data/cells_sim_discerete_clusters_gex_seed_1.rds")
-    label_idxs <- as.numeric(read.csv("../data/benchmark_dataset_sim_discrete_clusters.csv", header = FALSE)[1, 4:2703]) + 1
-    labels <- c("Condition2", "Condition1")[label_idxs]
-    cells$label <- labels
-    cells <- FindNeighbors(cells, dims = 1:50, return.neighbor = TRUE, k.param = 1000+1, reduction = "pca")
+    cells <- readRDS("../data/dawnn_test_data_1000_cells_discrete_clusters.rds")
 
     set.seed(123)
 

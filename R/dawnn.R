@@ -147,10 +147,10 @@ generate_null_dist <- function(cells, model, label_names, enforce_05, verbosity)
 #' beta distribution fitted to the null distribution of scores.
 #' @examples
 #' \dontrun{
-#' generate_p_vals_pc1(scores = score_vect, null_dist = null_scores, two_sided
+#' generate_p_vals(scores = score_vect, null_dist = null_scores, two_sided
 #' = TRUE)
 #' }
-generate_p_vals_pc1 <- function(scores, null_dist, two_sided = TRUE) {
+generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
     null_MoM_est <- beta_method_of_moments(null_dist)
     null_MoM_alpha <- null_MoM_est$alpha
     null_MoM_beta <- null_MoM_est$beta
@@ -331,7 +331,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
                                     verbosity = verbosity)
 
     if (verbosity > 0) {message("Generating p-values.")}
-    p_vals <- generate_p_vals_pc1(scores, null_dist, two_sided = two_sided)
+    p_vals <- generate_p_vals(scores, null_dist, two_sided = two_sided)
     cells$dawnn_p_vals <- p_vals
 
     if (verbosity > 0) {message("Determining significance.")}

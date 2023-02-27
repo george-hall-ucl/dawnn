@@ -78,7 +78,9 @@ load_model_from_python <- function(model_path) {
         # conda_env_name <- "r-reticulate"
         # conda_create(conda_env_name)
         # conda_install(conda_env_name, "tensorflow")
-        stop("Tensorflow not installed in reticulate environment. Please install following https://rstudio.github.io/reticulate/articles/python_packages.html.")
+        stop(paste("Tensorflow not installed in reticulate environment.",
+                   "Please install following",
+                   "rstudio.github.io/reticulate/articles/python_packages.html."))
     }
 
     tensorflow <- import("tensorflow")

@@ -18,8 +18,8 @@ beta_method_of_moments <- function(data) {
     sample_var <- var(data)
     common_factor <- ((sample_mean * (1 - sample_mean)) / sample_var) - 1
 
-    alpha = sample_mean * common_factor
-    beta = (1 - sample_mean) * common_factor
+    alpha <- sample_mean * common_factor
+    beta <- (1 - sample_mean) * common_factor
 
     return(list(alpha = alpha, beta = beta))
 }

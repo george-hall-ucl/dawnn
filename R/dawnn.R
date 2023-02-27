@@ -83,8 +83,6 @@ load_model_from_python <- function(model_path) {
                    "rstudio.github.io/reticulate/articles/python_packages.html."))
     }
 
-    tensorflow <- import("tensorflow")
-
     if (!file.exists(model_path)) {
         stop(paste("No model available at", model_path))
     }

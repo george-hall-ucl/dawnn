@@ -14,8 +14,8 @@ generate_neighbor_labels(
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
 
-\item{k}{Integer number of neighbors to use (should be left as 1000 unless you have
-a very good reason) (optional, default 1000).}
+\item{k}{Integer number of neighbors to use (should be left as 1000 unless
+you have a very good reason) (optional, default 1000).}
 
 \item{verbose}{Boolean verbosity (optional, default = TRUE).}
 

@@ -35,8 +35,8 @@ default = TRUE).}
 greater than the mode of the beta distribution fitted to the null
 distribution (optional, default TRUE).}
 
-\item{alpha}{Numeric target false discovery rate supplied to the Benjamini–Yekutieli
-procedure (optional, default 0.1, i.e. 10\%).}
+\item{alpha}{Numeric target false discovery rate supplied to the
+Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10\%).}
 
 \item{verbosity}{Integer how much output to print. 0: silent; 1: normal
 output; 2: display messages from predict() function.}

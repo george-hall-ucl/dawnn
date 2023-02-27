@@ -19,26 +19,21 @@ determine_if_region_da(
 
 \item{null_dist}{Numeric vector containing the null distribution of scores.}
 
-\item{alpha}{Numeric target false discovery rate supplied to the Benjamini–Yekutieli
-procedure (optional, default 0.1, i.e. 10\%).}
+\item{alpha}{Numeric target false discovery rate supplied to the
+Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10\%).}
 
 \item{assume_independence}{Boolean whether to assume that the score
 for each cell is independent. Intended for testing purposes, do not change
 unless you have good reason (optional, default FALSE)}
-
-\item{method}{Whether to determine differential abundance using p-values
-from the fitted beta distribution or seeing which cells have scores more
-extreme than any in the null distribution. Intended for testing purposes, do
-not change unless you have good reason (optional, default "beta")}
 }
 \value{
 Boolean vector containing Dawnn's verdict for each cell.
 }
 \description{
-\code{determine_if_region_da()} takes vectors of p-values, observed
-scores, and the null distribution of scores and uses the Benjamini–Yekutieli
-procedure to determine whether a cell is in a region of differential
-abundance.
+\code{determine_if_region_da()} takes vectors of p-values,
+observed scores, and the null distribution of scores and uses the
+Benjamini–Yekutieli procedure to determine whether a cell is in a region of
+differential abundance.
 }
 \examples{
 \dontrun{

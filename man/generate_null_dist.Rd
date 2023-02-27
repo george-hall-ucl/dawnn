@@ -4,7 +4,7 @@
 \alias{generate_null_dist}
 \title{Generate a null distribution of P(Condition_1) estimates.}
 \usage{
-generate_null_dist(cells, model, label_names, enforce_05, verbosity)
+generate_null_dist(cells, model, label_names, verbosity)
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
@@ -13,9 +13,6 @@ generate_null_dist(cells, model, label_names, enforce_05, verbosity)
 
 \item{label_names}{String containing the name of the meta.data slot in
 `cells' containing the labels of each cell.}
-
-\item{enforce_05}{Boolean whether to simulate an equal distribution of
-Condition1 and Condition2 labels.}
 
 \item{verbosity}{Integer how much output to print. 0: silent; 1: normal
 output; 2: display messages from predict() function.}
@@ -31,6 +28,6 @@ and returns the estimates of P(Condition_1) for each shuffled dataset.
 \examples{
 \dontrun{
 generate_null_dist(cells = cell_object, model = nn_model, label_names =
-"synth_labels", enforce_05 = TRUE, verbosity = 1)
+"synth_labels", verbosity = 1)
 }
 }

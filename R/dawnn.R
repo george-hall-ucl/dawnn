@@ -98,8 +98,6 @@ load_model_from_python <- function(model_path) {
 #' @param model Loaded neural network model to use.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
-#' @param enforce_05 Boolean whether to simulate an equal distribution of
-#' Condition1 and Condition2 labels.
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @return A vector containing a null distribution of Dawnn's model outputs for
@@ -107,20 +105,15 @@ load_model_from_python <- function(model_path) {
 #' @examples
 #' \dontrun{
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
-#' "synth_labels", enforce_05 = TRUE, verbosity = 1)
+#' "synth_labels", verbosity = 1)
 #' }
-generate_null_dist <- function(cells, model, label_names, enforce_05,
-                               verbosity) {
+generate_null_dist <- function(cells, model, label_names, verbosity) {
     null_dist <- c()
     for (i in 1:3) {
-        if (enforce_05) {
-            num_cells <- ncol(cells)
-            labels <- c(rep("Condition1", round(num_cells / 2)),
-                        rep("Condition2", num_cells - round(num_cells / 2)))
-            cells$shuff_labels <- sample(labels)
-        } else {
-            cells$shuff_labels <- sample(cells@meta.data[[label_names]])
-        }
+        num_cells <- ncol(cells)
+        labels <- c(rep("Condition1", round(num_cells / 2)),
+                    rep("Condition2", num_cells - round(num_cells / 2)))
+        cells$shuff_labels <- sample(labels)
         shuff_nbor_labs <- generate_neighbor_labels(cells,
                                                     label_names = "shuff_labels",
                                                     verbose = verbosity > 0)
@@ -318,7 +311,6 @@ run_dawnn <- function(cells, label_names, reduced_dim,
         message("Generating null distribution.")
     }
     null_dist <- generate_null_dist(cells, nn_model, label_names,
-                                    enforce_05 = TRUE,
                                     verbosity = verbosity)
 
     if (verbosity > 0) {

@@ -6,7 +6,6 @@
 \usage{
 generate_neighbor_labels(
   cells,
-  reduced_dim,
   k = 1000,
   verbose = TRUE,
   label_names = "synth_labels"
@@ -14,9 +13,6 @@ generate_neighbor_labels(
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
-
-\item{reduced_dim}{String containing the name of the dimensionality
-reduction to use.}
 
 \item{k}{Integer number of neighbors to use (should be left as 1000 unless you have
 a very good reason) (optional, default 1000).}

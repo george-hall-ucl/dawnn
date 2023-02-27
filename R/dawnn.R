@@ -27,8 +27,6 @@ beta_method_of_moments <- function(data) {
 #' Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 #'
 #' @param cells Seurat object containing the dataset.
-#' @param reduced_dim String containing the name of the dimensionality
-#' reduction to use.
 #' @param k Integer number of neighbors to use (should be left as 1000 unless you have
 #' a very good reason) (optional, default 1000).
 #' @param verbose Boolean verbosity (optional, default = TRUE).
@@ -41,8 +39,7 @@ beta_method_of_moments <- function(data) {
 #' \dontrun{
 #' generate_neighbor_labels(cell_object, "pca")
 #' }
-generate_neighbor_labels <- function(cells, reduced_dim, k = 1000,
-                                     verbose = TRUE,
+generate_neighbor_labels <- function(cells, k = 1000, verbose = TRUE,
                                      label_names = "synth_labels") {
 
     if (verbose) {message("Creating adjacency matrix.")}
@@ -125,7 +122,7 @@ generate_null_dist <- function(cells, reduced_dim, model, label_names, enforce_0
         } else {
             cells$shuffled_labels <- sample(cells@meta.data[[label_names]])
         }
-        shuffled_neighbor_labels <- generate_neighbor_labels(cells, reduced_dim,
+        shuffled_neighbor_labels <- generate_neighbor_labels(cells,
                                                              label_names = "shuffled_labels",
                                                              verbose = verbosity > 0)
         shuffled_scores <- predict(model, shuffled_neighbor_labels,
@@ -322,8 +319,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     }
 
     if (verbosity > 0) {message("Generating neighbor labels.")}
-    neighbor_labels <- generate_neighbor_labels(cells, reduced_dim,
-                                                label_names = label_names,
+    neighbor_labels <- generate_neighbor_labels(cells, label_names = label_names,
                                                 verbose = verbosity > 0)
 
     if (verbosity > 0) {message("Generating scores.")}

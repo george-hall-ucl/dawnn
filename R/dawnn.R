@@ -158,22 +158,22 @@ generate_null_dist <- function(cells, model, label_names, enforce_05,
 #' = TRUE)
 #' }
 generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
-    null_MoM_est <- beta_method_of_moments(null_dist)
-    null_MoM_alpha <- null_MoM_est$alpha
-    null_MoM_beta <- null_MoM_est$beta
-    null_MoM_mode <- (null_MoM_alpha - 1) / (null_MoM_alpha + null_MoM_beta - 2)
+    null_dist_est_params <- beta_method_of_moments(null_dist)
+    null_alpha <- null_dist_est_params$alpha
+    null_beta <- null_dist_est_params$beta
+    null_mode <- (null_alpha - 1) / (null_alpha + null_beta - 2)
 
     p_vals <- c()
 
     for (score in scores) {
         if (two_sided) {
-            if (score <= null_MoM_mode) {
-                p_vals <- c(p_vals, pbeta(score, null_MoM_alpha, null_MoM_beta))
+            if (score <= null_mode) {
+                p_vals <- c(p_vals, pbeta(score, null_alpha, null_beta))
             } else {
-                p_vals <- c(p_vals, 1 - pbeta(score, null_MoM_alpha, null_MoM_beta))
+                p_vals <- c(p_vals, 1 - pbeta(score, null_alpha, null_beta))
             }
         } else {
-            p_vals <- c(p_vals, 1 - pbeta(score, null_MoM_alpha, null_MoM_beta))
+            p_vals <- c(p_vals, 1 - pbeta(score, null_alpha, null_beta))
         }
     }
 

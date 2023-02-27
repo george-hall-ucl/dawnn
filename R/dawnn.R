@@ -30,13 +30,15 @@ beta_method_of_moments <- function(data) {
 #' @param verbose Boolean verbosity.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
+#' @param label_1 String containing the name of one of the labels.
 #' @return A data frame containing the labels of the 1000 nearest neighbors of
 #' each cell.
 #' @examples
 #' \dontrun{
-#' generate_neighbor_labels(cell_object, verbose = TRUE, label_names = "sample_names")
+#' generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
+#' "sample_names", label_1 = "Condition1")
 #' }
-generate_neighbor_labels <- function(cells, verbose, label_names) {
+generate_neighbor_labels <- function(cells, verbose, label_names, label_1) {
 
     if (verbose) {
         message("Creating adjacency matrix.")
@@ -51,7 +53,7 @@ generate_neighbor_labels <- function(cells, verbose, label_names) {
                                   cells@meta.data[[label_names]][x][-1]
                               })
     nhbor_labels_df <- data.frame(nhbor_labels_mtx)
-    nhbor_labels_binary_df <- nhbor_labels_df == "Condition1"
+    nhbor_labels_binary_df <- nhbor_labels_df == label_1
     nhbor_labels_binary_mtx <- apply(nhbor_labels_binary_df, 1, as.numeric)
 
     return(nhbor_labels_binary_mtx)
@@ -98,6 +100,8 @@ load_model_from_python <- function(model_path) {
 #' @param model Loaded neural network model to use.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
+#' @param label_1 String containing the name of one of the labels.
+#' @param label_2 String containing the name of the other label.
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @return A vector containing a null distribution of Dawnn's model outputs for
@@ -107,15 +111,17 @@ load_model_from_python <- function(model_path) {
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
 #' "synth_labels", verbosity = 1)
 #' }
-generate_null_dist <- function(cells, model, label_names, verbosity) {
+generate_null_dist <- function(cells, model, label_names, label_1, label_2,
+                               verbosity) {
     null_dist <- c()
     for (i in 1:3) {
         num_cells <- ncol(cells)
-        labels <- c(rep("Condition1", round(num_cells / 2)),
-                    rep("Condition2", num_cells - round(num_cells / 2)))
+        labels <- c(rep(label_1, round(num_cells / 2)),
+                    rep(label_2, num_cells - round(num_cells / 2)))
         cells$shuff_labels <- sample(labels)
         shuff_nbor_labs <- generate_neighbor_labels(cells,
                                                     label_names = "shuff_labels",
+                                                    label_1 = label_1,
                                                     verbose = verbosity > 0)
         shuff_scores <- predict(model, shuff_nbor_labs,
                                 verbose = ifelse(verbosity == 2, 1, 0))
@@ -239,6 +245,8 @@ download_model <- function(model_url, model_file_path) {
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
+#' @param label_1 String containing the name of one of the labels.
+#' @param label_2 String containing the name of the other label.
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
 #' @param nn_model String containing the path to the model's .hdf5 file.
@@ -263,7 +271,7 @@ download_model <- function(model_url, model_file_path) {
 #' verbosity = 0, seed = 42)
 #' }
 #' @export
-run_dawnn <- function(cells, label_names, reduced_dim,
+run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       nn_model = "final_model_dawnn.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123) {
@@ -286,6 +294,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     }
     neighbor_labels <- generate_neighbor_labels(cells,
                                                 label_names = label_names,
+                                                label_1 = label_1,
                                                 verbose = verbosity > 0)
 
     if (verbosity > 0) {
@@ -299,8 +308,8 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     if (verbosity > 0) {
         message("Generating null distribution.")
     }
-    null_dist <- generate_null_dist(cells, nn_model, label_names,
-                                    verbosity = verbosity)
+    null_dist <- generate_null_dist(cells, nn_model, label_names, label_1,
+                                    label_2, verbosity = verbosity)
 
     if (verbosity > 0) {
         message("Generating p-values.")

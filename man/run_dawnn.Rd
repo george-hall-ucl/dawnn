@@ -7,6 +7,8 @@
 run_dawnn(
   cells,
   label_names,
+  label_1,
+  label_2,
   reduced_dim,
   nn_model = "final_model_dawnn.h5",
   recalculate_graph = TRUE,
@@ -20,6 +22,10 @@ run_dawnn(
 
 \item{label_names}{String containing the name of the meta.data slot in
 `cells' containing the labels of each cell.}
+
+\item{label_1}{String containing the name of one of the labels.}
+
+\item{label_2}{String containing the name of the other label.}
 
 \item{reduced_dim}{String containing the name of the dimensionality
 reduction to use.}

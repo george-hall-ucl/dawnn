@@ -16,7 +16,7 @@ test_that("generate_neighbor_labels check correctness and class", {
     cells@neighbors$RNA.nn@nn.idx <- mat
 
     actual <- generate_neighbor_labels(cells, label_names = "label",
-                                       verbose = FALSE)
+                                       label_1 = "Condition1", verbose = FALSE)
     # Should be:
     #      [,1] [,2] [,3] [,4] [,5]
     # [1,]    1    0    1    0    1

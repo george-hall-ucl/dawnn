@@ -191,8 +191,8 @@ generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
 #' @param p_vals Numeric vector of p-values.
 #' @param scores Numeric vector containing observed output of Dawnn.
 #' @param null_dist Numeric vector containing the null distribution of scores.
-#' @param alpha Numeric target false discovery rate supplied to the Benjamini–Yekutieli
-#' procedure (optional, default 0.1, i.e. 10%).
+#' @param alpha Numeric target false discovery rate supplied to the
+#' Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10%).
 #' @param assume_independence Boolean whether to assume that the score
 #' for each cell is independent. Intended for testing purposes, do not change
 #' unless you have good reason (optional, default FALSE)
@@ -221,9 +221,9 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1,
         j <- 1
         for (i in order(p_vals)) {
             if (assume_independence == FALSE) {
-                # This is in fact the "Benjamini–Yekutieli procedure", which allows
-                # for arbitrary dependence assumptions. We can remove the
-                # "c" if we assume that all tests are independent.
+                # This is in fact the "Benjamini–Yekutieli procedure", which
+                # allows for arbitrary dependence assumptions. We can remove
+                # the "c" if we assume that all tests are independent.
                 cutoff <- (j * alpha) / (num_cells * c)
             } else {
                 cutoff <- (j * alpha) / num_cells

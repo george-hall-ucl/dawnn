@@ -1,6 +1,6 @@
 library(Seurat)
 
-test_that("generate_neighbor_labels", {
+test_that("generate_neighbor_labels check correctness and class", {
     cells <- readRDS("../data/five_cell_seurat.rds")
     # cells$label is c("Condition1", "Condition2", "Condition1",
     #                  "Condition2", "Condition1")
@@ -15,8 +15,8 @@ test_that("generate_neighbor_labels", {
     # [5,]    5    3    4    2    1    5 
     cells@neighbors$RNA.nn@nn.idx <- mat
 
-    actual <- generate_neighbor_labels(cells, reduced_dim = "foo",
-                                       label_names = "label", verbose = FALSE)
+    actual <- generate_neighbor_labels(cells, label_names = "label",
+                                       verbose = FALSE)
     # Should be:
     #      [,1] [,2] [,3] [,4] [,5]
     # [1,]    1    0    1    0    1

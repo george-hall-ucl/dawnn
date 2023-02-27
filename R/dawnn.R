@@ -133,18 +133,14 @@ generate_null_dist <- function(cells, model, label_names, verbosity) {
 #'
 #' @param scores Numeric vector containing observed output of Dawnn.
 #' @param null_dist Numeric vector containing null distribution of scores.
-#' @param two_sided Boolean whether to use 1-(a calculated p-value) for a score
-#' greater than the mode of the beta distribution fitted to the null
-#' distribution.
 #' @return Numeric vector containing a p-value for each cell, i.e. the
 #' probability of observing at least such an extreme score for a cell given the
 #' beta distribution fitted to the null distribution of scores.
 #' @examples
 #' \dontrun{
-#' generate_p_vals(scores = score_vect, null_dist = null_scores, two_sided
-#' = TRUE)
+#' generate_p_vals(scores = score_vect, null_dist = null_scores)
 #' }
-generate_p_vals <- function(scores, null_dist, two_sided) {
+generate_p_vals <- function(scores, null_dist) {
     null_dist_est_params <- beta_method_of_moments(null_dist)
     null_alpha <- null_dist_est_params$alpha
     null_beta <- null_dist_est_params$beta
@@ -153,12 +149,8 @@ generate_p_vals <- function(scores, null_dist, two_sided) {
     p_vals <- c()
 
     for (score in scores) {
-        if (two_sided) {
-            if (score <= null_mode) {
-                p_vals <- c(p_vals, pbeta(score, null_alpha, null_beta))
-            } else {
-                p_vals <- c(p_vals, 1 - pbeta(score, null_alpha, null_beta))
-            }
+        if (score <= null_mode) {
+            p_vals <- c(p_vals, pbeta(score, null_alpha, null_beta))
         } else {
             p_vals <- c(p_vals, 1 - pbeta(score, null_alpha, null_beta))
         }
@@ -253,9 +245,6 @@ download_model <- function(model_url, model_file_path) {
 #' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
 #' FALSE, then the one stored in the `cells` object will be used (optional,
 #' default = TRUE).
-#' @param two_sided Boolean whether to use 1-(a calculated p-value) for a score
-#' greater than the mode of the beta distribution fitted to the null
-#' distribution (optional, default TRUE).
 #' @param alpha Numeric target false discovery rate supplied to the
 #' Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10%).
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
@@ -270,14 +259,14 @@ download_model <- function(model_url, model_file_path) {
 #' @examples
 #' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", nn_model =
-#' "my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, two_sided =
-#' FALSE, alpha = 0.2, versboity = 0, seed = 42)
+#' "my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, alpha = 0.2,
+#' verbosity = 0, seed = 42)
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, reduced_dim,
                       nn_model = "final_model_dawnn.h5",
-                      recalculate_graph = TRUE, two_sided = TRUE,
-                      alpha = 0.1, verbosity = 2, seed = 123) {
+                      recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
+                      seed = 123) {
     set.seed(seed)
 
     if (class(nn_model)[1] == "character") {
@@ -316,7 +305,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     if (verbosity > 0) {
         message("Generating p-values.")
     }
-    p_vals <- generate_p_vals(scores, null_dist, two_sided = two_sided)
+    p_vals <- generate_p_vals(scores, null_dist)
     cells$dawnn_p_vals <- p_vals
 
     if (verbosity > 0) {

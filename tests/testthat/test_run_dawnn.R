@@ -8,12 +8,12 @@ test_that("run_dawnn reproducible recalculate_graph = FALSE", {
     model_file <- "../data/final_model_dawnn.h5"
     dawnn_out_1 <- run_dawnn(cells = cells, label_names = "label",
                              nn_model = model_file, reduced_dim = "pca",
-                             recalculate_graph = FALSE, two_sided = TRUE,
-                             alpha = 0.1, verbosity = 0)
+                             recalculate_graph = FALSE, alpha = 0.1,
+                             verbosity = 0)
     dawnn_out_2 <- run_dawnn(cells = cells, label_names = "label",
                              nn_model = model_file, reduced_dim = "pca",
-                             recalculate_graph = FALSE, two_sided = TRUE,
-                             alpha = 0.1, verbosity = 0)
+                             recalculate_graph = FALSE, alpha = 0.1,
+                             verbosity = 0)
 
     expect_equal(dawnn_out_1, dawnn_out_2)
 })
@@ -24,13 +24,13 @@ test_that("run_dawnn reproducible recalculate_graph = TRUE", {
     model_file <- "../data/final_model_dawnn.h5"
     dawnn_out_1 <- run_dawnn(cells = cells, label_names = "label",
                              nn_model = model_file, reduced_dim = "pca",
-                             recalculate_graph = TRUE, two_sided = TRUE,
-                             alpha = 0.1, verbosity = 0)
+                             recalculate_graph = TRUE, alpha = 0.1,
+                             verbosity = 0)
 
     dawnn_out_2 <- run_dawnn(cells = cells, label_names = "label",
                              nn_model = model_file, reduced_dim = "pca",
-                             recalculate_graph = TRUE, two_sided = TRUE,
-                             alpha = 0.1, verbosity = 0)
+                             recalculate_graph = TRUE, alpha = 0.1,
+                             verbosity = 0)
 
     expect_equal(dawnn_out_1, dawnn_out_2)
 })
@@ -41,7 +41,7 @@ test_that("run_dawnn returns Seurat", {
     model_file <- "../data/final_model_dawnn.h5"
     dawnn_out <- run_dawnn(cells = cells, label_names = "label",
                            nn_model = model_file, reduced_dim = "pca",
-                           recalculate_graph = TRUE, two_sided = TRUE,
-                           alpha = 0.1, verbosity = 0)
+                           recalculate_graph = TRUE, alpha = 0.1,
+                           verbosity = 0)
     expect_s4_class(dawnn_out, "Seurat")
 })

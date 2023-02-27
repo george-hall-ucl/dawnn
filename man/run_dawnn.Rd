@@ -10,7 +10,6 @@ run_dawnn(
   reduced_dim,
   nn_model = "final_model_dawnn.h5",
   recalculate_graph = TRUE,
-  two_sided = TRUE,
   alpha = 0.1,
   verbosity = 2,
   seed = 123
@@ -30,10 +29,6 @@ reduction to use.}
 \item{recalculate_graph}{Boolean whether to recalculate the KNN graph. If
 FALSE, then the one stored in the \code{cells} object will be used (optional,
 default = TRUE).}
-
-\item{two_sided}{Boolean whether to use 1-(a calculated p-value) for a score
-greater than the mode of the beta distribution fitted to the null
-distribution (optional, default TRUE).}
 
 \item{alpha}{Numeric target false discovery rate supplied to the
 Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10\%).}
@@ -59,7 +54,7 @@ abundance.
 \examples{
 \dontrun{
 run_dawnn(cells = dataset, label_names = "condition", nn_model =
-"my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, two_sided =
-FALSE, alpha = 0.2, versboity = 0, seed = 42)
+"my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, alpha = 0.2,
+verbosity = 0, seed = 42)
 }
 }

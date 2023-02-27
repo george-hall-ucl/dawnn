@@ -289,8 +289,8 @@ download_model <- function(model_url = "http://example.com/hard/coded/path",
 #' @param two_sided Boolean whether to use 1-(a calculated p-value) for a score
 #' greater than the mode of the beta distribution fitted to the null
 #' distribution (optional, default TRUE).
-#' @param alpha Numeric target false discovery rate supplied to the Benjamini–Yekutieli
-#' procedure (optional, default 0.1, i.e. 10%).
+#' @param alpha Numeric target false discovery rate supplied to the
+#' Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10%).
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param seed Integer random seed (optional, default 123).
@@ -318,31 +318,48 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     }
 
     if (recalculate_graph) {
-        if (verbosity > 0) {message("Finding neighbors.")}
+        if (verbosity > 0) {
+            message("Finding neighbors.")
+        }
         cells <- FindNeighbors(cells, dims = 1:50, return.neighbor = TRUE,
                                k.param = 1001, reduction = reduced_dim)
     }
 
-    if (verbosity > 0) {message("Generating neighbor labels.")}
-    neighbor_labels <- generate_neighbor_labels(cells, label_names = label_names,
+    if (verbosity > 0) {
+        message("Generating neighbor labels.")
+    }
+    neighbor_labels <- generate_neighbor_labels(cells,
+                                                label_names = label_names,
                                                 verbose = verbosity > 0)
 
-    if (verbosity > 0) {message("Generating scores.")}
+    if (verbosity > 0) {
+        message("Generating scores.")
+    }
     scores <- predict(nn_model, neighbor_labels,
                       verbose = ifelse(verbosity == 2, 1, 0))
     cells$dawnn_scores <- scores
-    cells$dawnn_lfc <- log2(scores/(1-scores))
+    cells$dawnn_lfc <- log2(scores / (1 - scores))
 
-    if (verbosity > 0) {message("Generating null distribution.")}
-    null_dist <- generate_null_dist(cells, nn_model, label_names, enforce_05 = T,
+    if (verbosity > 0) {
+        message("Generating null distribution.")
+    }
+    null_dist <- generate_null_dist(cells, nn_model, label_names,
+                                    enforce_05 = TRUE,
                                     verbosity = verbosity)
 
-    if (verbosity > 0) {message("Generating p-values.")}
+    if (verbosity > 0) {
+        message("Generating p-values.")
+    }
     p_vals <- generate_p_vals(scores, null_dist, two_sided = two_sided)
     cells$dawnn_p_vals <- p_vals
 
-    if (verbosity > 0) {message("Determining significance.")}
-    cells$dawnn_da_verdict <- determine_if_region_da(p_vals, scores, null_dist, alpha = 0.1, assume_independence = FALSE, method = "beta")
+    if (verbosity > 0) {
+        message("Determining significance.")
+    }
+    cells$dawnn_da_verdict <- determine_if_region_da(p_vals, scores, null_dist,
+                                                     alpha = 0.1,
+                                                     assume_independence = FALSE,
+                                                     method = "beta")
 
     return(cells)
 }

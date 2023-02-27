@@ -194,50 +194,39 @@ generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
 #' @param assume_independence Boolean whether to assume that the score
 #' for each cell is independent. Intended for testing purposes, do not change
 #' unless you have good reason (optional, default FALSE)
-#' @param method Whether to determine differential abundance using p-values
-#' from the fitted beta distribution or seeing which cells have scores more
-#' extreme than any in the null distribution. Intended for testing purposes, do
-#' not change unless you have good reason (optional, default "beta")
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @examples
 #' \dontrun{
 #' determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
-#' alpha = 0.2, assume_independence = FALSE, method = "beta")
+#' alpha = 0.2, assume_independence = FALSE)
 #' }
 determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1,
-                                       assume_independence = FALSE,
-                                       method = "beta") {
-    if (method == "beta") {
-        num_cells <- length(p_vals)
+                                       assume_independence = FALSE) {
+    num_cells <- length(p_vals)
+    if (assume_independence == FALSE) {
+        c <- 0
+        for (k in 1:num_cells) {
+            c <- (c + (1 / k))
+        }
+    }
+    da_verdict <- rep(FALSE, num_cells)
+    j <- 1
+    for (i in order(p_vals)) {
         if (assume_independence == FALSE) {
-            c <- 0
-            for (k in 1:num_cells) {
-                c <- (c + (1 / k))
-            }
+            # This is in fact the "Benjamini–Yekutieli procedure", which allows
+            # for arbitrary dependence assumptions. We can remove the "c" if we
+            # assume that all tests are independent.
+            cutoff <- (j * alpha) / (num_cells * c)
+        } else {
+            cutoff <- (j * alpha) / num_cells
         }
-        da_verdict <- rep(FALSE, num_cells)
-        j <- 1
-        for (i in order(p_vals)) {
-            if (assume_independence == FALSE) {
-                # This is in fact the "Benjamini–Yekutieli procedure", which
-                # allows for arbitrary dependence assumptions. We can remove
-                # the "c" if we assume that all tests are independent.
-                cutoff <- (j * alpha) / (num_cells * c)
-            } else {
-                cutoff <- (j * alpha) / num_cells
-            }
 
-            if (p_vals[i] <= cutoff) {
-                da_verdict[i] <- TRUE
-            } else {
-                break
-            }
-            j <- j + 1
+        if (p_vals[i] <= cutoff) {
+            da_verdict[i] <- TRUE
+        } else {
+            break
         }
-    } else if (method == "perturbation") {
-        da_verdict <- scores > max(null_dist)
-    } else {
-        stop(paste("Unknown DA-calling method:", method))
+        j <- j + 1
     }
 
     return(da_verdict)
@@ -356,8 +345,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
     }
     cells$dawnn_da_verdict <- determine_if_region_da(p_vals, scores, null_dist,
                                                      alpha = 0.1,
-                                                     assume_independence = FALSE,
-                                                     method = "beta")
+                                                     assume_independence = FALSE)
 
     return(cells)
 }

@@ -7,12 +7,10 @@ test_that("determine_if_region_da reproducible", {
     p <- rbeta(n = 1000, shape1 = 0.7, shape2 = 0.4)
     verdict_1 <- determine_if_region_da(p_vals = p, scores = s,
                                         null_dist = n, alpha = 0.1,
-                                        assume_independence = TRUE,
-                                        method = "beta")
+                                        assume_independence = TRUE)
     verdict_2 <- determine_if_region_da(p_vals = p, scores = s,
                                         null_dist = n, alpha = 0.1,
-                                        assume_independence = TRUE,
-                                        method = "beta")
+                                        assume_independence = TRUE)
     expect_equal(verdict_1, verdict_2)
 })
 
@@ -23,7 +21,6 @@ test_that("determine_if_region_da returns vector", {
     p <- rbeta(n = 1000, shape1 = 0.7, shape2 = 0.4)
     verdict <- determine_if_region_da(p_vals = p, scores = s,
                                       null_dist = n, alpha = 0.1,
-                                      assume_independence = TRUE,
-                                      method = "beta")
+                                      assume_independence = TRUE)
     expect_vector(verdict, ptype = logical(), size = 1000)
 })

@@ -9,8 +9,7 @@ determine_if_region_da(
   scores,
   null_dist,
   alpha = 0.1,
-  assume_independence = FALSE,
-  method = "beta"
+  assume_independence = FALSE
 )
 }
 \arguments{
@@ -44,6 +43,6 @@ abundance.
 \examples{
 \dontrun{
 determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
-alpha = 0.2, assume_independence = FALSE, method = "beta")
+alpha = 0.2, assume_independence = FALSE)
 }
 }

@@ -27,18 +27,16 @@ beta_method_of_moments <- function(data) {
 #' Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 #'
 #' @param cells Seurat object containing the dataset.
-#' @param verbose Boolean verbosity (optional, default = TRUE).
+#' @param verbose Boolean verbosity.
 #' @param label_names String containing the name of the meta.data slot in
-#' `cells' containing the labels of each cell (optional, default =
-#' "synth_labels").
+#' `cells' containing the labels of each cell.
 #' @return A data frame containing the labels of the 1000 nearest neighbors of
 #' each cell.
 #' @examples
 #' \dontrun{
-#' generate_neighbor_labels(cell_object, "pca")
+#' generate_neighbor_labels(cell_object, verbose = TRUE, label_names = "sample_names")
 #' }
-generate_neighbor_labels <- function(cells, verbose = TRUE,
-                                     label_names = "synth_labels") {
+generate_neighbor_labels <- function(cells, verbose, label_names) {
 
     if (verbose) {
         message("Creating adjacency matrix.")
@@ -144,7 +142,7 @@ generate_null_dist <- function(cells, model, label_names, enforce_05,
 #' @param null_dist Numeric vector containing null distribution of scores.
 #' @param two_sided Boolean whether to use 1-(a calculated p-value) for a score
 #' greater than the mode of the beta distribution fitted to the null
-#' distribution (optional, default TRUE).
+#' distribution.
 #' @return Numeric vector containing a p-value for each cell, i.e. the
 #' probability of observing at least such an extreme score for a cell given the
 #' beta distribution fitted to the null distribution of scores.
@@ -153,7 +151,7 @@ generate_null_dist <- function(cells, model, label_names, enforce_05,
 #' generate_p_vals(scores = score_vect, null_dist = null_scores, two_sided
 #' = TRUE)
 #' }
-generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
+generate_p_vals <- function(scores, null_dist, two_sided) {
     null_dist_est_params <- beta_method_of_moments(null_dist)
     null_alpha <- null_dist_est_params$alpha
     null_beta <- null_dist_est_params$beta
@@ -188,14 +186,14 @@ generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
 #' @param scores Numeric vector containing observed output of Dawnn.
 #' @param null_dist Numeric vector containing the null distribution of scores.
 #' @param alpha Numeric target false discovery rate supplied to the
-#' Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10%).
+#' Benjamini–Yekutieli procedure.
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @examples
 #' \dontrun{
 #' determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
 #' alpha = 0.2)
 #' }
-determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1) {
+determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
     num_cells <- length(p_vals)
 
     c <- 0
@@ -231,8 +229,7 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1) {
 #' be used once before run_dawnn() can be executed. After this, the path to the
 #' model can be passed to this function.
 #'
-#' @param model_url String url from which to download the model (optional,
-#' default to hard-coded URL).
+#' @param model_url String url from which to download the model.
 #' @param model_file_path String path at which to save the downloaded model.
 #' @return Absolute path to the downloaded model.
 #' @examples
@@ -241,8 +238,7 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1) {
 #' cells <- run_dawnn(cells, nn_model = model_path, [...])
 #' }
 #' @export
-download_model <- function(model_url = "http://example.com/hard/coded/path",
-                           model_file_path = "dawnn_nn_model.h5") {
+download_model <- function(model_url, model_file_path) {
     system(paste0("wget -O ", model_file_path, " '", model_url, "'"))
 
     return(normalizePath(model_file_path))

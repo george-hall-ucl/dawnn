@@ -4,14 +4,10 @@
 \alias{download_model}
 \title{Download the neural network model used by Dawnn.}
 \usage{
-download_model(
-  model_url = "http://example.com/hard/coded/path",
-  model_file_path = "dawnn_nn_model.h5"
-)
+download_model(model_url, model_file_path)
 }
 \arguments{
-\item{model_url}{String url from which to download the model (optional,
-default to hard-coded URL).}
+\item{model_url}{String url from which to download the model.}
 
 \item{model_file_path}{String path at which to save the downloaded model.}
 }

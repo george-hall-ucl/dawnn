@@ -4,7 +4,7 @@
 \alias{generate_p_vals}
 \title{Generate p-values for observed Dawnn model outputs.}
 \usage{
-generate_p_vals(scores, null_dist, two_sided = TRUE)
+generate_p_vals(scores, null_dist, two_sided)
 }
 \arguments{
 \item{scores}{Numeric vector containing observed output of Dawnn.}
@@ -13,7 +13,7 @@ generate_p_vals(scores, null_dist, two_sided = TRUE)
 
 \item{two_sided}{Boolean whether to use 1-(a calculated p-value) for a score
 greater than the mode of the beta distribution fitted to the null
-distribution (optional, default TRUE).}
+distribution.}
 }
 \value{
 Numeric vector containing a p-value for each cell, i.e. the

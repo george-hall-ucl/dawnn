@@ -4,16 +4,15 @@
 \alias{generate_neighbor_labels}
 \title{Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.}
 \usage{
-generate_neighbor_labels(cells, verbose = TRUE, label_names = "synth_labels")
+generate_neighbor_labels(cells, verbose, label_names)
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
 
-\item{verbose}{Boolean verbosity (optional, default = TRUE).}
+\item{verbose}{Boolean verbosity.}
 
 \item{label_names}{String containing the name of the meta.data slot in
-`cells' containing the labels of each cell (optional, default =
-"synth_labels").}
+`cells' containing the labels of each cell.}
 }
 \value{
 A data frame containing the labels of the 1000 nearest neighbors of
@@ -24,6 +23,6 @@ Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 }
 \examples{
 \dontrun{
-generate_neighbor_labels(cell_object, "pca")
+generate_neighbor_labels(cell_object, verbose = TRUE, label_names = "sample_names")
 }
 }

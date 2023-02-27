@@ -115,23 +115,24 @@ load_model_from_python <- function(model_path) {
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
 #' "synth_labels", enforce_05 = TRUE, verbosity = 1)
 #' }
-generate_null_dist <- function(cells, model, label_names, enforce_05, verbosity) {
+generate_null_dist <- function(cells, model, label_names, enforce_05,
+                               verbosity) {
     null_dist <- c()
     for (i in 1:3) {
         if (enforce_05) {
             num_cells <- ncol(cells)
-            labels <- c(rep("Condition1", round(num_cells/2)),
-                        rep("Condition2", num_cells - round(num_cells/2)))
-            cells$shuffled_labels <- sample(labels)
+            labels <- c(rep("Condition1", round(num_cells / 2)),
+                        rep("Condition2", num_cells - round(num_cells / 2)))
+            cells$shuff_labels <- sample(labels)
         } else {
-            cells$shuffled_labels <- sample(cells@meta.data[[label_names]])
+            cells$shuff_labels <- sample(cells@meta.data[[label_names]])
         }
-        shuffled_neighbor_labels <- generate_neighbor_labels(cells,
-                                                             label_names = "shuffled_labels",
-                                                             verbose = verbosity > 0)
-        shuffled_scores <- predict(model, shuffled_neighbor_labels,
-                                             verbose = ifelse(verbosity == 2, 1, 0))
-        null_dist <- c(null_dist, shuffled_scores)
+        shuff_nbor_labs <- generate_neighbor_labels(cells,
+                                                    label_names = "shuff_labels",
+                                                    verbose = verbosity > 0)
+        shuff_scores <- predict(model, shuff_nbor_labs,
+                                verbose = ifelse(verbosity == 2, 1, 0))
+        null_dist <- c(null_dist, shuff_scores)
     }
 
     return(null_dist)

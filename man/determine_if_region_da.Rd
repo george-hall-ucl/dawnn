@@ -4,13 +4,7 @@
 \alias{determine_if_region_da}
 \title{Determine whether each cell is in a region of differential abundance.}
 \usage{
-determine_if_region_da(
-  p_vals,
-  scores,
-  null_dist,
-  alpha = 0.1,
-  assume_independence = FALSE
-)
+determine_if_region_da(p_vals, scores, null_dist, alpha = 0.1)
 }
 \arguments{
 \item{p_vals}{Numeric vector of p-values.}
@@ -21,10 +15,6 @@ determine_if_region_da(
 
 \item{alpha}{Numeric target false discovery rate supplied to the
 Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10\%).}
-
-\item{assume_independence}{Boolean whether to assume that the score
-for each cell is independent. Intended for testing purposes, do not change
-unless you have good reason (optional, default FALSE)}
 }
 \value{
 Boolean vector containing Dawnn's verdict for each cell.
@@ -38,6 +28,6 @@ differential abundance.
 \examples{
 \dontrun{
 determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
-alpha = 0.2, assume_independence = FALSE)
+alpha = 0.2)
 }
 }

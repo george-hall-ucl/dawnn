@@ -191,41 +191,34 @@ generate_p_vals <- function(scores, null_dist, two_sided = TRUE) {
 #' @param null_dist Numeric vector containing the null distribution of scores.
 #' @param alpha Numeric target false discovery rate supplied to the
 #' Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10%).
-#' @param assume_independence Boolean whether to assume that the score
-#' for each cell is independent. Intended for testing purposes, do not change
-#' unless you have good reason (optional, default FALSE)
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @examples
 #' \dontrun{
 #' determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
-#' alpha = 0.2, assume_independence = FALSE)
+#' alpha = 0.2)
 #' }
-determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1,
-                                       assume_independence = FALSE) {
+determine_if_region_da <- function(p_vals, scores, null_dist, alpha = 0.1) {
     num_cells <- length(p_vals)
-    if (assume_independence == FALSE) {
-        c <- 0
-        for (k in 1:num_cells) {
-            c <- (c + (1 / k))
-        }
+
+    c <- 0
+    for (k in 1:num_cells) {
+        c <- (c + (1 / k))
     }
+
     da_verdict <- rep(FALSE, num_cells)
     j <- 1
     for (i in order(p_vals)) {
-        if (assume_independence == FALSE) {
-            # This is in fact the "Benjamini–Yekutieli procedure", which allows
-            # for arbitrary dependence assumptions. We can remove the "c" if we
-            # assume that all tests are independent.
-            cutoff <- (j * alpha) / (num_cells * c)
-        } else {
-            cutoff <- (j * alpha) / num_cells
-        }
+        # This is the "Benjamini–Yekutieli procedure", which allows for
+        # arbitrary dependence assumptions. We can remove the "c" if we assume
+        # that all tests are independent.
+        cutoff <- (j * alpha) / (num_cells * c)
 
         if (p_vals[i] <= cutoff) {
             da_verdict[i] <- TRUE
         } else {
             break
         }
+
         j <- j + 1
     }
 
@@ -344,8 +337,7 @@ run_dawnn <- function(cells, label_names, reduced_dim,
         message("Determining significance.")
     }
     cells$dawnn_da_verdict <- determine_if_region_da(p_vals, scores, null_dist,
-                                                     alpha = 0.1,
-                                                     assume_independence = FALSE)
+                                                     alpha = 0.1)
 
     return(cells)
 }

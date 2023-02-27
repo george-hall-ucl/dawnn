@@ -4,18 +4,10 @@
 \alias{generate_neighbor_labels}
 \title{Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.}
 \usage{
-generate_neighbor_labels(
-  cells,
-  k = 1000,
-  verbose = TRUE,
-  label_names = "synth_labels"
-)
+generate_neighbor_labels(cells, verbose = TRUE, label_names = "synth_labels")
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
-
-\item{k}{Integer number of neighbors to use (should be left as 1000 unless
-you have a very good reason) (optional, default 1000).}
 
 \item{verbose}{Boolean verbosity (optional, default = TRUE).}
 
@@ -24,7 +16,7 @@ you have a very good reason) (optional, default 1000).}
 "synth_labels").}
 }
 \value{
-A data frame containing the labels of the k nearest neighbors of
+A data frame containing the labels of the 1000 nearest neighbors of
 each cell.
 }
 \description{

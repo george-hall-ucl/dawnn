@@ -27,19 +27,17 @@ beta_method_of_moments <- function(data) {
 #' Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 #'
 #' @param cells Seurat object containing the dataset.
-#' @param k Integer number of neighbors to use (should be left as 1000 unless
-#' you have a very good reason) (optional, default 1000).
 #' @param verbose Boolean verbosity (optional, default = TRUE).
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell (optional, default =
 #' "synth_labels").
-#' @return A data frame containing the labels of the k nearest neighbors of
+#' @return A data frame containing the labels of the 1000 nearest neighbors of
 #' each cell.
 #' @examples
 #' \dontrun{
 #' generate_neighbor_labels(cell_object, "pca")
 #' }
-generate_neighbor_labels <- function(cells, k = 1000, verbose = TRUE,
+generate_neighbor_labels <- function(cells, verbose = TRUE,
                                      label_names = "synth_labels") {
 
     if (verbose) {

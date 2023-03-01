@@ -236,6 +236,61 @@ download_model <- function(model_url, model_file_path) {
 }
 
 
+#' Sanity check input parameters
+#'
+#' @description `param_check()' verifies that the parameters passed to
+#' run_dawnn() are sane.
+#'
+#' @param cells Seurat object containing the dataset.
+#' @param label_names String containing the name of the meta.data slot in
+#' `cells' containing the labels of each cell.
+#' @param label_1 String containing the name of one of the labels.
+#' @param label_2 String containing the name of the other label.
+#' @param reduced_dim String containing the name of the dimensionality
+#' reduction to use.
+#' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
+#' FALSE, then the one stored in the `cells` object will be used (optional,
+#' default = TRUE).
+#' @return TRUE if all parameters sane, otherwise stop execution with error
+#' message.
+#' @examples
+#' \dontrun{
+#' param_check(cells, label_names, label_1, label_2, reduced_dim,
+#' recalculate_graph)
+#' }
+#' @export
+param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
+                        recalculate_graph) {
+    # Are label_1 and label_2 distinct?
+    if (label_1 == label_2) {
+        stop("label_1 and label_2 must not be the same.")
+    }
+
+    # Are there two unique labels?
+    if (length(unique(cells[[label_names]][, 1])) != 2) {
+        stop("There must be exactly two distinct labels.")
+    }
+
+    # Do label_1 and label_2 both appear in the set of labels?
+    if (!all(c(label_1, label_2) %in% unique(cells[[label_names]][, 1]))) {
+        stop("Both label_1 and label_2 must be assigned to at least one cell.")
+    }
+
+    # Does reduced_dim exist?
+    if (!reduced_dim %in% names(cells@reductions)) {
+        stop(paste("No dimensionality reduction:", reduced_dim))
+    }
+
+    # Does a KNN graph exist?
+    if ((recalculate_graph == FALSE) & (length(cells@neighbors) == 0)) {
+        stop(paste("No K-nearest-neighbor graph but recalculate_graph is",
+                   "FALSE. Set to TRUE or run Seurat::FindNeighbors()."))
+    }
+
+    return(TRUE)
+}
+
+
 #' Identify which cells are in regions of differential abundance using Dawnn.
 #'
 #' @description `run_dawnn()` is the main function used to run Dawnn. It takes
@@ -276,6 +331,9 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123) {
     set.seed(seed)
+
+    param_check(cells, label_names, label_1, label_2, reduced_dim,
+                recalculate_graph)
 
     if (class(nn_model)[1] == "character") {
         nn_model <- load_model_from_python(nn_model)

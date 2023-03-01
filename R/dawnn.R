@@ -258,7 +258,6 @@ download_model <- function(model_url, model_file_path) {
 #' param_check(cells, label_names, label_1, label_2, reduced_dim,
 #' recalculate_graph)
 #' }
-#' @export
 param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
                         recalculate_graph) {
     # Are label_1 and label_2 distinct?

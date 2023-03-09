@@ -222,17 +222,52 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
 #'
 #' @param model_url String url from which to download the model.
 #' @param model_file_path String path at which to save the downloaded model.
-#' @return Absolute path to the downloaded model.
+#' @param download_method String download program to use (e.g. wget, curl etc).
+#' @return Message confirming the absolute path to the downloaded model.
 #' @examples
 #' \dontrun{
 #' model_path <- download_model(model_url = "http://example.com/model.h5")
 #' cells <- run_dawnn(cells, nn_model = model_path, [...])
 #' }
 #' @export
-download_model <- function(model_url, model_file_path) {
-    system(paste0("wget -O ", model_file_path, " '", model_url, "'"))
+download_model <- function(model_url = NULL, model_file_path = NULL,
+                           download_method = "auto") {
+    if (is.null(model_url)) {
+        model_url <- "https://figshare.com/ndownloader/files/39528841?private_link=0e1c9e7a9871f09ca7c0"
+    }
 
-    return(normalizePath(model_file_path))
+    if (is.null(model_file_path)) {
+        # Unless told otherwise, save model in directory ".dawnn" in user's
+        # home directory
+        home_dir <- path.expand('~')
+        dawnn_dir_path <- paste0(home_dir, "/.dawnn")
+        if (dir.exists(dawnn_dir_path) == FALSE) {
+            # If necessary, create directory "~/.dawnn"
+            dir_create_ret <- dir.create(dawnn_dir_path)
+            if (dir_create_ret != TRUE) {
+                stop("Not downloading as cannot create ~/.dawnn directory")
+            }
+        }
+        model_file_path <- paste0(dawnn_dir_path, "/dawnn_nn_model.h5")
+    }
+    message(paste("Downloading Dawnn's neural network model to",
+                  model_file_path))
+    download_ret <- download.file(model_url, model_file_path,
+                                  method = download_method)
+
+    if (download_ret != 0) {
+        stop(paste("Download finished with non-zero exit code:", download_ret))
+    }
+
+    if (file.info(model_file_path)$size != 255225824) {
+        warning("Downloaded model file is different to expected size: wrong file?")
+    }
+
+    return_msg <- paste("Model was downloaded to:",
+                        normalizePath(model_file_path))
+    message(return_msg)
+
+    return(return_msg)
 }
 
 

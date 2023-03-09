@@ -4,15 +4,21 @@
 \alias{download_model}
 \title{Download the neural network model used by Dawnn.}
 \usage{
-download_model(model_url, model_file_path)
+download_model(
+  model_url = NULL,
+  model_file_path = NULL,
+  download_method = "auto"
+)
 }
 \arguments{
 \item{model_url}{String url from which to download the model.}
 
 \item{model_file_path}{String path at which to save the downloaded model.}
+
+\item{download_method}{String download program to use (e.g. wget, curl etc).}
 }
 \value{
-Absolute path to the downloaded model.
+Message confirming the absolute path to the downloaded model.
 }
 \description{
 `download_model()' downloads the neural network model used by

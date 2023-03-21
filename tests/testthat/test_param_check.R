@@ -1,7 +1,7 @@
 library(Seurat)
 
 test_that("param_check error if label_1 same as label_2", {
-    cells <- readRDS("../data/five_cell_seurat.rds")
+    cells <- readRDS("../data/five_cell_seurat_2gene.rds")
 
     expect_error(param_check(cells, label_names = "label",
                              label_1 = "Condition1", label_2 = "Condition1",
@@ -10,7 +10,7 @@ test_that("param_check error if label_1 same as label_2", {
 })
 
 test_that("param_check error if not two unique labels", {
-    cells <- readRDS("../data/five_cell_seurat.rds")
+    cells <- readRDS("../data/five_cell_seurat_2gene.rds")
 
     cells$label <- rep("Condition1", ncol(cells))
     expect_error(param_check(cells, label_names = "label",
@@ -27,7 +27,7 @@ test_that("param_check error if not two unique labels", {
 })
 
 test_that("param_check error if both labels do not appear", {
-    cells <- readRDS("../data/five_cell_seurat.rds")
+    cells <- readRDS("../data/five_cell_seurat_2gene.rds")
 
     # Only label_1 assigned to cells
     expect_error(param_check(cells, label_names = "label",
@@ -49,7 +49,7 @@ test_that("param_check error if both labels do not appear", {
 })
 
 test_that("param_check error if reduced_dim does not exist", {
-    cells <- readRDS("../data/five_cell_seurat.rds")
+    cells <- readRDS("../data/five_cell_seurat_2gene.rds")
     expect_error(param_check(cells, label_names = "label",
                              label_1 = "Condition1", label_2 = "Condition2",
                              reduced_dim = "foo", recalculate_graph = FALSE),
@@ -57,7 +57,7 @@ test_that("param_check error if reduced_dim does not exist", {
 })
 
 test_that("param_check error if no graph with recalculate_graph = FALSE", {
-    cells <- readRDS("../data/cells_sim_discerete_clusters_gex_seed_1.rds")
+    cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells@meta.data$label <- c("Condition1", "Condition2")
     expect_error(param_check(cells, label_names = "label",
                              label_1 = "Condition1", label_2 = "Condition2",
@@ -68,14 +68,14 @@ test_that("param_check error if no graph with recalculate_graph = FALSE", {
 })
 
 test_that("param_check no error if no problem", {
-    cells <- readRDS("../data/cells_sim_discerete_clusters_gex_seed_1.rds")
+    cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells@meta.data$label <- c("Condition1", "Condition2")
     expect_equal(param_check(cells, label_names = "label",
                              label_1 = "Condition1", label_2 = "Condition2",
                              reduced_dim = "pca", recalculate_graph = TRUE),
                  TRUE)
 
-    cells <- readRDS("../data/five_cell_seurat.rds")
+    cells <- readRDS("../data/five_cell_seurat_2gene.rds")
     expect_equal(param_check(cells, label_names = "label",
                              label_1 = "Condition1", label_2 = "Condition2",
                              reduced_dim = "pca", recalculate_graph = FALSE),

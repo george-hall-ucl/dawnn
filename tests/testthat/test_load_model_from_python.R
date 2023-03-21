@@ -4,7 +4,7 @@ test_that("Incorrect model_path leads to error", {
 })
 
 test_that("Loaded model has the correct class", {
-              model <- load_model_from_python("~/Documents/Analysis/own_da_method/final_model_dawnn.h5")
+              model <- load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
               model_class <- class(model)
               goal_class_values <- c("keras.engine.sequential.Sequential",
                                      "keras.engine.functional.Functional",

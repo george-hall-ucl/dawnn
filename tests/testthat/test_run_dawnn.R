@@ -6,7 +6,7 @@ sm <- suppressMessages
 test_that("run_dawnn reproducible recalculate_graph = FALSE", {
     cells <- readRDS("../data/dawnn_test_data_1000_cells_discrete_clusters.rds")
 
-    model_file <- "../data/final_model_dawnn.h5"
+    model_file <- "~/.dawnn/dawnn_nn_model.h5"
     dawnn_out_1 <- sm(run_dawnn(cells = cells, label_names = "label",
                                 label_1 = "Condition1", label_2 = "Condition2",
                                 nn_model = model_file, reduced_dim = "pca",
@@ -24,7 +24,7 @@ test_that("run_dawnn reproducible recalculate_graph = FALSE", {
 test_that("run_dawnn reproducible recalculate_graph = TRUE", {
     cells <- readRDS("../data/dawnn_test_data_1000_cells_discrete_clusters.rds")
 
-    model_file <- "../data/final_model_dawnn.h5"
+    model_file <- "~/.dawnn/dawnn_nn_model.h5"
     dawnn_out_1 <- sm(run_dawnn(cells = cells, label_names = "label",
                                 label_1 = "Condition1", label_2 = "Condition2",
                                 nn_model = model_file, reduced_dim = "pca",
@@ -43,7 +43,7 @@ test_that("run_dawnn reproducible recalculate_graph = TRUE", {
 test_that("run_dawnn returns Seurat", {
     cells <- readRDS("../data/dawnn_test_data_1000_cells_discrete_clusters.rds")
 
-    model_file <- "../data/final_model_dawnn.h5"
+    model_file <- "~/.dawnn/dawnn_nn_model.h5"
     dawnn_out <- sm(run_dawnn(cells = cells, label_names = "label",
                               label_1 = "Condition1", label_2 = "Condition2",
                               nn_model = model_file, reduced_dim = "pca",

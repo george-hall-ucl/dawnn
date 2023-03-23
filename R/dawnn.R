@@ -239,16 +239,20 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     if (is.null(model_file_path)) {
         # Unless told otherwise, save model in directory ".dawnn" in user's
         # home directory
-        home_dir <- path.expand('~')
+        home_dir <- Sys.getenv("HOME")
         dawnn_dir_path <- paste0(home_dir, "/.dawnn")
-        if (dir.exists(dawnn_dir_path) == FALSE) {
-            # If necessary, create directory "~/.dawnn"
-            dir_create_ret <- dir.create(dawnn_dir_path)
-            if (dir_create_ret != TRUE) {
-                stop("Not downloading as cannot create ~/.dawnn directory")
-            }
-        }
         model_file_path <- paste0(dawnn_dir_path, "/dawnn_nn_model.h5")
+    } else {
+        dawnn_dir_path <- dirname(normalizePath(model_file_path,
+                                                mustWork = FALSE))
+    }
+
+    if (dir.exists(dawnn_dir_path) == FALSE) {
+        # If necessary, create model directory (by default, "~/.dawnn")
+        dir_create_ret <- dir.create(dawnn_dir_path, recursive = TRUE)
+        if (dir_create_ret != TRUE) {
+            stop("Not downloading as cannot create ~/.dawnn directory")
+        }
     }
     message(paste("Downloading Dawnn's neural network model to",
                   model_file_path))

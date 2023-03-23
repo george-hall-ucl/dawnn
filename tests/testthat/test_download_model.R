@@ -1,7 +1,5 @@
 test_that("download_model functions with no arguments", {
-              old_home <- Sys.getenv("HOME")
-              Sys.setenv(HOME = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write")
-
+              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               home_dir <- Sys.getenv("HOME")
               dawnn_dir_path <- paste0(home_dir, "/.dawnn")
               expected_model_path <- paste0(dawnn_dir_path,
@@ -14,13 +12,11 @@ test_that("download_model functions with no arguments", {
 
               # Delete test .dawnn directory
               unlink(dawnn_dir_path, recursive = TRUE)
-              Sys.setenv(HOME = old_home)
 })
 
 
 test_that("download_model saves model in correct location", {
-              old_home <- Sys.getenv("HOME")
-              Sys.setenv(HOME = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write")
+              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               home_dir <- Sys.getenv("HOME")
               dawnn_dir_path <- paste0(home_dir, "/.dawnn")
               desired_model_path <- paste0(dawnn_dir_path, "/my_path.h5")
@@ -32,22 +28,18 @@ test_that("download_model saves model in correct location", {
 
               # Delete test .dawnn directory
               unlink(dawnn_dir_path, recursive = TRUE)
-              Sys.setenv(HOME = old_home)
 })
 
 
 test_that("download_model stops if cannot create .dawnn", {
-              old_home <- Sys.getenv("HOME")
-              Sys.setenv(HOME = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.cannot_write")
+              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.cannot_write"))
               expect_error(suppressWarnings(download_model()),
                            "Not downloading as cannot create ~/.dawnn directory")
-              Sys.setenv(HOME = old_home)
 })
 
 
 test_that("download_model warns if downloaded file is smaller than expected", {
-              old_home <- Sys.getenv("HOME")
-              Sys.setenv(HOME = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write")
+              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               home_dir <- Sys.getenv("HOME")
               dawnn_dir_path <- paste0(home_dir, "/.dawnn")
               desired_model_path <- paste0(dawnn_dir_path, "/my_path.h5")
@@ -56,13 +48,11 @@ test_that("download_model warns if downloaded file is smaller than expected", {
 
               # Delete test .dawnn directory
               unlink(dawnn_dir_path, recursive = TRUE)
-              Sys.setenv(HOME = old_home)
 })
 
 
 test_that("download_model stops if URL is faulty", {
-              old_home <- Sys.getenv("HOME")
-              Sys.setenv(HOME = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write")
+              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               home_dir <- Sys.getenv("HOME")
               dawnn_dir_path <- paste0(home_dir, "/.dawnn")
               desired_model_path <- paste0(dawnn_dir_path, "/my_path.h5")
@@ -71,5 +61,4 @@ test_that("download_model stops if URL is faulty", {
 
               # Delete test .dawnn directory
               unlink(dawnn_dir_path, recursive = TRUE)
-              Sys.setenv(HOME = old_home)
 })

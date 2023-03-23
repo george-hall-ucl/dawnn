@@ -1,5 +1,7 @@
+library(withr)
+
 test_that("download_model functions with no arguments", {
-              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
+              local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               expected_model_path <- paste0(Sys.getenv("HOME"), "/.dawnn/dawnn_nn_model.h5")
               expected_msg <- paste("Model was downloaded to:", expected_model_path)
               expect_message(download_model(),
@@ -11,7 +13,7 @@ test_that("download_model functions with no arguments", {
 
 
 test_that("download_model saves model in correct location", {
-              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
+              local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               desired_model_path <- paste0(Sys.getenv("HOME"), "/.dawnn/my_path.h5")
               expected_msg <- paste("Model was downloaded to:",
                                     desired_model_path)
@@ -25,14 +27,14 @@ test_that("download_model saves model in correct location", {
 
 
 test_that("download_model stops if cannot create .dawnn", {
-              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.cannot_write"))
+              local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.cannot_write"))
               expect_error(suppressWarnings(download_model()),
                            "Not downloading as cannot create ~/.dawnn directory")
 })
 
 
 test_that("download_model warns if downloaded file is smaller than expected", {
-              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
+              local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               expect_warning(download_model(model_url = "example.com"),
                              "Downloaded model file is different to expected size: wrong file?")
 
@@ -42,7 +44,7 @@ test_that("download_model warns if downloaded file is smaller than expected", {
 
 
 test_that("download_model stops if URL is faulty", {
-              withr::local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
+              local_envvar(c("HOME" = "/Users/georgehall/Documents/Code/dawnn_everything/dawnn/tests/.tmp_home/.can_write"))
               expect_error(suppressWarnings(download_model(model_url = "example.com/dawnn_nn_model.h5")),
                            "cannot open URL 'example.com/dawnn_nn_model.h5'")
 

@@ -365,7 +365,7 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
-                      nn_model = "final_model_dawnn.h5",
+                      n_dims = 50, nn_model = "final_model_dawnn.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123) {
     set.seed(seed)
@@ -381,8 +381,9 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
         if (verbosity > 0) {
             message("Finding neighbors.")
         }
-        cells <- FindNeighbors(cells, dims = 1:50, return.neighbor = TRUE,
-                               k.param = 1001, reduction = reduced_dim)
+        cells <- FindNeighbors(cells, dims = (1:n_dims),
+                               return.neighbor = TRUE, k.param = 1001,
+                               reduction = reduced_dim)
     }
 
     if (verbosity > 0) {

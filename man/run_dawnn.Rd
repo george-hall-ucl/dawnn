@@ -10,6 +10,7 @@ run_dawnn(
   label_1,
   label_2,
   reduced_dim,
+  n_dims = 50,
   nn_model = "final_model_dawnn.h5",
   recalculate_graph = TRUE,
   alpha = 0.1,
@@ -29,6 +30,9 @@ run_dawnn(
 
 \item{reduced_dim}{String containing the name of the dimensionality
 reduction to use.}
+
+\item{n_dims}{Integer number of dimensions to use if computing graph
+(optional, default 50).}
 
 \item{nn_model}{String containing the path to the model's .hdf5 file.}
 
@@ -60,7 +64,7 @@ abundance.
 \examples{
 \dontrun{
 run_dawnn(cells = dataset, label_names = "condition", nn_model =
-"my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, alpha = 0.2,
-verbosity = 0, seed = 42)
+"my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
+alpha = 0.2, verbosity = 0, seed = 42)
 }
 }

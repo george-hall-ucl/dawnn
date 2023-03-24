@@ -342,6 +342,8 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param label_2 String containing the name of the other label.
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
+#' @param n_dims Integer number of dimensions to use if computing graph
+#' (optional, default 50).
 #' @param nn_model String containing the path to the model's .hdf5 file.
 #' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
 #' FALSE, then the one stored in the `cells` object will be used (optional,
@@ -360,8 +362,8 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @examples
 #' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", nn_model =
-#' "my_model.h5", reduced_dim = "pca", recalculate_graph = FALSE, alpha = 0.2,
-#' verbosity = 0, seed = 42)
+#' "my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
+#' alpha = 0.2, verbosity = 0, seed = 42)
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,

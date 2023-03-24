@@ -3,17 +3,14 @@ test_that("run_dawnn reproducible recalculate_graph = FALSE", {
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
 
-    model_file <- "~/.dawnn/dawnn_nn_model.h5"
     dawnn_out_1 <- sm(run_dawnn(cells = cells, label_names = "label",
                                 label_1 = "Condition1", label_2 = "Condition2",
-                                nn_model = model_file, reduced_dim = "pca",
-                                recalculate_graph = FALSE, alpha = 0.1,
-                                verbosity = 0))
+                                reduced_dim = "pca", recalculate_graph = FALSE,
+                                alpha = 0.1, verbosity = 0))
     dawnn_out_2 <- sm(run_dawnn(cells = cells, label_names = "label",
                                 label_1 = "Condition1", label_2 = "Condition2",
-                                nn_model = model_file, reduced_dim = "pca",
-                                recalculate_graph = FALSE, alpha = 0.1,
-                                verbosity = 0))
+                                reduced_dim = "pca", recalculate_graph = FALSE,
+                                alpha = 0.1, verbosity = 0))
 
     expect_equal(dawnn_out_1, dawnn_out_2)
 })
@@ -23,18 +20,17 @@ test_that("run_dawnn reproducible recalculate_graph = TRUE", {
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
 
-    model_file <- "~/.dawnn/dawnn_nn_model.h5"
     dawnn_out_1 <- sm(run_dawnn(cells = cells, label_names = "label",
                                 label_1 = "Condition1", label_2 = "Condition2",
-                                nn_model = model_file, reduced_dim = "pca",
-                                n_dims = 2, recalculate_graph = TRUE,
-                                alpha = 0.1, verbosity = 0))
+                                reduced_dim = "pca", n_dims = 2,
+                                recalculate_graph = TRUE, alpha = 0.1,
+                                verbosity = 0))
 
     dawnn_out_2 <- sm(run_dawnn(cells = cells, label_names = "label",
                                 label_1 = "Condition1", label_2 = "Condition2",
-                                nn_model = model_file, reduced_dim = "pca",
-                                n_dims = 2, recalculate_graph = TRUE,
-                                alpha = 0.1, verbosity = 0))
+                                reduced_dim = "pca", n_dims = 2,
+                                recalculate_graph = TRUE, alpha = 0.1,
+                                verbosity = 0))
 
     expect_equal(dawnn_out_1, dawnn_out_2)
 })
@@ -44,11 +40,9 @@ test_that("run_dawnn returns Seurat", {
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
 
-    model_file <- "~/.dawnn/dawnn_nn_model.h5"
     dawnn_out <- sm(run_dawnn(cells = cells, label_names = "label",
                               label_1 = "Condition1", label_2 = "Condition2",
-                              nn_model = model_file, reduced_dim = "pca",
-                              recalculate_graph = FALSE, alpha = 0.1,
-                              verbosity = 0))
+                              reduced_dim = "pca", recalculate_graph = FALSE,
+                              alpha = 0.1, verbosity = 0))
     expect_s4_class(dawnn_out, "Seurat")
 })

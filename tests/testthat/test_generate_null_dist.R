@@ -1,6 +1,3 @@
-library(Seurat)
-sm <- suppressMessages
-
 test_that("generate_null_distribution returns vector of correct length", {
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     set.seed(123)

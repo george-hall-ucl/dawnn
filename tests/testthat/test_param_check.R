@@ -1,5 +1,3 @@
-library(Seurat)
-
 test_that("param_check error if label_1 same as label_2", {
     cells <- readRDS("../data/five_cell_seurat_2gene.rds")
 

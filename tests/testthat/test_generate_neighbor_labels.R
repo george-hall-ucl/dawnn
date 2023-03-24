@@ -1,5 +1,3 @@
-library(Seurat)
-
 test_that("generate_neighbor_labels check correctness and class", {
     cells <- readRDS("../data/five_cell_seurat_2gene.rds")
     # cells$label is c("Condition1", "Condition2", "Condition1",

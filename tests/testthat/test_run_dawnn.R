@@ -1,6 +1,3 @@
-library(Seurat)
-sm <- suppressMessages
-
 # This test currently passes, however:
 # * It crashes if I set recalculate_graph to TRUE
 test_that("run_dawnn reproducible recalculate_graph = FALSE", {

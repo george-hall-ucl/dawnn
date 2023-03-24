@@ -1,5 +1,3 @@
-library(Seurat)
-
 test_that("determine_if_region_da reproducible", {
     set.seed(123)
     s <- rbeta(n = 1000, shape1 = 6, shape2 = 4)

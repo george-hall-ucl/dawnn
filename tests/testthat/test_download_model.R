@@ -1,5 +1,3 @@
-library(withr)
-
 test_that("download_model functions with no arguments", {
               local_envvar(c("HOME" = paste0(devtools::package_file(), "/tests/.tmp_home/.can_write")))
               expected_model_path <- paste0(Sys.getenv("HOME"), "/.dawnn/dawnn_nn_model.h5")

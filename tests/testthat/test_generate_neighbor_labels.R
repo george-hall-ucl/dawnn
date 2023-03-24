@@ -33,3 +33,19 @@ test_that("generate_neighbor_labels check correctness and class", {
     expect_equal(actual, expected)
     expect_equal(class(actual), c("matrix", "array"))
 })
+
+test_that("generate_neighbor_labels chooses first graph if there are multiple", {
+    # "Multiple available graph names. Choosing the first one:", graph_name
+    cells <- readRDS("../data/five_cell_seurat_2gene.rds")
+    cells@neighbors <- list()
+    cells <- FindNeighbors(cells, reduction = "pca", k.param = 3, dims = 1:2,
+                           return.neighbor = TRUE, graph.name = "graph_1")
+    cells <- FindNeighbors(cells, reduction = "pca", k.param = 3, dims = 1:2,
+                           return.neighbor = TRUE, graph.name = "graph_2")
+    # Should now have:
+    # > names(cells@neighbors)
+    # [1] "graph_1" "graph_2"
+
+    expect_message(generate_neighbor_labels(cells, label_names = "label", label_1 = "Condition1", verbose = FALSE),
+                   "Multiple available graph names. Choosing the first one: graph_1")
+})

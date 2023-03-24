@@ -11,7 +11,7 @@ run_dawnn(
   label_2,
   reduced_dim,
   n_dims = 50,
-  nn_model = "final_model_dawnn.h5",
+  nn_model = "~/.dawnn/dawnn_nn_model.h5",
   recalculate_graph = TRUE,
   alpha = 0.1,
   verbosity = 2,
@@ -34,7 +34,8 @@ reduction to use.}
 \item{n_dims}{Integer number of dimensions to use if computing graph
 (optional, default 50).}
 
-\item{nn_model}{String containing the path to the model's .hdf5 file.}
+\item{nn_model}{String containing the path to the model's .hdf5 file
+(optional, default "~/.dawnn/dawnn_nn_model.h5").}
 
 \item{recalculate_graph}{Boolean whether to recalculate the KNN graph. If
 FALSE, then the one stored in the \code{cells} object will be used (optional,

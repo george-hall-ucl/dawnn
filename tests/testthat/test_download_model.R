@@ -27,6 +27,7 @@ test_that("download_model saves model in correct location", {
 
 test_that("download_model stops if cannot create .dawnn", {
               local_envvar(c("HOME" = paste0(testthat::test_path("tmp_home/cannot_write"))))
+              Sys.chmod(Sys.getenv("HOME"), "577", use_umask = FALSE)
               expect_error(suppressWarnings(download_model()),
                            "Not downloading as cannot create ~/.dawnn directory")
 })

@@ -17,5 +17,8 @@ Imports: stats, dplyr, Seurat, reticulate, keras, utils, withr, callr
 Depends:
     R (>= 3.5.0)
 Suggests:
+    rmarkdown,
+    knitr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr

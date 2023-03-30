@@ -1,0 +1,78 @@
+---
+title: "dawnn"
+output:
+    rmarkdown::html_vignette:
+        fig_width: 5
+        fig_height: 3
+vignette: >
+  %\VignetteIndexEntry{dawnn}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(stats)
+library(dplyr)
+library(Seurat)
+library(dawnn)
+```
+
+Before we can run Dawnn, we need a dataset. We generate this dataset now. We
+generate three clusters of cells. In one cluster, we aim to have a 50/50 split
+of the labels "Condition1" and "Condition2"; in the second, we aim for a 10/90
+split; and in the third we aim for a 90/10 split. This means that there is
+differential abundance in the second and third clusters. We aim to detect this
+with Dawnn.
+
+<details>
+<summary>Show simulation code</summary>
+```{r create_seurat_obj}
+set.seed(123)
+
+# Simulate three samples with the expression of 30 genes measured:
+#   - Sample 1 is upregulated in the first ten genes
+#   - Sample 2 is upregulated in the second ten genes
+#   - Sample 3 is upregulated in the third ten genes
+sample_1 <- rnbinom(n = 30000, size = 1,
+                    prob = c(rep(0.5, 0), rep(0.1, 10), rep(0.5, 20)))
+sample_2 <- rnbinom(n = 30000, size = 1,
+                    prob = c(rep(0.5, 10), rep(0.1, 10), rep(0.5, 10)))
+sample_3 <- rnbinom(n = 30000, size = 1,
+                    prob = c(rep(0.5, 20), rep(0.1, 10), rep(0.5, 0)))
+
+ge_vect <- c(sample_1, sample_2, sample_3)
+ge_matrix <- matrix(ge_vect, ncol = 3000)
+colnames(ge_matrix) <- paste0("cell", 1:3000)
+rownames(ge_matrix) <- paste0("gene", 1:30)
+
+cells <- CreateSeuratObject(counts = ge_matrix) %>%
+         NormalizeData() %>%
+         FindVariableFeatures() %>%
+         ScaleData() %>%
+         RunPCA() %>%
+         RunUMAP(dims = 1:10)
+
+cells$pc1 <- c(rep(0.1, 1000), rep(0.5, 1000), rep(0.9, 1000))
+cells$label <- ifelse(runif(3000) <= cells$pc1, "Condition1", "Condition2")
+DimPlot(cells, group.by = "label")
+```
+</details>
+
+# Running Dawnn
+
+```{r run_dawnn}
+cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
+                   label_2 = "Condition2", reduced_dim = "pca", n_dims = 10)
+DimPlot(cells, group.by = "dawnn_da_verdict")
+FeaturePlot(cells, "dawnn_lfc")
+```

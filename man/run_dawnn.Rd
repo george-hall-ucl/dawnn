@@ -10,7 +10,7 @@ run_dawnn(
   label_1,
   label_2,
   reduced_dim,
-  n_dims = 50,
+  n_dims = 10,
   nn_model = "~/.dawnn/dawnn_nn_model.h5",
   recalculate_graph = TRUE,
   alpha = 0.1,
@@ -32,7 +32,7 @@ run_dawnn(
 reduction to use.}
 
 \item{n_dims}{Integer number of dimensions to use if computing graph
-(optional, default 50).}
+(optional, default 10).}
 
 \item{nn_model}{String containing the path to the model's .hdf5 file
 (optional, default "~/.dawnn/dawnn_nn_model.h5").}

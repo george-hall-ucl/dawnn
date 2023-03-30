@@ -343,7 +343,7 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
 #' @param n_dims Integer number of dimensions to use if computing graph
-#' (optional, default 50).
+#' (optional, default 10).
 #' @param nn_model String containing the path to the model's .hdf5 file
 #' (optional, default "~/.dawnn/dawnn_nn_model.h5").
 #' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
@@ -368,7 +368,7 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
-                      n_dims = 50, nn_model = "~/.dawnn/dawnn_nn_model.h5",
+                      n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123) {
     set.seed(seed)

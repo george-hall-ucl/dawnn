@@ -20,23 +20,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(stats)
-library(dplyr)
-library(Seurat)
-library(dawnn)
-```
-
-Before we can run Dawnn, we need a dataset. We generate this dataset now. We
-generate three clusters of cells. In one cluster, we aim to have a 50/50 split
-of the labels "Condition1" and "Condition2"; in the second, we aim for a 10/90
-split; and in the third we aim for a 90/10 split. This means that there is
+<details>
+<summary>We have simulated some toy data to demonstrate Dawnn. Click here to display the simulation code.</summary>
+We need to first generate a dataset on which we can run Dawnn. We generate
+three clusters of cells. In one cluster, we aim to have a 50/50 split of the
+labels "Condition1" and "Condition2"; in the second, we aim for a 10/90 split;
+and in the third we aim for a 90/10 split. This means that there is
 differential abundance in the second and third clusters. We aim to detect this
 with Dawnn.
 
-<details>
-<summary>Show simulation code</summary>
 ```{r create_seurat_obj}
+library(stats)
+library(dplyr)
+library(Seurat)
+
 set.seed(123)
 
 # Simulate three samples with the expression of 30 genes measured:
@@ -68,11 +65,107 @@ DimPlot(cells, group.by = "label")
 ```
 </details>
 
-# Running Dawnn
+## Main workflow
+
+```{r setup}
+library(dawnn)
+library(Seurat)
+```
+
+The first time we use Dawnn, we need to download its trained neural network
+model. For the majority of cases, simply calling `download_model()` will be
+sufficient. By default, the model is downloaded to
+`~/.dawnn/dawnn_nn_model.h5`.
+
+```{r download_model, eval = FALSE}
+download_model()
+```
+
+Once we have downloaded the model, we can call Dawnn with ``run_dawnn()``.
 
 ```{r run_dawnn}
 cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca", n_dims = 10)
+                   label_2 = "Condition2", reduced_dim = "pca")
+```
+
+### Dawnn's non-optional parameters
+
+`run_dawnn` has five parameters that we must specify:
+
+| Parameter | Description |
+|-----------|-------------|
+| `cells`   | Seurat object containing the dataset |
+| `label_names` | `meta.data` slot in `cells` containing labels |
+| `label_1` | The label corresponding to the first sample |
+| `label_2` | The label corresponding to the second sample |
+| `reduced_dim` | Dimensionality reduction to use when calculating KNN graph |
+
+### Dawnn's outputs
+
+Dawnn's outputs are stored in `meta.data` slots of `cells`. These outputs are:
+
+| Dawnn output             | Description                                                                                   |
+|--------------------------|-----------------------------------------------------------------------------------------------|
+| `cells$dawnn_da_verdict` | Boolean output of Dawnn for whether it is in a region of differential abundance.              |
+| `cells$dawnn_lfc`        | Estimated log2-fold change in its neighbourhood.                                              |
+| `cells$dawnn_scores`     | Estimated probability that cell drawn from sample associated with label_1.                    |
+| `cells$dawnn_p_vals`     | P-value associated with the hypothesis test that it is in a region of differential abundance. |
+
+The first two outputs are likely the most useful.  `dawnn_da_verdict` tells us
+whether Dawnn has called a cell as being in a region of differential abundance
+and `dawnn_lfc` contains the estimated log2-fold change in the abundance of
+`label_1` and `label_2` in the neighbourhood of each cell.
+
+```{r plot_first_two_dawnn_results}
 DimPlot(cells, group.by = "dawnn_da_verdict")
 FeaturePlot(cells, "dawnn_lfc")
+```
+
+We can extract the cells for which `cells$dawnn_da_verdict` is `TRUE` in order
+to find the subpopulations perturbed in the experiment
+
+`dawnn_scores` contains the direct output of Dawnn's neural
+network, i.e. the estimated probability a cell was drawn from the sample associated
+with `label_1`. `dawnn_scores` is converted into `dawnn_lfc` using
+`log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`. Finally, `dawnn_p_vals`
+contains, for each cell, the p-value associated with testing the null
+hypothesis "this cell is not in a region of differential abundance".
+
+```{r plot_second_two_dawnn_results}
+FeaturePlot(cells, "dawnn_scores")
+FeaturePlot(cells, "dawnn_p_vals")
+```
+
+## Optional parameters
+
+### Setting all options
+
+In this example, we change all options that can be passed to Dawnn.
+
+```{r dawnn_all_options, eval = FALSE}
+cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
+                   label_2 = "Condition2", reduced_dim = "pca", n_dims = 20,
+                   nn_model = "~/another_dawnn_model.h5",
+                   recalculate_graph = FALSE, alpha = 0.05, verbosity = 0,
+                   seed = 42)
+```
+
+### Changing model location
+
+We can use `download_model`'s `model_file_path` parameter to change the
+location to which the model is downloaded. This location can be passed to
+`run_dawnn` using the `nn_model` parameter.
+
+```{r changing_model_location, eval = FALSE}
+download_model(..., model_file_path = "~/Documents/new_model_location.h5")
+run_dawnn(..., nn_model = "~/Documents/new_model_location.h5")
+```
+
+### Downloading a model from another location
+
+A model can be downloaded from a non-default url using the `model_url`
+parameter.
+
+```{r download_model_another_url, eval = FALSE}
+download_model(..., model_url = "example.com/another_model_url.h5")
 ```

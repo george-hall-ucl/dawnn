@@ -7,7 +7,8 @@
 download_model(
   model_url = NULL,
   model_file_path = NULL,
-  download_method = "auto"
+  download_method = "auto",
+  download_timeout = 600
 )
 }
 \arguments{
@@ -16,6 +17,9 @@ download_model(
 \item{model_file_path}{String path at which to save the downloaded model.}
 
 \item{download_method}{String download program to use (e.g. wget, curl etc).}
+
+\item{download_timeout}{Integer number of seconds before download times out
+(optional, default = 600).}
 }
 \value{
 Message confirming the absolute path to the downloaded model.

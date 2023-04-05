@@ -223,6 +223,8 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
 #' @param model_url String url from which to download the model.
 #' @param model_file_path String path at which to save the downloaded model.
 #' @param download_method String download program to use (e.g. wget, curl etc).
+#' @param download_timeout Integer number of seconds before download times out
+#' (optional, default = 600).
 #' @return Message confirming the absolute path to the downloaded model.
 #' @examples
 #' \dontrun{
@@ -231,7 +233,7 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
 #' }
 #' @export
 download_model <- function(model_url = NULL, model_file_path = NULL,
-                           download_method = "auto") {
+                           download_method = "auto", download_timeout = 600) {
     if (is.null(model_url)) {
         model_url <- "https://figshare.com/ndownloader/files/39528841?private_link=0e1c9e7a9871f09ca7c0"
     }
@@ -256,8 +258,27 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     }
     message(paste("Downloading Dawnn's neural network model to",
                   model_file_path))
-    download_ret <- download.file(model_url, model_file_path,
-                                  method = download_method)
+
+    # Check if url exists
+    if (substr(model_url, 1, 4) != "http") {
+        # Prevent error with url() if protocol is unspecified
+        model_url <- paste0("http://", model_url)
+    }
+    con <- url(model_url)
+    open.connection(con, open = "rt", timeout = 2)
+    close(con, silent = TRUE)
+
+    # Increase timeout to 10 minutes
+    old_timeout <- getOption("timeout")
+    options(timeout = download_timeout)
+
+    tryCatch(download_ret <- download.file(model_url, model_file_path, method = download_method),
+             error = function(c) {
+                 options(timeout = old_timeout)
+                 stop("Error in model download, perhaps due to timeout? Try increasing download_timeout parameter.")
+             })
+
+    options(timeout = old_timeout)
 
     if (download_ret != 0) {
         stop(paste("Download finished with non-zero exit code:", download_ret))

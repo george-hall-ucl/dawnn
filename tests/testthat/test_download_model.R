@@ -35,7 +35,7 @@ test_that("download_model stops if cannot create .dawnn", {
 
 test_that("download_model warns if downloaded file is smaller than expected", {
               local_envvar(c("HOME" = paste0(testthat::test_path("tmp_home/can_write"))))
-              expect_warning(download_model(model_url = "example.com"),
+              expect_warning(download_model(model_url = "http://www.example.com"),
                              "Downloaded model file is different to expected size: wrong file?")
 
               # Delete test .dawnn directory
@@ -45,8 +45,22 @@ test_that("download_model warns if downloaded file is smaller than expected", {
 
 test_that("download_model stops if URL is faulty", {
               local_envvar(c("HOME" = paste0(testthat::test_path("tmp_home/can_write"))))
-              expect_error(suppressWarnings(download_model(model_url = "example.com/dawnn_nn_model.h5")),
-                           "cannot open URL 'example.com/dawnn_nn_model.h5'")
+              expect_error(suppressWarnings(download_model(model_url = "http://www.example.com/dawnn_nn_model.h5")),
+                           "cannot open the connection to 'http://www.example.com/dawnn_nn_model.h5'")
+
+              # Delete test .dawnn directory
+              unlink(paste0(Sys.getenv("HOME"), "/.dawnn"), recursive = TRUE)
+})
+
+test_that("download_model detects if timeout too small", {
+              local_envvar(c("HOME" = paste0(testthat::test_path("tmp_home/can_write"))))
+              # "fixed = TRUE" ensures that the question mark is not used as a
+              # special character
+              expect_error(suppressWarnings(download_model(download_timeout = 1)),
+                           paste("Error in model download, perhaps due to timeout?",
+                                 "Try increasing download_timeout parameter.",
+                                 collapse = " "),
+                           fixed = TRUE)
 
               # Delete test .dawnn directory
               unlink(paste0(Sys.getenv("HOME"), "/.dawnn"), recursive = TRUE)

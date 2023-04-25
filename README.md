@@ -58,3 +58,15 @@ cells <- run_dawnn(cells = cells, label_names = "condition_name",
 ```
 
 These parameters are defined in the vignette.
+
+### Citation
+
+Dawnn is currently only published on bioXiv: aaa.bbb/ccc.
+
+### Contributions
+
+Any contributions are warmly welcomed! Please feel free to submit an issue or pull request on this repository.
+
+### Contact me
+
+I can be reached at george.hall@ucl.ac.uk.

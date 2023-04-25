@@ -7,37 +7,49 @@
 
 ### Installation
 
-Dawnn is currently only available from Github:
+Dawnn is currently only available from Github.
 
-```
+```{r}
+# Step 1: Install Dawnn package
 devtools::install_github("george-hall-ucl/dawnn")
+
+# Step 2: Download Dawnn's model
+# By default, model stored at ~/.dawnn/dawnn_nn_model.h5
+dawnn::download_model()
+
+# Step 3: Install Tensorflow Python package (if necessary)
+tensorflow::install_tensorflow()
 ```
 
-### How to use
+### Quick start
 
-In the following, we assume that `cells` is a Seurat single-cell dataset with
-\>1000 cells and a stored PCA dimensionality reduction. We also assume that
-each cell has one of two labels (`Condition1` or `Condition2`), stored in a
-metadata slot called "labels".
+Assume that `cells` is a Seurat dataset with
+\>1000 cells, a PCA reduction, and a `meta.data` slot `condition_name` that contains the name of the condition to which each cell belongs (either `Condition1` or `Condition2`).
 
-Dawnn can be run with:
 
 ```{r}
 library(dawnn)
 
-# Step 1: Download Dawnn's model:
-# Only run once per machine.
-# By default, model stored at ~/.dawnn/dawnn_nn_model.h5 (can be changed with
-#     model_file_path parameter)
-download_model()
-
-# Step 2: Run Dawnn:
-cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
+cells <- run_dawnn(cells, label_names = "condition_name", label_1 = "Condition1",
                    label_2 = "Condition2", reduced_dim = "pca")
+```
 
-# The above example only specified the required parameters. We can specify more
-# parameters as follows:
-cells <- run_dawnn(cells = cells, label_names = "label",
+
+After `run_dawnn()`, the object `cells` has additional `meta.data` slots:
+
+| Dawnn output             | Description                                                                                   |
+|--------------------------|-----------------------------------------------------------------------------------------------|
+| `cells$dawnn_scores`     | Output of Dawnn's model (estimated probability that a cell was drawn from sample with `label_1`)                                                                      |
+| `cells$dawnn_lfc`        | Estimated log2-fold change in its neighbourhood.                                              |
+| `cells$dawnn_p_vals`     | P-value associated with the hypothesis test that it is in a region of differential abundance. |
+| `cells$dawnn_da_verdict` | Boolean output of Dawnn for whether it is in a region of differential abundance.              |
+
+### Optional parameters
+
+The above example only specifies the required parameters. Dawnn can be run in more complex scenarios by setting the following parameters:
+
+```{r}
+cells <- run_dawnn(cells = cells, label_names = "condition_name",
                    label_1 = "Condition1", label_2 = "Condition2",
                    reduced_dim = "pca", n_dims = 20,
                    nn_model = "~/Documents/another_nn_model.h5,
@@ -45,11 +57,4 @@ cells <- run_dawnn(cells = cells, label_names = "label",
                    verbosity = 0, seed = 42)
 ```
 
-After `run_dawnn()`, the object `cells` has additional metadata for each cell:
-
-| Dawnn output             | Description                                                                                   |
-|--------------------------|-----------------------------------------------------------------------------------------------|
-| `cells$dawnn_scores`     | Output of Dawnn's model.                                                                      |
-| `cells$dawnn_lfc`        | Estimated log2-fold change in its neighbourhood.                                              |
-| `cells$dawnn_p_vals`     | P-value associated with the hypothesis test that it is in a region of differential abundance. |
-| `cells$dawnn_da_verdict` | Boolean output of Dawnn for whether it is in a region of differential abundance.              |
+These parameters are defined in the vignette.

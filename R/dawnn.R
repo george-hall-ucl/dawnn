@@ -235,7 +235,7 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
 download_model <- function(model_url = NULL, model_file_path = NULL,
                            download_method = "auto", download_timeout = 600) {
     if (is.null(model_url)) {
-        model_url <- "https://figshare.com/ndownloader/files/39528841?private_link=0e1c9e7a9871f09ca7c0"
+        model_url <- "https://figshare.com/ndownloader/files/40162366?private_link=bdb00fc52ff4ea0ccd20"
     }
 
     if (is.null(model_file_path)) {

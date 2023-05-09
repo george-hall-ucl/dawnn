@@ -20,6 +20,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Installation
+
+Installation instructions are given in the [GitHub
+README](https://github.com/george-hall-ucl/dawnn#installation).
+
+## Main workflow
+
 <details>
 <summary>We have simulated some toy data to demonstrate Dawnn. Click here to display the simulation code.</summary>
 We need to first generate a dataset on which we can run Dawnn. We generate
@@ -61,34 +68,30 @@ cells <- CreateSeuratObject(counts = ge_matrix) %>%
 
 cells$pc1 <- c(rep(0.1, 1000), rep(0.5, 1000), rep(0.9, 1000))
 cells$label <- ifelse(runif(3000) <= cells$pc1, "Condition1", "Condition2")
-DimPlot(cells, group.by = "label")
+DimPlot(cells, group.by = "label", pt.size = 0.1,
+        cols = c("#FFC107", "#D81B60"))
 ```
 </details>
-
-## Main workflow
 
 ```{r setup}
 library(dawnn)
 library(Seurat)
 ```
 
-The first time we use Dawnn, we need to download its trained neural network
-model. For the majority of cases, simply calling `download_model()` will be
-sufficient. By default, the model is downloaded to
-`~/.dawnn/dawnn_nn_model.h5`.
+Following installation of the Dawnn package, Dawnn model, and Tensorflow Python
+package, we are now ready to run the tool.
 
-```{r download_model, eval = FALSE}
-download_model()
-```
-
-Once we have downloaded the model, we can call Dawnn with ``run_dawnn()``.
+As in the GitHub README, we assume in the following simple example that `cells`
+is a Seurat dataset with \>1000 cells, a PCA reduction, and a `meta.data` slot
+`condition_name` that contains the name of the condition to which each cell
+belongs (either `Condition1` or `Condition2`).
 
 ```{r run_dawnn}
 cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
                    label_2 = "Condition2", reduced_dim = "pca")
 ```
 
-### Dawnn's non-optional parameters
+### Required parameters
 
 `run_dawnn` has five parameters that we must specify:
 
@@ -100,7 +103,9 @@ cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
 | `label_2` | The label corresponding to the second sample |
 | `reduced_dim` | Dimensionality reduction to use when calculating KNN graph |
 
-### Dawnn's outputs
+We outline the optional parameters later in this vignette.
+
+### Output
 
 Dawnn's outputs are stored in `meta.data` slots of `cells`. These outputs are:
 
@@ -116,31 +121,71 @@ whether Dawnn has called a cell as being in a region of differential abundance
 and `dawnn_lfc` contains the estimated log2-fold change in the abundance of
 `label_1` and `label_2` in the neighbourhood of each cell.
 
-```{r plot_first_two_dawnn_results}
-DimPlot(cells, group.by = "dawnn_da_verdict")
-FeaturePlot(cells, "dawnn_lfc")
+Let's first plot the labels of each cell to identify manually which cluster
+exhibit differential abundance.
+
+```{r plot_cell_labels_again}
+DimPlot(cells, group.by = "label", pt.size = 0.1,
+        cols = c("#FFC107", "#D81B60"))
+```
+
+From this, it appears that the cluster at the bottom of the UMAP has a roughly
+even split of the two conditions, whilst the other two clusters exhibit
+differential abundance towards one of them. We will see whether Dawnn has
+detected this by colouring the UMAP according to Dawnn's verdict
+(`dawnn_da_verdict`).
+
+```{r plot_dawnn_verdict}
+DimPlot(cells, group.by = "dawnn_da_verdict", pt.size = 0.1,
+        cols = c("#FFC107", "#D81B60"))
 ```
 
 We can extract the cells for which `cells$dawnn_da_verdict` is `TRUE` in order
 to find the subpopulations perturbed in the experiment
 
+If we want to investigate the estimated log2-fold change in the abundance of
+`Condition1` compared to `Condition2`, we can colour cells accordig to
+`dawnn_lfc`.
+
+```{r plot_dawnn_lfc}
+FeaturePlot(cells, "dawnn_lfc") + viridis::scale_color_viridis(option = "cividis")
+```
+
+As expected, the two clusters identified as generally exhibiting differential
+abundance have estimated log2-fold changes far from 0, whereas for the cluster
+at the bottom of the UMAP this quantity is close to 0.
+
 `dawnn_scores` contains the direct output of Dawnn's neural
 network, i.e. the estimated probability a cell was drawn from the sample associated
-with `label_1`. `dawnn_scores` is converted into `dawnn_lfc` using
-`log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`. Finally, `dawnn_p_vals`
-contains, for each cell, the p-value associated with testing the null
-hypothesis "this cell is not in a region of differential abundance".
+with `label_1` (in our case, `Condition1`). `dawnn_scores` is converted into `dawnn_lfc` with
+`log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`.
 
-```{r plot_second_two_dawnn_results}
-FeaturePlot(cells, "dawnn_scores")
-FeaturePlot(cells, "dawnn_p_vals")
+```{r plot_dawnn_scores}
+FeaturePlot(cells, "dawnn_scores") + viridis::scale_color_viridis(option = "cividis")
+```
+
+Finally, `dawnn_p_vals` contains, for each cell, the p-value associated with
+testing the null hypothesis of "this cell is not in a region of differential
+abundance". These p-values are used to determine the calls made in
+`dawnn_da_verdict`.
+
+```{r plot_dawnn_p_vals}
+FeaturePlot(cells, "dawnn_p_vals") + viridis::scale_color_viridis(option = "cividis")
 ```
 
 ## Optional parameters
 
-### Setting all options
+The main function `run_dawnn` has a number of optional parameters:
 
-In this example, we change all options that can be passed to Dawnn.
+| Parameter | Description |
+|-----------|-------------|
+|`nn_model` | String containing the path to the model's .hdf5 file (default `~/.dawnn/dawnn_nn_model.h5`). |
+|`recalculate_graph`| Boolean whether to recalculate the KNN graph. If FALSE, then the one stored in the ‘cells’ object will be used (default `TRUE`). |
+|`alpha`| Numeric target false discovery rate supplied to the Benjamini–Yekutieli procedure (default 0.1, i.e.  10%). |
+| `verbosity` | Integer how much output to print. 0: silent; 1: normal output; 2: display messages from predict() function. (default `2`)|
+| `seed` | Integer random seed (default `123`). |
+
+These options can be set as follow:
 
 ```{r dawnn_all_options, eval = FALSE}
 cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
@@ -153,8 +198,8 @@ cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
 ### Changing model location
 
 We can use `download_model`'s `model_file_path` parameter to change the
-location to which the model is downloaded. This location can be passed to
-`run_dawnn` using the `nn_model` parameter.
+location to which the model is downloaded. This non-default location must then
+be passed to `run_dawnn` using the `nn_model` parameter.
 
 ```{r changing_model_location, eval = FALSE}
 download_model(..., model_file_path = "~/Documents/new_model_location.h5")
@@ -163,8 +208,9 @@ run_dawnn(..., nn_model = "~/Documents/new_model_location.h5")
 
 ### Downloading a model from another location
 
-A model can be downloaded from a non-default url using the `model_url`
-parameter.
+A neural network model for Dawnn can be downloaded from a non-default url using
+the `model_url` parameter. This might be useful if you have trained a model
+with a different `K`, for instance
 
 ```{r download_model_another_url, eval = FALSE}
 download_model(..., model_url = "example.com/another_model_url.h5")

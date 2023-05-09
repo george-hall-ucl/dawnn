@@ -1,3 +1,11 @@
+# If a Python environment is already active, load/install Tensorflow here
+# rather than starting a new one
+# (https://cran.r-project.org/web/packages/reticulate/vignettes/python_dependencies.html)
+.onLoad <- function(libname, pkgname) {
+  reticulate::configure_environment(pkgname)
+}
+
+
 #' Estimate the parameters of a beta distribution using the method of moments.
 #'
 #' @param data Vector of numbers to which for which to estimate the parameters.

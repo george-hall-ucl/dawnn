@@ -16,6 +16,9 @@ devtools::install_github("george-hall-ucl/dawnn")
 # Step 2: Download Dawnn's model
 # By default, model stored at ~/.dawnn/dawnn_nn_model.h5
 dawnn::download_model()
+
+# Step 3: Install Tensorflow Python package in Reticulate environment
+reticulate::py_install("tensorflow")
 ```
 
 ### Quick start

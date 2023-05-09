@@ -10,15 +10,12 @@
 Dawnn is currently only available from Github.
 
 ```{r}
-# Step 1: Install Dawnn package
+# Step 1: Install Dawnn package (may need to install devtools first)
 devtools::install_github("george-hall-ucl/dawnn")
 
 # Step 2: Download Dawnn's model
 # By default, model stored at ~/.dawnn/dawnn_nn_model.h5
 dawnn::download_model()
-
-# Step 3: Install Tensorflow Python package (if necessary)
-tensorflow::install_tensorflow()
 ```
 
 ### Quick start

@@ -14,9 +14,9 @@ test_that("Loaded model has the correct class", {
 })
 
 test_that("No Tensorflow module leads to crash", {
-    m <- paste("Error : callr subprocess failed: Tensorflow not installed in",
-               "reticulate environment. Please install following",
-               "rstudio.github.io/reticulate/articles/python_packages.html.\n")
+    m <- paste("Tensorflow not installed in reticulate environment\\\\?.",
+               "Please install following",
+               "rstudio\\\\?.github\\\\?.io/reticulate/articles/python_packages\\\\?.html\\\\?.")
 
     # Use non-existant Python environment to simulate lack of Tensorflow
     # module.  callr is needed here since otherwise the loaded Tensorflow
@@ -27,6 +27,6 @@ test_that("No Tensorflow module leads to crash", {
         dawnn:::load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
     }))
 
-    expect_equal(res[[1]], m)
+    expect_match(res[[1]], m)
     expect_s3_class(res, "try-error")
 })

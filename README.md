@@ -65,9 +65,7 @@ These parameters are defined in the [vignette](https://github.com/george-hall-uc
 
 ### Citation
 
-Dawnn is currently only published on bioXiv: [Dawnn: single-cell differential
-abundance with neural
-networks](https://www.biorxiv.org/content/10.1101/2023.05.05.539427v1).
+_Dawnn: single-cell differential abundance with neural networks_. George T. Hall and Sergi Castellano (2023). Preprint on [bioRxiv](https://www.biorxiv.org/content/10.1101/2023.05.05.539427v1).
 
 ### Contributions
 

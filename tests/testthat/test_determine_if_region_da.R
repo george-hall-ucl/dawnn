@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 test_that("determine_if_region_da reproducible", {
     set.seed(123)
     s <- rbeta(n = 1000, shape1 = 6, shape2 = 4)

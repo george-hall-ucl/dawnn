@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 test_that("beta_method_of_moments fitted parameters", {
               set.seed(123)
               data <- rbeta(n = 1000000, shape1 = 5, shape2 = 2)

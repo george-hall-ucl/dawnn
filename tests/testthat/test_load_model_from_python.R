@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 test_that("Incorrect model_path leads to error", {
               expect_error(load_model_from_python("this_model_does_not_exist.h5"),
                            "No model available at this_model_does_not_exist.h5")

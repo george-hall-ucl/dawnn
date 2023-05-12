@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 create_tmp_home_dir <- function(writable = TRUE, env = parent.frame()) {
     # Create a new directory at "tempdir()/home_dir"
     dir_path <- file.path(tempdir(), "home_dir")

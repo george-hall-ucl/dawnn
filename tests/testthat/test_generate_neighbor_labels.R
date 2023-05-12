@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 test_that("generate_neighbor_labels check correctness and class", {
     cells <- readRDS("../data/five_cell_seurat_2gene.rds")
     # cells$label is c("Condition1", "Condition2", "Condition1",

@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 test_that("run_dawnn reproducible recalculate_graph = FALSE", {
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,

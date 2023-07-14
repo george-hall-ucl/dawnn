@@ -49,3 +49,15 @@ test_that("run_dawnn returns Seurat", {
                               alpha = 0.1, verbosity = 0))
     expect_s4_class(dawnn_out, "Seurat")
 })
+
+test_that("run_dawnn fails if too few cells", {
+    cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
+    cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
+                           dims = 1:2, return.neighbor = TRUE)
+
+    expect_error(sm(run_dawnn(cells = cells[, 1:1000], label_names = "label",
+                              label_1 = "Condition1", label_2 = "Condition2",
+                              reduced_dim = "pca", recalculate_graph = FALSE,
+                              alpha = 0.1, verbosity = 0)),
+                 "Dawnn requires at least 1001 cells. Your dataset contains 1000.")
+})

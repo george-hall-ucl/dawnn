@@ -60,7 +60,7 @@ considers a cell to be in a region of differential abundance).
 \description{
 \code{run_dawnn()} is the main function used to run Dawnn. It takes
 a Seurat dataset and identifies which cells are in regions of differential
-abundance.
+abundance. Dawnn requires at least 1,001 cells.
 }
 \examples{
 \dontrun{

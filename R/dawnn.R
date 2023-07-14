@@ -369,7 +369,7 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #'
 #' @description `run_dawnn()` is the main function used to run Dawnn. It takes
 #' a Seurat dataset and identifies which cells are in regions of differential
-#' abundance.
+#' abundance. Dawnn requires at least 1,001 cells.
 #'
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
@@ -408,6 +408,12 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123) {
     set.seed(seed)
+
+    num_cells <- ncol(cells)
+    if (num_cells < 1001) {
+        stop(paste0("Dawnn requires at least 1001 cells. Your dataset contains ",
+                    num_cells, "."))
+    }
 
     param_check(cells, label_names, label_1, label_2, reduced_dim,
                 recalculate_graph)

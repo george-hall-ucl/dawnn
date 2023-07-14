@@ -23,9 +23,10 @@ reticulate::py_install("tensorflow")
 
 ### Quick start
 
-Assume that `cells` is a Seurat dataset with
-\>1000 cells, a PCA reduction, and a `meta.data` slot `condition_name` that contains the name of the condition to which each cell belongs (either `Condition1` or `Condition2`).
-
+Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`
+slot `condition_name` that contains the name of the condition to which each
+cell belongs (either `Condition1` or `Condition2`). Dawnn requires at least
+1,001 cells.
 
 ```{r}
 library(dawnn)

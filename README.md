@@ -21,6 +21,10 @@ dawnn::download_model()
 reticulate::py_install("tensorflow")
 ```
 
+Note: We are currently experiencing some installation issues on Apple-silicon
+(i.e. M1, M2, M3 chip) Macs, which we are trying to fix. See
+[here](https://github.com/george-hall-ucl/dawnn/issues/4).
+
 ### Quick start
 
 Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`

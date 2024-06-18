@@ -119,15 +119,17 @@ load_model_from_python <- function(model_path) {
 #' @param label_2 String containing the name of the other label.
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
+#' @param predict_fcn Function Function to run the dockerized or non-dockerized
+#' TensorFlow prediction.
 #' @return A vector containing a null distribution of Dawnn's model outputs for
 #' shuffled sample labels.
 #' @examples
 #' \dontrun{
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
-#' "synth_labels", verbosity = 1)
+#' "synth_labels", verbosity = 1, predict_fcn = predict_func)
 #' }
 generate_null_dist <- function(cells, model, label_names, label_1, label_2,
-                               verbosity) {
+                               verbosity, predict_fcn) {
     null_dist <- c()
     for (i in 1:3) {
         num_cells <- ncol(cells)
@@ -138,8 +140,7 @@ generate_null_dist <- function(cells, model, label_names, label_1, label_2,
                                                     label_names = "shuff_labels",
                                                     label_1 = label_1,
                                                     verbose = verbosity > 0)
-        shuff_scores <- predict(model, shuff_nbor_labs,
-                                verbose = ifelse(verbosity == 2, 1, 0))
+        shuff_scores <- predict_fcn(shuff_nbor_labs)
         null_dist <- c(null_dist, shuff_scores)
     }
 
@@ -365,6 +366,39 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 }
 
 
+#' Run TensorFlow preduction within Docker
+#'
+#' @description `predict_docker()' uses docker to run the prediction procdure
+#' for the TensorFlow neural network.
+#'
+#' @param docker_image String name of the docker image to use.
+#' @param neighbor_labels Integer-matrix Matrix containing the labels of the
+#' 1000 nearest neighbours of each cell.
+#' @param nn_model String containing the path to the model's .hdf5 file.
+#' @examples
+#' \dontrun{
+#' param_check(docker_image = "dawnn_standalone", neighbor_labels =
+#' nn_label_mtx, nn_model = "~/.dawnn/dawnn_nn_model.h5")
+#' }
+predict_docker <- function(docker_image, neighbor_labels, nn_model) {
+    neighbor_labels_file <- tempfile()
+    out_file <- tempfile()
+    write.table(neighbor_labels, neighbor_labels_file,
+                row.names = FALSE, col.names = FALSE, sep = ",")
+    cmd <- paste0('docker run --interactive --tty --rm --volume "',
+                  dirname(nn_model), ':/tmp/dawnn" --volume "',
+                  dirname(neighbor_labels_file), ':/tmp/tmp_mnt" --workdir / ',
+                  docker_image, ' python3 run_dawnn_docker.py ',
+                  "/tmp/dawnn/dawnn_nn_model.h5", " /tmp/tmp_mnt/",
+                  basename(neighbor_labels_file), " /tmp/tmp_mnt/",
+                  basename(out_file))
+    system(cmd)
+    scores <- read.csv(out_file, header = FALSE)[, 1]
+
+    return(scores)
+}
+
+
 #' Identify which cells are in regions of differential abundance using Dawnn.
 #'
 #' @description `run_dawnn()` is the main function used to run Dawnn. It takes
@@ -390,6 +424,9 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param seed Integer random seed (optional, default 123).
+#' @param docker_image String name of the docker image to run the underlying
+#' neural network, required if tensorflow is not implemented on your machine
+#' (optional, default NULL).
 #' @return Seurat dataset `cells' with added metadata: dawnn_scores (output of
 #' Dawnn's model for each cell); dawnn_lfc (estimated log2-fold change in the
 #' neighbourhood of each cell); dawnn_p_vals (p-values associated with the
@@ -406,7 +443,7 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
-                      seed = 123) {
+                      seed = 123, docker_image = NULL) {
     set.seed(seed)
 
     num_cells <- ncol(cells)
@@ -417,10 +454,6 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
 
     param_check(cells, label_names, label_1, label_2, reduced_dim,
                 recalculate_graph)
-
-    if (class(nn_model)[1] == "character") {
-        nn_model <- load_model_from_python(nn_model)
-    }
 
     if (recalculate_graph) {
         if (verbosity > 0) {
@@ -442,8 +475,20 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
     if (verbosity > 0) {
         message("Generating scores.")
     }
-    scores <- predict(nn_model, neighbor_labels,
-                      verbose = ifelse(verbosity == 2, 1, 0))
+    if (is.null(docker_image)) {
+        if (class(nn_model)[1] == "character") {
+            nn_model <- load_model_from_python(nn_model)
+        }
+        predict_func <- function(x) {
+            predict(nn_model, x, verbose = ifelse(verbosity == 2, 1, 0))
+        }
+    }
+    else {
+        predict_func <- function(x) {
+            predict_docker(docker_image, x, nn_model)
+        }
+    }
+    scores <- predict_func(neighbor_labels)
     cells$dawnn_scores <- scores
     cells$dawnn_lfc <- log2(scores / (1 - scores))
 
@@ -451,7 +496,7 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
         message("Generating null distribution.")
     }
     null_dist <- generate_null_dist(cells, nn_model, label_names, label_1,
-                                    label_2, verbosity = verbosity)
+                                    label_2, verbosity = verbosity, predict_func)
 
     if (verbosity > 0) {
         message("Generating p-values.")

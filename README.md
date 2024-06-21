@@ -16,7 +16,21 @@ remotes::install_github("george-hall-ucl/dawnn")
 # Step 2: Download Dawnn's model
 # By default, model stored at ~/.dawnn/dawnn_nn_model.h5
 dawnn::download_model()
+```
 
+To solve installation issues, we recommend to run Dawnn using a Docker image to
+execute the model. This image can be downloaded from Dockerhub
+([georgehallucl/dawnn](https://hub.docker.com/repository/docker/georgehallucl/dawnn/general)).
+To run in this way, you must first [install
+docker](https://docs.docker.com/get-docker/). When you want to run Dawnn, start
+the Docker program and then run Dawnn with the `docker_image` option set to
+`"georgehallucl/dawnn"`. We give an example of this in the Quick Start guide
+below.
+
+<details>
+<summary>Click to reveal instructions to install Dawnn without Docker (not recommended)</summary>
+
+```{r}
 # Step 3: Install Tensorflow Python package in Reticulate environment
 reticulate::py_install("tensorflow")
 ```
@@ -25,12 +39,28 @@ Note: We are currently experiencing some installation issues on Apple-silicon
 (i.e. M1, M2, M3 chip) Macs, which we are trying to fix. See
 [here](https://github.com/george-hall-ucl/dawnn/issues/4).
 
+</details>
+
 ### Quick start
 
 Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`
 slot `condition_name` that contains the name of the condition to which each
 cell belongs (either `Condition1` or `Condition2`). Dawnn requires at least
 1,001 cells.
+
+First, start the Docker application. Then run:
+
+```{r}
+library(dawnn)
+
+cells <- run_dawnn(cells, label_names = "condition_name", label_1 = "Condition1",
+                   label_2 = "Condition2", reduced_dim = "pca",
+                   docker_image = "georgehallucl/dawnn")
+```
+
+<details>
+<summary>Click to reveal instructions to run Dawnn without Docker (not recommended)</summary>
+#### Without Docker
 
 ```{r}
 library(dawnn)
@@ -39,6 +69,7 @@ cells <- run_dawnn(cells, label_names = "condition_name", label_1 = "Condition1"
                    label_2 = "Condition2", reduced_dim = "pca")
 ```
 
+</details>
 
 After `run_dawnn()`, the object `cells` has additional `meta.data` slots:
 
@@ -78,7 +109,7 @@ Any contributions are warmly welcomed! Please feel free to submit an issue or pu
 
 ### Licence
 
-Copyright (C) 2023 University College London
+Copyright (C) 2023-2024 University College London
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

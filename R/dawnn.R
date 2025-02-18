@@ -138,8 +138,8 @@ generate_null_dist <- function(cells, model, label_names, label_1, label_2,
                                                     label_names = "shuff_labels",
                                                     label_1 = label_1,
                                                     verbose = verbosity > 0)
-        shuff_scores <- predict(model, shuff_nbor_labs,
-                                verbose = ifelse(verbosity == 2, 1, 0))
+        shuff_scores <- model$predict(shuff_nbor_labs,
+                                      verbose = ifelse(verbosity == 2, 1, 0))
         null_dist <- c(null_dist, shuff_scores)
     }
 
@@ -442,8 +442,8 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
     if (verbosity > 0) {
         message("Generating scores.")
     }
-    scores <- predict(nn_model, neighbor_labels,
-                      verbose = ifelse(verbosity == 2, 1, 0))
+    scores <- nn_model$predict(neighbor_labels,
+                               verbose = ifelse(verbosity == 2, 1, 0))
     cells$dawnn_scores <- scores
     cells$dawnn_lfc <- log2(scores / (1 - scores))
 

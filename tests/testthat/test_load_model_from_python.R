@@ -6,14 +6,48 @@ test_that("Incorrect model_path leads to error", {
                            "No model available at this_model_does_not_exist.h5")
 })
 
-test_that("Loaded model has the correct class", {
+test_that("Loaded model has correct structure and weights", {
+              # Ideally, we would be able to compute a checksum of all weights
+              # in each tensor, but I can't find a way of doing this. For now,
+              # summing them seems sufficient.
               model <- load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
-              model_class <- class(model)[1:4]
-              goal_class_values <- c("keras.engine.sequential.Sequential",
-                                     "keras.engine.functional.Functional",
-                                     "keras.engine.training.Model",
-                                     "keras.engine.base_layer.Layer")
-              expect_equal(model_class, goal_class_values)
+              goal_model_summary <- "Model: \"sequential\"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type)                      ┃ Output Shape             ┃       Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ dense (Dense)                     │ (None, 1000)             │     1,001,000 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_1 (Dense)                   │ (None, 2000)             │     2,002,000 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_2 (Dense)                   │ (None, 4000)             │     8,004,000 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_3 (Dense)                   │ (None, 2000)             │     8,002,000 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_4 (Dense)                   │ (None, 1000)             │     2,001,000 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_5 (Dense)                   │ (None, 250)              │       250,250 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_6 (Dense)                   │ (None, 10)               │         2,510 │
+├───────────────────────────────────┼──────────────────────────┼───────────────┤
+│ dense_7 (Dense)                   │ (None, 1)                │            11 │
+└───────────────────────────────────┴──────────────────────────┴───────────────┘
+ Total params: 21,262,771 (81.11 MB)
+ Trainable params: 21,262,771 (81.11 MB)
+ Non-trainable params: 0 (0.00 B)"
+              goal_model_sum <- -415.2789
+              goal_model_summary_sum <- paste(goal_model_summary,
+                                              goal_model_sum)
+
+              actual_model_summary <- keras:::format.keras.engine.training.Model(model)
+              actual_model_sum <- sum(unlist(lapply(model$weights,
+                                                    function(x) {
+                                                        as.numeric(sum(x))
+                                                    })))
+              # Only look to four decimal places, as in goal_model_sum
+              actual_model_sum <- round(actual_model_sum, digits = 4)
+              actual_model_summary_sum <- paste(actual_model_summary,
+                                                actual_model_sum)
+              expect_equal(actual_model_summary_sum, goal_model_summary_sum)
 })
 
 test_that("No Tensorflow module leads to crash", {

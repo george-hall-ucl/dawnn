@@ -100,7 +100,7 @@ load_model_from_python <- function(model_path) {
         stop(paste("No model available at", model_path))
     }
     # load model trained with Python
-    model <- load_model_hdf5(model_path)
+    model <- load_model_hdf5(model_path, compile = FALSE)
 
     return(model)
 }

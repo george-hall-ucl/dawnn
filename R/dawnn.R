@@ -119,20 +119,34 @@ load_model_from_python <- function(model_path) {
 #' @param label_2 String containing the name of the other label.
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
+#' @param da_mode String containing the type of differential abundance being
+#' seeked, either "pda" (proportional DA) or "ada" (absolute DA).
 #' @return A vector containing a null distribution of Dawnn's model outputs for
 #' shuffled sample labels.
 #' @examples
 #' \dontrun{
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
-#' "synth_labels", verbosity = 1)
+#' "synth_labels", verbosity = 1, da_mode = "ada")
 #' }
 generate_null_dist <- function(cells, model, label_names, label_1, label_2,
-                               verbosity) {
+                               verbosity, da_mode) {
     null_dist <- c()
     for (i in 1:3) {
         num_cells <- ncol(cells)
-        labels <- c(rep(label_1, round(num_cells / 2)),
-                    rep(label_2, num_cells - round(num_cells / 2)))
+        if (da_mode == "ada") {
+            labels <- c(rep(label_1, round(num_cells / 2)),
+                        rep(label_2, num_cells - round(num_cells / 2)))
+        } else if (da_mode == "pda") {
+            labels <- cells@meta.data[, label_names]
+        } else {
+            stop(paste("Unknown da_mode:", da_mode))
+        }
+        # Sort the labels to ensure that the same result is returned for both
+        # ADA and PDA if Condition1 and Condition2 are in equal proportions.
+        # Since we then shuffle them, this does not make the result any more or
+        # less correct than not sorting them, but it ensures the above goal is
+        # satisfied if the labels are not arranged identically in both cases.
+        labels <- sort(labels)
         cells$shuff_labels <- sample(labels)
         shuff_nbor_labs <- generate_neighbor_labels(cells,
                                                     label_names = "shuff_labels",
@@ -406,7 +420,7 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
-                      seed = 123) {
+                      seed = 123, da_mode = "ada") {
     set.seed(seed)
 
     num_cells <- ncol(cells)
@@ -451,7 +465,8 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
         message("Generating null distribution.")
     }
     null_dist <- generate_null_dist(cells, nn_model, label_names, label_1,
-                                    label_2, verbosity = verbosity)
+                                    label_2, verbosity = verbosity,
+                                    da_mode = da_mode)
 
     if (verbosity > 0) {
         message("Generating p-values.")

@@ -404,6 +404,8 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param seed Integer random seed (optional, default 123).
+#' @param da_mode String containing the type of differential abundance being
+#' seeked, either "pda" (proportional DA) or "ada" (absolute DA).
 #' @return Seurat dataset `cells' with added metadata: dawnn_scores (output of
 #' Dawnn's model for each cell); dawnn_lfc (estimated log2-fold change in the
 #' neighbourhood of each cell); dawnn_p_vals (p-values associated with the

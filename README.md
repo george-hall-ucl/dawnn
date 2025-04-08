@@ -63,7 +63,7 @@ cells <- run_dawnn(cells = cells, label_names = "condition_name",
                    reduced_dim = "pca", n_dims = 20,
                    nn_model = "~/Documents/another_nn_model.h5,
                    recalculate_graph = FALSE, alpha = 0.025,
-                   verbosity = 0, seed = 42)
+                   verbosity = 0, seed = 42, da_mode = "pda")
 ```
 
 These parameters are defined in the [vignette](https://github.com/george-hall-ucl/dawnn_vignette/blob/main/dawnn.md).

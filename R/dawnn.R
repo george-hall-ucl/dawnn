@@ -414,6 +414,8 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param seed Integer random seed (optional, default 123).
 #' @param da_mode String containing the type of differential abundance being
 #' seeked, either "pda" (proportional DA) or "ada" (absolute DA).
+#' @param tf_conda_env Conda environment with TensorFlow installed, useful if
+#' it is unavailable in the current environment (optional, default NULL).
 #' @return Seurat dataset `cells' with added metadata: dawnn_scores (output of
 #' Dawnn's model for each cell); dawnn_lfc (estimated log2-fold change in the
 #' neighbourhood of each cell); dawnn_p_vals (p-values associated with the
@@ -424,14 +426,19 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", nn_model =
 #' "my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
-#' alpha = 0.2, verbosity = 0, seed = 42)
+#' alpha = 0.2, verbosity = 0, seed = 42, da_mode = "pda",
+#' tf_conda_env = "my_tensorflow_env")
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
-                      seed = 123, da_mode = "ada") {
+                      seed = 123, da_mode = "ada", tf_conda_env = NULL) {
     set.seed(seed)
+
+    if (!is.null(tf_conda_env)) {
+        reticulate::use_condaenv(tf_conda_env)
+    }
 
     num_cells <- ncol(cells)
     if (num_cells < 1001) {

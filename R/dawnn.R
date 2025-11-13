@@ -293,7 +293,12 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         # Prevent error with url() if protocol is unspecified
         model_url <- paste0("http://", model_url)
     }
-    con <- url(model_url)
+
+    # Set blank user agent to prevent "403: Forbidden" error in `open.connection`
+    old_user_agent = options("HTTPUserAgent")
+    options("HTTPUserAgent" = "")
+
+    con <- url(model_url, headers = list("test"="test"))
     open.connection(con, open = "rt", timeout = 2)
     close(con, silent = TRUE)
 
@@ -308,6 +313,9 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
              })
 
     options(timeout = old_timeout)
+
+    # Restore old user agent
+    options("HTTPUserAgent" = older_user_agent)
 
     if (download_ret != 0) {
         stop(paste("Download finished with non-zero exit code:", download_ret))

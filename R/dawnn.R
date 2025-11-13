@@ -315,7 +315,7 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     options(timeout = old_timeout)
 
     # Restore old user agent
-    options("HTTPUserAgent" = older_user_agent)
+    options("HTTPUserAgent" = old_user_agent)
 
     if (download_ret != 0) {
         stop(paste("Download finished with non-zero exit code:", download_ret))

@@ -5,13 +5,19 @@ library(withr)
 library(Seurat)
 
 sm <- suppressMessages
-sep_r <- function(x, print_stdout = TRUE, print_stderr = FALSE) {
-    res <- callr::r(x, stdout = "/tmp/out", stderr = "/tmp/err")
+sep_r <- function(x, args = list(), print_stdout = TRUE, print_stderr = FALSE, ...) {
+    res <- callr::r(x, args = args, stdout = "/tmp/out", stderr = "/tmp/err")
     if (print_stdout) {
-        print(readLines("/tmp/out"))
+        outs <- readLines("/tmp/out")
+        if (!identical(outs, character(0))) {
+            print(outs)
+        }
     }
     if (print_stderr) {
-        print(readLines("/tmp/err"))
+        outs <- readLines("/tmp/err")
+        if (!identical(outs, character(0))) {
+            print(outs)
+        }
     }
     return(res)
 }

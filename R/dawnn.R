@@ -86,14 +86,10 @@ generate_neighbor_labels <- function(cells, verbose, label_names, label_1) {
 load_model_from_python <- function(model_path) {
     # Need to have tensorflow installed in the reticulate environment. Check
     # whether it is installed:
-    if (py_module_available("tensorflow") == FALSE) {
-        # I found it best to do this using conda.
-        # conda_env_name <- "r-reticulate"
-        # conda_create(conda_env_name)
-        # conda_install(conda_env_name, "tensorflow")
-        stop(paste("Tensorflow not installed in reticulate environment.",
-                   "Please install following",
-                   "rstudio.github.io/reticulate/articles/python_packages.html."))
+    if (!py_module_available("tensorflow")) {
+        stop(paste("Tensorflow not installed. If you have Tensorflow installed in a",
+                   "conda environment, you can make Dawnn use this with the",
+                   "`tf_conda_env` parameter of `run_dawnn`."))
     }
 
     if (!file.exists(model_path)) {

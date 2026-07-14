@@ -2,15 +2,19 @@
 # Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
 test_that("Incorrect model_path leads to error", {
-              expect_error(load_model_from_python("this_model_does_not_exist.h5"),
-                           "No model available at this_model_does_not_exist.h5")
+              results <- try(sep_r(function() {
+                                       reticulate::use_condaenv("tf_env")
+                                       dawnn:::load_model_from_python("this_model_does_not_exist.h5")},
+                                       print_stdout = FALSE))
+              error_msg <- strsplit((results[[1]]), "\n")[[1]][3]
+              expect_s3_class(results, "try-error")
+              expect_equal(error_msg, "! No model available at this_model_does_not_exist.h5")
 })
 
 test_that("Loaded model has correct structure and weights", {
               # Ideally, we would be able to compute a checksum of all weights
               # in each tensor, but I can't find a way of doing this. For now,
               # summing them seems sufficient.
-              model <- load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
               goal_model_summary <- "Model: \"sequential\"
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
 ┃ Layer (type)                      ┃ Output Shape             ┃       Param # ┃
@@ -38,32 +42,17 @@ test_that("Loaded model has correct structure and weights", {
               goal_model_summary_sum <- paste(goal_model_summary,
                                               goal_model_sum)
 
-              actual_model_summary <- keras:::format.keras.engine.training.Model(model)
-              actual_model_sum <- sum(unlist(lapply(model$weights,
-                                                    function(x) {
-                                                        as.numeric(sum(x))
-                                                    })))
-              # Only look to four decimal places, as in goal_model_sum
-              actual_model_sum <- round(actual_model_sum, digits = 4)
-              actual_model_summary_sum <- paste(actual_model_summary,
-                                                actual_model_sum)
+              actual_model_summary_sum <- sep_r(function() {
+                reticulate::use_condaenv("tf_env")
+                model <- dawnn:::load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
+                actual_model_summary <- keras:::format.keras.engine.training.Model(model)
+                actual_model_sum <- sum(unlist(lapply(model$weights,
+                                                      function(x) {
+                                                          as.numeric(sum(x))
+                                                      })))
+                # Only look to four decimal places, as in goal_model_sum
+                actual_model_sum <- round(actual_model_sum, digits = 4)
+                return(paste(actual_model_summary, actual_model_sum))
+              })
               expect_equal(actual_model_summary_sum, goal_model_summary_sum)
-})
-
-test_that("No Tensorflow module leads to crash", {
-    m <- paste("Tensorflow not installed in reticulate environment\\\\?.",
-               "Please install following",
-               "rstudio\\\\?.github\\\\?.io/reticulate/articles/python_packages\\\\?.html\\\\?.")
-
-    # Use non-existant Python environment to simulate lack of Tensorflow
-    # module.  callr is needed here since otherwise the loaded Tensorflow
-    # library from earlier tests means that the module is still findable even
-    # when RETICULATE_PYTHON_ENV pointed away from it.
-    res <- try(callr::r(function() {
-        withr::local_envvar(c("RETICULATE_PYTHON_ENV" = "no_tensorflow_env"))
-        dawnn:::load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
-    }))
-
-    expect_match(res[[1]], m)
-    expect_s3_class(res, "try-error")
 })

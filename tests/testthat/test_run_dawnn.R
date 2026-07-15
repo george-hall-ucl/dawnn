@@ -28,6 +28,38 @@ test_that("run_dawnn reproducible recalculate_graph = FALSE", {
     expect_equal(dawnn_out_1, dawnn_out_2)
 })
 
+test_that("run_dawnn respects alpha parameter", {
+    cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
+    cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
+                           dims = 1:2, return.neighbor = TRUE)
+    cells$label <- sample(c(rep("Condition1", 650), rep("Condition2", 550)))
+
+    dawnn_out_1 <- sep_r(function(cells) {
+                             devtools::load_all()
+                             dawnn::run_dawnn(cells = cells, label_names = "label",
+                                              label_1 = "Condition1",
+                                              label_2 = "Condition2",
+                                              reduced_dim = "pca",
+                                              recalculate_graph = FALSE,
+                                              alpha = 0.5, verbosity = 0,
+                                              tf_conda_env = "tf_env")},
+                         args = list(cells))
+    dawnn_out_2 <- sep_r(function(cells) {
+                             devtools::load_all()
+                             dawnn::run_dawnn(cells = cells, label_names = "label",
+                                              label_1 = "Condition1",
+                                              label_2 = "Condition2",
+                                              reduced_dim = "pca",
+                                              recalculate_graph = FALSE,
+                                              alpha = 0.05, verbosity = 0,
+                                              tf_conda_env = "tf_env")},
+                         args = list(cells))
+
+    # DA verdicts should differ due to different alphas
+    expect_failure(expect_equal(dawnn_out_1$dawnn_da_verdict,
+                                dawnn_out_2$dawnn_da_verdict))
+})
+
 test_that("run_dawnn reproducible recalculate_graph = TRUE", {
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,

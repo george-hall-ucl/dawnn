@@ -491,7 +491,7 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
         message("Determining significance.")
     }
     cells$dawnn_da_verdict <- determine_if_region_da(p_vals, scores, null_dist,
-                                                     alpha = 0.1)
+                                                     alpha = alpha)
 
     return(cells)
 }

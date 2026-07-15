@@ -116,23 +116,23 @@ load_model_from_python <- function(model_path) {
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param da_mode String containing the type of differential abundance being
-#' seeked, either "pda" (proportional DA) or "ada" (absolute DA).
+#' seeked, either "lda" (local DA) or "gda" (global DA).
 #' @return A vector containing a null distribution of Dawnn's model outputs for
 #' shuffled sample labels.
 #' @examples
 #' \dontrun{
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
-#' "synth_labels", verbosity = 1, da_mode = "ada")
+#' "synth_labels", verbosity = 1, da_mode = "lda")
 #' }
 generate_null_dist <- function(cells, model, label_names, label_1, label_2,
                                verbosity, da_mode) {
     null_dist <- c()
     for (i in 1:3) {
         num_cells <- ncol(cells)
-        if (da_mode == "ada") {
+        if (da_mode == "lda") {
             labels <- c(rep(label_1, round(num_cells / 2)),
                         rep(label_2, num_cells - round(num_cells / 2)))
-        } else if (da_mode == "pda") {
+        } else if (da_mode == "gda") {
             labels <- cells@meta.data[, label_names]
         } else {
             stop(paste("Unknown da_mode:", da_mode))
@@ -471,10 +471,10 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
     cells$dawnn_scores <- scores
     cells$dawnn_lfc <- log2(scores / (1 - scores))
 
-    for (da_mode in c("ada", "pda")) {
+    for (da_mode in c("lda", "gda")) {
         if (verbosity > 0) {
             message(paste("Testing for",
-                          ifelse(da_mode == "ada", "local", "global"),
+                          ifelse(da_mode == "lda", "local", "global"),
                           "differential abundance."))
             message("... Generating null distribution.")
         }

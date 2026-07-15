@@ -408,8 +408,6 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param seed Integer random seed (optional, default 123).
-#' @param da_mode String containing the type of differential abundance being
-#' seeked, either "pda" (proportional DA) or "ada" (absolute DA).
 #' @param tf_conda_env Conda environment with TensorFlow installed, useful if
 #' it is unavailable in the current environment (optional, default NULL).
 #' @return Seurat dataset `cells' with added metadata: dawnn_scores (output of
@@ -422,14 +420,13 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", nn_model =
 #' "my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
-#' alpha = 0.2, verbosity = 0, seed = 42, da_mode = "pda",
-#' tf_conda_env = "my_tensorflow_env")
+#' alpha = 0.2, verbosity = 0, seed = 42, tf_conda_env = "my_tensorflow_env")
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                       n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
-                      seed = 123, da_mode = "ada", tf_conda_env = NULL) {
+                      seed = 123, tf_conda_env = NULL) {
     set.seed(seed)
 
     if (!is.null(tf_conda_env)) {
@@ -474,24 +471,30 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
     cells$dawnn_scores <- scores
     cells$dawnn_lfc <- log2(scores / (1 - scores))
 
-    if (verbosity > 0) {
-        message("Generating null distribution.")
-    }
-    null_dist <- generate_null_dist(cells, nn_model, label_names, label_1,
-                                    label_2, verbosity = verbosity,
-                                    da_mode = da_mode)
+    for (da_mode in c("ada", "pda")) {
+        if (verbosity > 0) {
+            message(paste("Testing for",
+                          ifelse(da_mode == "ada", "local", "global"),
+                          "differential abundance."))
+            message("... Generating null distribution.")
+        }
+        null_dist <- generate_null_dist(cells, nn_model, label_names, label_1,
+                                        label_2, verbosity = verbosity,
+                                        da_mode = da_mode)
 
-    if (verbosity > 0) {
-        message("Generating p-values.")
-    }
-    p_vals <- generate_p_vals(scores, null_dist)
-    cells$dawnn_p_vals <- p_vals
+        if (verbosity > 0) {
+            message("... Generating p-values.")
+        }
+        p_vals <- generate_p_vals(scores, null_dist)
+        cells@meta.data[[paste0("dawnn_p_values_", da_mode)]] <- p_vals
 
-    if (verbosity > 0) {
-        message("Determining significance.")
+        if (verbosity > 0) {
+            message("... Determining significance.")
+        }
+        verdicts <- determine_if_region_da(p_vals, scores, null_dist,
+                                           alpha = alpha)
+        cells@meta.data[[paste0("dawnn_", da_mode, "_verdict")]] <- verdicts
     }
-    cells$dawnn_da_verdict <- determine_if_region_da(p_vals, scores, null_dist,
-                                                     alpha = alpha)
 
     return(cells)
 }

@@ -15,7 +15,9 @@ run_dawnn(
   recalculate_graph = TRUE,
   alpha = 0.1,
   verbosity = 2,
-  seed = 123
+  seed = 123,
+  da_mode = "ada",
+  tf_conda_env = NULL
 )
 }
 \arguments{
@@ -48,6 +50,12 @@ Benjamini–Yekutieli procedure (optional, default 0.1, i.e. 10\%).}
 output; 2: display messages from predict() function.}
 
 \item{seed}{Integer random seed (optional, default 123).}
+
+\item{da_mode}{String containing the type of differential abundance being
+seeked, either "pda" (proportional DA) or "ada" (absolute DA).}
+
+\item{tf_conda_env}{Conda environment with TensorFlow installed, useful if
+it is unavailable in the current environment (optional, default NULL).}
 }
 \value{
 Seurat dataset `cells' with added metadata: dawnn_scores (output of
@@ -66,6 +74,7 @@ abundance. Dawnn requires at least 1,001 cells.
 \dontrun{
 run_dawnn(cells = dataset, label_names = "condition", nn_model =
 "my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
-alpha = 0.2, verbosity = 0, seed = 42)
+alpha = 0.2, verbosity = 0, seed = 42, da_mode = "pda",
+tf_conda_env = "my_tensorflow_env")
 }
 }

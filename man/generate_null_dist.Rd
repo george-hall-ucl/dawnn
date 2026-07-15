@@ -4,7 +4,15 @@
 \alias{generate_null_dist}
 \title{Generate a null distribution of P(Condition_1) estimates.}
 \usage{
-generate_null_dist(cells, model, label_names, label_1, label_2, verbosity)
+generate_null_dist(
+  cells,
+  model,
+  label_names,
+  label_1,
+  label_2,
+  verbosity,
+  da_mode
+)
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
@@ -20,6 +28,9 @@ generate_null_dist(cells, model, label_names, label_1, label_2, verbosity)
 
 \item{verbosity}{Integer how much output to print. 0: silent; 1: normal
 output; 2: display messages from predict() function.}
+
+\item{da_mode}{String containing the type of differential abundance being
+seeked, either "pda" (proportional DA) or "ada" (absolute DA).}
 }
 \value{
 A vector containing a null distribution of Dawnn's model outputs for
@@ -32,6 +43,6 @@ and returns the estimates of P(Condition_1) for each shuffled dataset.
 \examples{
 \dontrun{
 generate_null_dist(cells = cell_object, model = nn_model, label_names =
-"synth_labels", verbosity = 1)
+"synth_labels", verbosity = 1, da_mode = "ada")
 }
 }

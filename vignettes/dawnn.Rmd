@@ -26,7 +26,10 @@ knitr::opts_chunk$set(
 ## Installation
 
 Installation instructions are given in the [GitHub
-README](https://github.com/george-hall-ucl/dawnn#installation).
+README](https://github.com/george-hall-ucl/dawnn#installation).  We assume that
+Tensorflow is installed in a conda environment called `tf_env`.  A docker image
+that will run this vignette is available on DockerHub as
+`georgehallucl/dawnn_benchmarking`.
 
 ## Main workflow
 
@@ -91,7 +94,8 @@ belongs (either `Condition1` or `Condition2`).
 
 ```{r run_dawnn}
 cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca")
+                   label_2 = "Condition2", reduced_dim = "pca", da_mode = "ada",
+                   tf_conda_env = "tf_env")
 ```
 
 ### Required parameters
@@ -192,7 +196,8 @@ These options can be set as follow:
 
 ```{r dawnn_all_options, eval = FALSE}
 cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca", n_dims = 20,
+                   label_2 = "Condition2", reduced_dim = "pca",
+                   da_mode = "ada", tf_conda_env = "tf_env", n_dims = 20,
                    nn_model = "~/another_dawnn_model.h5",
                    recalculate_graph = FALSE, alpha = 0.05, verbosity = 0,
                    seed = 42)

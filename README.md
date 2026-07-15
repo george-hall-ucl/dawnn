@@ -76,6 +76,13 @@ _Dawnn: single-cell differential abundance with neural networks_. George T. Hall
 
 Any contributions are warmly welcomed! Please feel free to submit an issue or pull request on this repository.
 
+### Releases
+
+#### v1.2.0 (15 July 2026)
+
+* Fixed a bug where the `alpha` parameter was not being respected (the default
+  value of 0.1 was always being used).
+
 ### Licence
 
 Copyright (C) 2023-2025 University College London

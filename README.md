@@ -85,7 +85,7 @@ Any contributions are warmly welcomed! Please feel free to submit an issue or pu
 
 ### Licence
 
-Copyright (C) 2023-2025 University College London
+Copyright (C) 2023-2026 University College London
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

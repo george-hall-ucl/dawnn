@@ -1,23 +1,25 @@
----
-title: "Dawnn vignette"
-author: "George T. Hall and Sergi Castellano"
-date: "Compiled on 16 July 2026"
----
+Dawnn vignette
+================
+George T. Hall and Sergi Castellano
+Compiled on 16 July 2026
 
-> Copyright (C) 2023- University College London <br>
-> Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
-
-
+> Copyright (C) 2023- University College London <br> Licensed under GNU
+> GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
 <details>
-<summary>We have simulated some toy data to demonstrate Dawnn. Click here to display the simulation code.</summary>
-We need to first generate a dataset on which we can run Dawnn. We generate
-three clusters of cells. In one cluster, we aim to have a 50/50 split of the
-labels "Condition1" and "Condition2"; in the second, we aim for a 10/90 split;
-and in the third we aim for a 90/10 split. This means that there is
-differential abundance in the second and third clusters. We aim to detect this
-with Dawnn.
 
+<summary>
+
+We have simulated some toy data to demonstrate Dawnn. Click here to
+display the simulation code.
+</summary>
+
+We need to first generate a dataset on which we can run Dawnn. We
+generate three clusters of cells. In one cluster, we aim to have a 50/50
+split of the labels “Condition1” and “Condition2”; in the second, we aim
+for a 10/90 split; and in the third we aim for a 90/10 split. This means
+that there is differential abundance in the second and third clusters.
+We aim to detect this with Dawnn.
 
 ``` r
 library(stats)
@@ -55,159 +57,157 @@ DimPlot(cells, group.by = "label", pt.size = 0.1,
         cols = c("#FFC107", "#D81B60"))
 ```
 
-<img src="dawnn_files/figure-html/create_seurat_obj-1.png" style="display: block; margin: auto;" />
+<img src="dawnn_files/figure-gfm/create_seurat_obj-1.png" style="display: block; margin: auto;" />
 </details>
 
 ## Installation
 
 Installation instructions are given in the [GitHub
 README](https://github.com/george-hall-ucl/dawnn#installation). In this
-vignette, we assume that Tensorflow is installed in a conda environment called
-`tf_env`, which is not necessarily the same environment that contains Dawnn. A
-docker image that will run this vignette is available on DockerHub as
-`georgehallucl/dawnn_benchmarking`.
+vignette, we assume that Tensorflow is installed in a conda environment
+called `tf_env`, which is not necessarily the same environment that
+contains Dawnn. A docker image that will run this vignette is available
+on DockerHub as `georgehallucl/dawnn_benchmarking`.
 
 ## Main workflow
-
 
 ``` r
 library(dawnn)
 library(Seurat)
 ```
 
-Following installation of the Dawnn package, Dawnn model, and Tensorflow Python
-package, we are now ready to run the tool.
+Following installation of the Dawnn package, Dawnn model, and Tensorflow
+Python package, we are now ready to run the tool.
 
-As in the GitHub README, we assume in the following simple example that `cells`
-is a Seurat dataset with \>1000 cells, a PCA reduction, and a `meta.data` slot
-`condition_name` that contains the name of the condition to which each cell
-belongs (either `Condition1` or `Condition2`).
-
+As in the GitHub README, we assume in the following simple example that
+`cells` is a Seurat dataset with \>1000 cells, a PCA reduction, and a
+`meta.data` slot `condition_name` that contains the name of the
+condition to which each cell belongs (either `Condition1` or
+`Condition2`). We wish to associate the label `Condition1` with positive
+log-fold changes in the results (`Condition2` will thus be associated
+with negative).
 
 ``` r
-cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca",
-                   tf_conda_env = "tf_env", verbosity = 0)
+cells <- run_dawnn(cells, label_names = "label", label_pos_lfc = "Condition1",
+                   reduced_dim = "pca", tf_conda_env = "tf_env", verbosity = 0)
 ```
 
 ### Required parameters
 
-`run_dawnn` has five parameters that we must specify:
+`run_dawnn` has four required parameters:
 
 | Parameter | Description |
-|-----------|-------------|
-| `cells`   | Seurat object containing the dataset |
+|----|----|
+| `cells` | Seurat object containing the dataset |
 | `label_names` | `meta.data` slot in `cells` containing labels |
-| `label_1` | The label corresponding to the first sample |
-| `label_2` | The label corresponding to the second sample |
+| `label_pos_lfc` | The label corresponding to posiive log-fold change |
 | `reduced_dim` | Dimensionality reduction to use when calculating KNN graph |
 
 We outline the optional parameters later in this vignette.
 
 ### Output
 
-Dawnn's outputs are stored in `meta.data` slots of `cells`. These outputs are:
+Dawnn’s outputs are stored in `meta.data` slots of `cells`. These
+outputs are:
 
-| Dawnn output             | Description                                                                                   |
-|--------------------------|-----------------------------------------------------------------------------------------------|
-| `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether a cell is in a region of [local/global] differential abundance.              |
-| `cells$dawnn_lfc`        | Estimated log2-fold change in the cell's neighbourhood.                                              |
-| `cells$dawnn_scores`     | Estimated probability that the cell was drawn from the sample associated with label_1.                    |
-| `cells$dawnn_p_vals_[lda/gda]`     | P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance. |
+| Dawnn output | Description |
+|----|----|
+| `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether a cell is in a region of \[local/global\] differential abundance. |
+| `cells$dawnn_lfc` | Estimated log2-fold change in the cell’s neighbourhood. |
+| `cells$dawnn_scores` | Estimated probability that the cell was drawn from the sample associated with `label_pos_lfc`. |
+| `cells$dawnn_p_vals_[lda/gda]` | P-value associated with the hypothesis test that it is in a region of \[local/global\] differential abundance. |
 
-The first two outputs are likely the most useful. `dawnn_[lda/gda]_verdict`
-tells us whether Dawnn has called a cell as being in a region of [local/global]
-differential abundance and `dawnn_lfc` contains the estimated log2-fold change
-in the abundance of `label_1` and `label_2` in the neighbourhood of each cell.
-This second quantity is independent of whether the user is searching for local
-or global DA.
+The first two outputs are likely the most useful.
+`dawnn_[lda/gda]_verdict` tells us whether Dawnn has called a cell as
+being in a region of \[local/global\] differential abundance and
+`dawnn_lfc` contains the estimated log2-fold change in the abundance of
+`label_pos_lfc` (relative to the other label) in the neighbourhood of
+each cell. This second quantity is independent of whether the user is
+searching for local or global DA.
 
-Let's first plot the labels of each cell to identify manually which cluster
-exhibit differential abundance.
-
+Let’s first plot the labels of each cell to identify manually which
+cluster exhibit differential abundance.
 
 ``` r
 DimPlot(cells, group.by = "label", pt.size = 0.1,
         cols = c("#FFC107", "#D81B60"))
 ```
 
-<img src="dawnn_files/figure-html/plot_cell_labels_again-1.png" style="display: block; margin: auto;" />
+<img src="dawnn_files/figure-gfm/plot_cell_labels_again-1.png" style="display: block; margin: auto;" />
 
-From this, it appears that the cluster at the bottom of the UMAP has a roughly
-even split of the two conditions, whilst the other two clusters exhibit
-differential abundance towards one of them. We will see whether Dawnn has
-detected this by colouring the UMAP according to Dawnn's verdict
-(`dawnn_lda_verdict`).
-
+From this, it appears that the cluster at the bottom of the UMAP has a
+roughly even split of the two conditions, whilst the other two clusters
+exhibit differential abundance towards one of them. We will see whether
+Dawnn has detected this by colouring the UMAP according to Dawnn’s
+verdict of local differential abundance (`dawnn_lda_verdict`).
 
 ``` r
 DimPlot(cells, group.by = "dawnn_lda_verdict", pt.size = 0.1,
         cols = c("#FFC107", "#D81B60"))
 ```
 
-<img src="dawnn_files/figure-html/plot_dawnn_verdict-1.png" style="display: block; margin: auto;" />
+<img src="dawnn_files/figure-gfm/plot_dawnn_verdict-1.png" style="display: block; margin: auto;" />
 
-As expected, Dawnn detects that there is no differential abundance in the
-bottom cluster and that there is in the other two.
+As expected, Dawnn detects that there is no differential abundance in
+the bottom cluster and that there is in the other two.
 
-If we want to investigate the estimated log2-fold change in the abundance of
-`Condition1` compared to `Condition2`, we can colour cells according to
-`dawnn_lfc`.
-
+If we want to investigate the estimated log2-fold change in the
+abundance of `Condition1` compared to `Condition2`, we can colour cells
+according to `dawnn_lfc`.
 
 ``` r
 FeaturePlot(cells, "dawnn_lfc") + viridis::scale_color_viridis(option = "cividis")
 ```
 
-<img src="dawnn_files/figure-html/plot_dawnn_lfc-1.png" style="display: block; margin: auto;" />
+<img src="dawnn_files/figure-gfm/plot_dawnn_lfc-1.png" style="display: block; margin: auto;" />
 
-As expected, the two clusters identified as generally exhibiting differential
-abundance have estimated log2-fold changes far from 0, whereas for the cluster
-at the bottom of the UMAP this quantity is close to 0.
+As expected, the two clusters identified as generally exhibiting local
+differential abundance have estimated log2-fold changes far from 0,
+whereas for the cluster at the bottom of the UMAP this quantity is close
+to 0.
 
-`dawnn_scores` contains the direct output of Dawnn's neural
-network, i.e. the estimated probability a cell was drawn from the sample associated
-with `label_1` (in our case, `Condition1`). `dawnn_scores` is converted into `dawnn_lfc` with
+`dawnn_scores` contains the direct output of Dawnn’s neural network,
+i.e. the estimated probability a cell was drawn from the sample
+associated with `label_pos_lfc` (in our case, `Condition1`).
+`dawnn_scores` is converted into `dawnn_lfc` with
 `log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`.
-
 
 ``` r
 FeaturePlot(cells, "dawnn_scores") + viridis::scale_color_viridis(option = "cividis")
 ```
 
-<img src="dawnn_files/figure-html/plot_dawnn_scores-1.png" style="display: block; margin: auto;" />
+<img src="dawnn_files/figure-gfm/plot_dawnn_scores-1.png" style="display: block; margin: auto;" />
 
 Finally, `dawnn_p_vals_[lda|gda]` contains, for each cell, the p-value
-associated with testing the null hypothesis of "this cell is not in a region of
-[local|global] differential abundance". These p-values are used to determine
-the calls made in `dawnn_[lda|gda]_verdict`.
-
+associated with testing the null hypothesis of “this cell is not in a
+region of \[local\|global\] differential abundance”. These p-values are
+used to determine the calls made in `dawnn_[lda|gda]_verdict`. We plot
+each cell’s p-value for the test of whether it is in a region of local
+differential abundance.
 
 ``` r
 FeaturePlot(cells, "dawnn_p_vals_lda") + viridis::scale_color_viridis(option = "cividis")
 ```
 
-<img src="dawnn_files/figure-html/plot_dawnn_p_vals-1.png" style="display: block; margin: auto;" />
+<img src="dawnn_files/figure-gfm/plot_dawnn_p_vals-1.png" style="display: block; margin: auto;" />
 
 ## Optional parameters
 
 The main function `run_dawnn` has a number of optional parameters:
 
 | Parameter | Description |
-|-----------|-------------|
-|`nn_model` | String containing the path to the model's .hdf5 file (default `~/.dawnn/dawnn_nn_model.h5`). |
-|`recalculate_graph`| Boolean whether to recalculate the KNN graph. If FALSE, then the one stored in the ‘cells’ object will be used (default `TRUE`). |
-|`alpha`| Numeric target false discovery rate supplied to the Benjamini–Yekutieli procedure (default 0.1, i.e.  10%). |
-| `verbosity` | Integer how much output to print. 0: silent; 1: normal output; 2: display messages from predict() function. (default `2`)|
+|----|----|
+| `nn_model` | String containing the path to the model’s .hdf5 file (default `~/.dawnn/dawnn_nn_model.h5`). |
+| `recalculate_graph` | Boolean whether to recalculate the KNN graph. If FALSE, then the one stored in the ‘cells’ object will be used (default `TRUE`). |
+| `alpha` | Numeric target false discovery rate supplied to the Benjamini–Yekutieli procedure (default 0.1, i.e. 10%). |
+| `verbosity` | Integer how much output to print. 0: silent; 1: normal output; 2: display messages from predict() function. (default `2`) |
 | `seed` | Integer random seed (default `123`). |
 
 These options can be set as follow:
 
-
 ``` r
-cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca",
-                   tf_conda_env = "tf_env", n_dims = 20,
+cells <- run_dawnn(cells, label_names = "labels", label_pos_lfc = "Condition1",
+                   reduced_dim = "pca", tf_conda_env = "tf_env", n_dims = 20,
                    nn_model = "~/another_dawnn_model.h5",
                    recalculate_graph = FALSE, alpha = 0.05, verbosity = 0,
                    seed = 42)
@@ -215,10 +215,9 @@ cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
 
 ### Changing model location
 
-We can use `download_model`'s `model_file_path` parameter to change the
-location to which the model is downloaded. This non-default location must then
-be passed to `run_dawnn` using the `nn_model` parameter.
-
+We can use `download_model`’s `model_file_path` parameter to change the
+location to which the model is downloaded. This non-default location
+must then be passed to `run_dawnn` using the `nn_model` parameter.
 
 ``` r
 download_model(..., model_file_path = "~/Documents/new_model_location.h5")
@@ -227,10 +226,9 @@ run_dawnn(..., nn_model = "~/Documents/new_model_location.h5")
 
 ### Downloading a model from another location
 
-A neural network model for Dawnn can be downloaded from a non-default url using
-the `model_url` parameter. This might be useful if you have trained a model
-with a different `K`, for instance
-
+A neural network model for Dawnn can be downloaded from a non-default
+url using the `model_url` parameter. This might be useful if you have
+trained a model with a different `K`, for instance
 
 ``` r
 download_model(..., model_url = "example.com/another_model_url.h5")
@@ -238,10 +236,12 @@ download_model(..., model_url = "example.com/another_model_url.h5")
 
 ## SessionInfo
 
-
 <details>
-<summary>Click to reveal output of `sessionInfo()`</summary>
 
+<summary>
+
+Click to reveal output of `sessionInfo()`
+</summary>
 
 ``` r
 sessionInfo()
@@ -263,7 +263,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] future_1.67.0      Seurat_5.3.1       SeuratObject_5.2.0 sp_2.2-0          
-#> [5] dplyr_1.1.4        dawnn_2.0.0-beta   testthat_3.2.3    
+#> [5] dplyr_1.1.4        dawnn_2.0.0        testthat_3.2.3    
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] RColorBrewer_1.1-3     rstudioapi_0.17.1      jsonlite_2.0.0        

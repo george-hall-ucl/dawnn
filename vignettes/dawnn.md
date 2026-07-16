@@ -2,27 +2,12 @@
 title: "Dawnn vignette"
 author: "George T. Hall and Sergi Castellano"
 date: "Compiled on 16 July 2026"
-output:
-    html_document:
-        fig_width: 8
-        fig_height: 6
-        keep_md: true
 ---
 
 > Copyright (C) 2023- University College London <br>
 > Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
 
-
-## Installation
-
-Installation instructions are given in the [GitHub
-README](https://github.com/george-hall-ucl/dawnn#installation).  We assume that
-Tensorflow is installed in a conda environment called `tf_env`.  A docker image
-that will run this vignette is available on DockerHub as
-`georgehallucl/dawnn_benchmarking`.
-
-## Main workflow
 
 <details>
 <summary>We have simulated some toy data to demonstrate Dawnn. Click here to display the simulation code.</summary>
@@ -73,6 +58,17 @@ DimPlot(cells, group.by = "label", pt.size = 0.1,
 <img src="dawnn_files/figure-html/create_seurat_obj-1.png" style="display: block; margin: auto;" />
 </details>
 
+## Installation
+
+Installation instructions are given in the [GitHub
+README](https://github.com/george-hall-ucl/dawnn#installation). In this
+vignette, we assume that Tensorflow is installed in a conda environment called
+`tf_env`, which is not necessarily the same environment that contains Dawnn. A
+docker image that will run this vignette is available on DockerHub as
+`georgehallucl/dawnn_benchmarking`.
+
+## Main workflow
+
 
 ``` r
 library(dawnn)
@@ -114,13 +110,13 @@ Dawnn's outputs are stored in `meta.data` slots of `cells`. These outputs are:
 
 | Dawnn output             | Description                                                                                   |
 |--------------------------|-----------------------------------------------------------------------------------------------|
-| `cells$dawnn_[lda|gda]_verdict` | Boolean output of Dawnn for whether a cell is in a region of [local|global] differential abundance.              |
+| `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether a cell is in a region of [local/global] differential abundance.              |
 | `cells$dawnn_lfc`        | Estimated log2-fold change in the cell's neighbourhood.                                              |
 | `cells$dawnn_scores`     | Estimated probability that the cell was drawn from the sample associated with label_1.                    |
-| `cells$dawnn_p_vals_[lda|gda]`     | P-value associated with the hypothesis test that it is in a region of [local|global] differential abundance. |
+| `cells$dawnn_p_vals_[lda/gda]`     | P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance. |
 
-The first two outputs are likely the most useful.  `dawnn_[lda|gda]_verdict`
-tells us whether Dawnn has called a cell as being in a region of [local|global]
+The first two outputs are likely the most useful. `dawnn_[lda/gda]_verdict`
+tells us whether Dawnn has called a cell as being in a region of [local/global]
 differential abundance and `dawnn_lfc` contains the estimated log2-fold change
 in the abundance of `label_1` and `label_2` in the neighbourhood of each cell.
 This second quantity is independent of whether the user is searching for local
@@ -151,8 +147,8 @@ DimPlot(cells, group.by = "dawnn_lda_verdict", pt.size = 0.1,
 
 <img src="dawnn_files/figure-html/plot_dawnn_verdict-1.png" style="display: block; margin: auto;" />
 
-We can extract the cells for which `cells$dawnn_da_verdict` is `TRUE` in order
-to find the subpopulations perturbed in the experiment
+As expected, Dawnn detects that there is no differential abundance in the
+bottom cluster and that there is in the other two.
 
 If we want to investigate the estimated log2-fold change in the abundance of
 `Condition1` compared to `Condition2`, we can colour cells according to

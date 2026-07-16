@@ -46,8 +46,8 @@ After `run_dawnn()`, the object `cells` has additional `meta.data` slots:
 |--------------------------|-----------------------------------------------------------------------------------------------|
 | `cells$dawnn_scores`     | Output of Dawnn's model (estimated probability that a cell was drawn from sample with `label_1`)                                                                      |
 | `cells$dawnn_lfc`        | Estimated log2-fold change in its neighbourhood.                                              |
-| `cells$dawnn_p_vals`     | P-value associated with the hypothesis test that it is in a region of differential abundance. |
-| `cells$dawnn_da_verdict` | Boolean output of Dawnn for whether it is in a region of differential abundance.              |
+| `cells$dawnn_p_vals_[lda/gda]`     | P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance. |
+| `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether it is in a region of [local/global] differential abundance.              |
 
 Dawnn's
 [vignette](https://github.com/george-hall-ucl/dawnn_vignette/blob/main/dawnn.md)
@@ -63,7 +63,7 @@ cells <- run_dawnn(cells = cells, label_names = "condition_name",
                    reduced_dim = "pca", n_dims = 20,
                    nn_model = "~/Documents/another_nn_model.h5,
                    recalculate_graph = FALSE, alpha = 0.025,
-                   verbosity = 0, seed = 42, da_mode = "pda")
+                   verbosity = 0, seed = 42)
 ```
 
 These parameters are defined in the [vignette](https://github.com/george-hall-ucl/dawnn_vignette/blob/main/dawnn.md).
@@ -77,6 +77,10 @@ _Dawnn: single-cell differential abundance with neural networks_. George T. Hall
 Any contributions are warmly welcomed! Please feel free to submit an issue or pull request on this repository.
 
 ### Releases
+
+#### v2.0.0 (16 July 2026)
+
+* Simultaneously test for local and global differential abundance.
 
 #### v1.2.0 (15 July 2026)
 

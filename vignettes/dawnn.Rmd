@@ -85,24 +85,24 @@ package, we are now ready to run the tool.
 As in the GitHub README, we assume in the following simple example that `cells`
 is a Seurat dataset with \>1000 cells, a PCA reduction, and a `meta.data` slot
 `condition_name` that contains the name of the condition to which each cell
-belongs (either `Condition1` or `Condition2`).
+belongs (either `Condition1` or `Condition2`). We wish to associate the label
+`Condition1` with positive log-fold changes in the results (`Condition2` will
+thus be associated with negative).
 
 ```{r run_dawnn}
-cells <- run_dawnn(cells, label_names = "label", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca",
-                   tf_conda_env = "tf_env", verbosity = 0)
+cells <- run_dawnn(cells, label_names = "label", label_pos_lfc = "Condition1",
+                   reduced_dim = "pca", tf_conda_env = "tf_env", verbosity = 0)
 ```
 
 ### Required parameters
 
-`run_dawnn` has five parameters that we must specify:
+`run_dawnn` has four required parameters:
 
 | Parameter | Description |
 |-----------|-------------|
 | `cells`   | Seurat object containing the dataset |
 | `label_names` | `meta.data` slot in `cells` containing labels |
-| `label_1` | The label corresponding to the first sample |
-| `label_2` | The label corresponding to the second sample |
+| `label_pos_lfc` | The label corresponding to posiive log-fold change |
 | `reduced_dim` | Dimensionality reduction to use when calculating KNN graph |
 
 We outline the optional parameters later in this vignette.
@@ -115,15 +115,15 @@ Dawnn's outputs are stored in `meta.data` slots of `cells`. These outputs are:
 |--------------------------|-----------------------------------------------------------------------------------------------|
 | `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether a cell is in a region of [local/global] differential abundance.              |
 | `cells$dawnn_lfc`        | Estimated log2-fold change in the cell's neighbourhood.                                              |
-| `cells$dawnn_scores`     | Estimated probability that the cell was drawn from the sample associated with label_1.                    |
+| `cells$dawnn_scores`     | Estimated probability that the cell was drawn from the sample associated with `label_pos_lfc`.                    |
 | `cells$dawnn_p_vals_[lda/gda]`     | P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance. |
 
 The first two outputs are likely the most useful. `dawnn_[lda/gda]_verdict`
 tells us whether Dawnn has called a cell as being in a region of [local/global]
 differential abundance and `dawnn_lfc` contains the estimated log2-fold change
-in the abundance of `label_1` and `label_2` in the neighbourhood of each cell.
-This second quantity is independent of whether the user is searching for local
-or global DA.
+in the abundance of `label_pos_lfc` (relative to the other label) in the
+neighbourhood of each cell.  This second quantity is independent of whether the
+user is searching for local or global DA.
 
 Let's first plot the labels of each cell to identify manually which cluster
 exhibit differential abundance.
@@ -136,7 +136,7 @@ DimPlot(cells, group.by = "label", pt.size = 0.1,
 From this, it appears that the cluster at the bottom of the UMAP has a roughly
 even split of the two conditions, whilst the other two clusters exhibit
 differential abundance towards one of them. We will see whether Dawnn has
-detected this by colouring the UMAP according to Dawnn's verdict
+detected this by colouring the UMAP according to Dawnn's verdict of local differential abundance
 (`dawnn_lda_verdict`).
 
 ```{r plot_dawnn_verdict}
@@ -155,14 +155,14 @@ If we want to investigate the estimated log2-fold change in the abundance of
 FeaturePlot(cells, "dawnn_lfc") + viridis::scale_color_viridis(option = "cividis")
 ```
 
-As expected, the two clusters identified as generally exhibiting differential
+As expected, the two clusters identified as generally exhibiting local differential
 abundance have estimated log2-fold changes far from 0, whereas for the cluster
 at the bottom of the UMAP this quantity is close to 0.
 
 `dawnn_scores` contains the direct output of Dawnn's neural
 network, i.e. the estimated probability a cell was drawn from the sample associated
-with `label_1` (in our case, `Condition1`). `dawnn_scores` is converted into `dawnn_lfc` with
-`log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`.
+with `label_pos_lfc` (in our case, `Condition1`). `dawnn_scores` is converted
+into `dawnn_lfc` with `log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`.
 
 ```{r plot_dawnn_scores}
 FeaturePlot(cells, "dawnn_scores") + viridis::scale_color_viridis(option = "cividis")
@@ -171,7 +171,8 @@ FeaturePlot(cells, "dawnn_scores") + viridis::scale_color_viridis(option = "civi
 Finally, `dawnn_p_vals_[lda|gda]` contains, for each cell, the p-value
 associated with testing the null hypothesis of "this cell is not in a region of
 [local|global] differential abundance". These p-values are used to determine
-the calls made in `dawnn_[lda|gda]_verdict`.
+the calls made in `dawnn_[lda|gda]_verdict`. We plot each cell's p-value for
+the test of whether it is in a region of local differential abundance.
 
 ```{r plot_dawnn_p_vals}
 FeaturePlot(cells, "dawnn_p_vals_lda") + viridis::scale_color_viridis(option = "cividis")
@@ -192,9 +193,8 @@ The main function `run_dawnn` has a number of optional parameters:
 These options can be set as follow:
 
 ```{r dawnn_all_options, eval = FALSE}
-cells <- run_dawnn(cells, label_names = "labels", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca",
-                   tf_conda_env = "tf_env", n_dims = 20,
+cells <- run_dawnn(cells, label_names = "labels", label_pos_lfc = "Condition1",
+                   reduced_dim = "pca", tf_conda_env = "tf_env", n_dims = 20,
                    nn_model = "~/another_dawnn_model.h5",
                    recalculate_graph = FALSE, alpha = 0.05, verbosity = 0,
                    seed = 42)

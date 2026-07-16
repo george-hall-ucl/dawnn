@@ -158,7 +158,7 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
 
 #' Generate p-values for observed Dawnn model outputs.
 #'
-#' @description `generate_null_dist()` takes Dawnn model outputs and a null
+#' @description `generate_p_vals()` takes Dawnn model outputs and a null
 #' distribution and returns p-values of the observed outputs.
 #'
 #' @param scores Numeric vector containing observed output of Dawnn.

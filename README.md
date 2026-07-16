@@ -35,8 +35,8 @@ cell belongs (either `Condition1` or `Condition2`). Dawnn requires at least
 ```{r}
 library(dawnn)
 
-cells <- run_dawnn(cells, label_names = "condition_name", label_1 = "Condition1",
-                   label_2 = "Condition2", reduced_dim = "pca")
+cells <- run_dawnn(cells, label_names = "condition_name",
+                   label_pos_lfc = "Condition1", reduced_dim = "pca")
 ```
 
 
@@ -44,7 +44,7 @@ After `run_dawnn()`, the object `cells` has additional `meta.data` slots:
 
 | Dawnn output             | Description                                                                                   |
 |--------------------------|-----------------------------------------------------------------------------------------------|
-| `cells$dawnn_scores`     | Output of Dawnn's model (estimated probability that a cell was drawn from sample with `label_1`)                                                                      |
+| `cells$dawnn_scores`     | Output of Dawnn's model (estimated probability that a cell was drawn from sample with `label_pos_lfc`)                                                                      |
 | `cells$dawnn_lfc`        | Estimated log2-fold change in its neighbourhood.                                              |
 | `cells$dawnn_p_vals_[lda/gda]`     | P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance. |
 | `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether it is in a region of [local/global] differential abundance.              |
@@ -59,9 +59,8 @@ The above example only specifies the required parameters. Dawnn can be run in mo
 
 ```{r}
 cells <- run_dawnn(cells = cells, label_names = "condition_name",
-                   label_1 = "Condition1", label_2 = "Condition2",
-                   reduced_dim = "pca", n_dims = 20,
-                   nn_model = "~/Documents/another_nn_model.h5,
+                   label_pos_lfc = "Condition1", reduced_dim = "pca",
+                   n_dims = 20, nn_model = "~/Documents/another_nn_model.h5,
                    recalculate_graph = FALSE, alpha = 0.025,
                    verbosity = 0, seed = 42)
 ```
@@ -81,6 +80,8 @@ Any contributions are warmly welcomed! Please feel free to submit an issue or pu
 #### v2.0.0 (16 July 2026)
 
 * Simultaneously test for local and global differential abundance.
+* Only take single label from user (since two labels are assumed, the other
+  need not be passed).
 
 #### v1.2.0 (15 July 2026)
 

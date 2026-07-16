@@ -45,15 +45,16 @@ beta_method_of_moments <- function(data) {
 #' @param verbose Boolean verbosity.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
-#' @param label_1 String containing the name of one of the labels.
+#' @param label_pos_lfc String containing the name of the label associated with
+#' positive log-fold change.
 #' @return A data frame containing the labels of the 1000 nearest neighbors of
 #' each cell.
 #' @examples
 #' \dontrun{
 #' generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
-#' "sample_names", label_1 = "Condition1")
+#' "sample_names", label_pos_lfc = "Condition1")
 #' }
-generate_neighbor_labels <- function(cells, verbose, label_names, label_1) {
+generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc) {
 
     if (verbose) {
         message("Creating adjacency matrix.")
@@ -68,7 +69,7 @@ generate_neighbor_labels <- function(cells, verbose, label_names, label_1) {
                                   cells@meta.data[[label_names]][x][-1]
                               })
     nhbor_labels_df <- data.frame(nhbor_labels_mtx)
-    nhbor_labels_binary_df <- nhbor_labels_df == label_1
+    nhbor_labels_binary_df <- nhbor_labels_df == label_pos_lfc
     nhbor_labels_binary_mtx <- apply(nhbor_labels_binary_df, 1, as.numeric)
 
     return(nhbor_labels_binary_mtx)
@@ -111,8 +112,8 @@ load_model_from_python <- function(model_path) {
 #' @param model Loaded neural network model to use.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
-#' @param label_1 String containing the name of one of the labels.
-#' @param label_2 String containing the name of the other label.
+#' @param label_pos_lfc String containing the name of the label associated with
+#' positive log-fold change.
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param da_mode String containing the type of differential abundance being
@@ -122,20 +123,18 @@ load_model_from_python <- function(model_path) {
 #' @examples
 #' \dontrun{
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
-#' "synth_labels", verbosity = 1, da_mode = "lda")
+#' "synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda")
 #' }
-generate_null_dist <- function(cells, model, label_names, label_1, label_2,
-                               verbosity, da_mode) {
+generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosity,
+                               da_mode) {
     null_dist <- c()
     for (i in 1:3) {
         num_cells <- ncol(cells)
+        labels <- cells@meta.data[, label_names]
         if (da_mode == "lda") {
-            labels <- c(rep(label_1, round(num_cells / 2)),
-                        rep(label_2, num_cells - round(num_cells / 2)))
-        } else if (da_mode == "gda") {
-            labels <- cells@meta.data[, label_names]
-        } else {
-            stop(paste("Unknown da_mode:", da_mode))
+            label_neg_lfc <- setdiff(unique(labels), label_pos_lfc)
+            labels <- c(rep(label_pos_lfc, round(num_cells / 2)),
+                        rep(label_neg_lfc, num_cells - round(num_cells / 2)))
         }
         # Sort the labels to ensure that the same result is returned for both
         # ADA and PDA if Condition1 and Condition2 are in equal proportions.
@@ -146,7 +145,7 @@ generate_null_dist <- function(cells, model, label_names, label_1, label_2,
         cells$shuff_labels <- sample(labels)
         shuff_nbor_labs <- generate_neighbor_labels(cells,
                                                     label_names = "shuff_labels",
-                                                    label_1 = label_1,
+                                                    label_pos_lfc = label_pos_lfc,
                                                     verbose = verbosity > 0)
         shuff_scores <- model$predict(shuff_nbor_labs,
                                       verbose = ifelse(verbosity == 2, 1, 0))
@@ -337,8 +336,8 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
-#' @param label_1 String containing the name of one of the labels.
-#' @param label_2 String containing the name of the other label.
+#' @param label_pos_lfc String containing the name of the label associated with
+#' positive log-fold change.
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
 #' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
@@ -348,24 +347,18 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
 #' message.
 #' @examples
 #' \dontrun{
-#' param_check(cells, label_names, label_1, label_2, reduced_dim,
-#' recalculate_graph)
+#' param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
 #' }
-param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
+param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
                         recalculate_graph) {
-    # Are label_1 and label_2 distinct?
-    if (label_1 == label_2) {
-        stop("label_1 and label_2 must not be the same.")
-    }
-
     # Are there two unique labels?
     if (length(unique(cells[[label_names]][, 1])) != 2) {
         stop("There must be exactly two distinct labels.")
     }
 
-    # Do label_1 and label_2 both appear in the set of labels?
-    if (!all(c(label_1, label_2) %in% unique(cells[[label_names]][, 1]))) {
-        stop("Both label_1 and label_2 must be assigned to at least one cell.")
+    # Does label_pos_lfc appear in the set of labels?
+    if (!label_pos_lfc %in% cells[[label_names]][, 1]) {
+        stop("label_pos_lfc must be assigned to at least one cell.")
     }
 
     # Does reduced_dim exist?
@@ -392,8 +385,8 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
 #' `cells' containing the labels of each cell.
-#' @param label_1 String containing the name of one of the labels.
-#' @param label_2 String containing the name of the other label.
+#' @param label_pos_lfc String containing the name of the label associated with
+#' positive log-fold change.
 #' @param reduced_dim String containing the name of the dimensionality
 #' reduction to use.
 #' @param n_dims Integer number of dimensions to use if computing graph
@@ -418,12 +411,13 @@ param_check <- function(cells, label_names, label_1, label_2, reduced_dim,
 #' considers a cell to be in a region of differential abundance).
 #' @examples
 #' \dontrun{
-#' run_dawnn(cells = dataset, label_names = "condition", nn_model =
-#' "my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
-#' alpha = 0.2, verbosity = 0, seed = 42, tf_conda_env = "my_tensorflow_env")
+#' run_dawnn(cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",
+#' nn_model = "my_model.h5", reduced_dim = "pca", n_dims = 50,
+#' recalculate_graph = FALSE, alpha = 0.2, verbosity = 0, seed = 42,
+#' tf_conda_env = "my_tensorflow_env")
 #' }
 #' @export
-run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
+run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
                       n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123, tf_conda_env = NULL) {
@@ -439,8 +433,7 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                     num_cells, "."))
     }
 
-    param_check(cells, label_names, label_1, label_2, reduced_dim,
-                recalculate_graph)
+    param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
 
     if (class(nn_model)[1] == "character") {
         nn_model <- load_model_from_python(nn_model)
@@ -460,7 +453,7 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
     }
     neighbor_labels <- generate_neighbor_labels(cells,
                                                 label_names = label_names,
-                                                label_1 = label_1,
+                                                label_pos_lfc = label_pos_lfc,
                                                 verbose = verbosity > 0)
 
     if (verbosity > 0) {
@@ -478,9 +471,8 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
                           "differential abundance."))
             message("... Generating null distribution.")
         }
-        null_dist <- generate_null_dist(cells, nn_model, label_names, label_1,
-                                        label_2, verbosity = verbosity,
-                                        da_mode = da_mode)
+        null_dist <- generate_null_dist(cells, nn_model, label_names, label_pos_lfc,
+                                        verbosity = verbosity, da_mode = da_mode)
 
         if (verbosity > 0) {
             message("... Generating p-values.")

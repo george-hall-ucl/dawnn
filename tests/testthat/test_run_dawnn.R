@@ -7,18 +7,18 @@ test_that("run_dawnn reproducible recalculate_graph = FALSE", {
                            dims = 1:2, return.neighbor = TRUE)
 
     dawnn_out_1 <- sep_r(function(cells) {
+                             devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                              label_1 = "Condition1",
-                                              label_2 = "Condition2",
+                                              label_pos_lfc = "Condition1",
                                               reduced_dim = "pca",
                                               recalculate_graph = FALSE,
                                               alpha = 0.1, verbosity = 0,
                                               tf_conda_env = "tf_env")},
                          args = list(cells))
     dawnn_out_2 <- sep_r(function(cells) {
+                             devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                              label_1 = "Condition1",
-                                              label_2 = "Condition2",
+                                              label_pos_lfc = "Condition1",
                                               reduced_dim = "pca",
                                               recalculate_graph = FALSE,
                                               alpha = 0.1, verbosity = 0,
@@ -37,8 +37,7 @@ test_that("run_dawnn respects alpha parameter", {
     dawnn_out_1 <- sep_r(function(cells) {
                              devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                              label_1 = "Condition1",
-                                              label_2 = "Condition2",
+                                              label_pos_lfc = "Condition1",
                                               reduced_dim = "pca",
                                               recalculate_graph = FALSE,
                                               alpha = 0.5, verbosity = 0,
@@ -47,8 +46,7 @@ test_that("run_dawnn respects alpha parameter", {
     dawnn_out_2 <- sep_r(function(cells) {
                              devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                              label_1 = "Condition1",
-                                              label_2 = "Condition2",
+                                              label_pos_lfc = "Condition1",
                                               reduced_dim = "pca",
                                               recalculate_graph = FALSE,
                                               alpha = 0.05, verbosity = 0,
@@ -66,16 +64,18 @@ test_that("run_dawnn reproducible recalculate_graph = TRUE", {
                            dims = 1:2, return.neighbor = TRUE)
 
     dawnn_out_1 <- sep_r(function(cells) {
+                             devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                       label_1 = "Condition1", label_2 = "Condition2",
+                                       label_pos_lfc = "Condition1",
                                        reduced_dim = "pca", n_dims = 2,
                                        recalculate_graph = TRUE, alpha = 0.1,
                                        verbosity = 0, tf_conda_env = "tf_env")},
                          args = list(cells))
 
     dawnn_out_2 <- sep_r(function(cells) {
+                             devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                       label_1 = "Condition1", label_2 = "Condition2",
+                                       label_pos_lfc = "Condition1",
                                        reduced_dim = "pca", n_dims = 2,
                                        recalculate_graph = TRUE, alpha = 0.1,
                                        verbosity = 0, tf_conda_env = "tf_env")},
@@ -90,8 +90,9 @@ test_that("run_dawnn returns Seurat", {
                            dims = 1:2, return.neighbor = TRUE)
 
     dawnn_out <- sep_r(function(cells) {
+                           devtools::load_all()
                            dawnn::run_dawnn(cells = cells, label_names = "label",
-                                     label_1 = "Condition1", label_2 = "Condition2",
+                                     label_pos_lfc = "Condition1",
                                      reduced_dim = "pca", recalculate_graph = FALSE,
                                      alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
                        args = list(cells))
@@ -104,8 +105,9 @@ test_that("run_dawnn fails if too few cells", {
                            dims = 1:2, return.neighbor = TRUE)
 
     expect_error(sep_r(function(cells) {
+                           devtools::load_all()
                            dawnn::run_dawnn(cells = cells[, 1:1000], label_names = "label",
-                                            label_1 = "Condition1", label_2 = "Condition2",
+                                            label_pos_lfc = "Condition1",
                                             reduced_dim = "pca", recalculate_graph = FALSE,
                                             alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
                        args = list(cells)),
@@ -123,16 +125,18 @@ test_that("run_dawnn different results if different da_mode", {
                            dims = 1:2, return.neighbor = TRUE)
 
     dawnn_out_1 <- sep_r(function(cells) {
+                             devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                label_1 = "Condition1", label_2 = "Condition2",
+                                label_pos_lfc = "Condition1",
                                 reduced_dim = "pca", recalculate_graph = FALSE,
-                                alpha = 0.1, verbosity = 0, da_mode = "ada", tf_conda_env = "tf_env")},
+                                alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
                          args = list(cells))
     dawnn_out_2 <- sep_r(function(cells) {
+                             devtools::load_all()
                              dawnn::run_dawnn(cells = cells, label_names = "label",
-                                label_1 = "Condition1", label_2 = "Condition2",
+                                label_pos_lfc = "Condition1",
                                 reduced_dim = "pca", recalculate_graph = FALSE,
-                                alpha = 0.1, verbosity = 0, da_mode = "pda", tf_conda_env = "tf_env")},
+                                alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
                          args = list(cells))
 
     expect_failure(expect_equal(dawnn_out_1, dawnn_out_2))
@@ -146,20 +150,14 @@ test_that("run_dawnn same results if different da_mode but exactly even labels",
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
 
-    dawnn_out_1 <- sep_r(function(cells) {
-                             dawnn::run_dawnn(cells = cells, label_names = "label",
-                                label_1 = "Condition1", label_2 = "Condition2",
-                                reduced_dim = "pca", recalculate_graph = FALSE,
-                                alpha = 0.1, verbosity = 0, da_mode = "ada",
-                                tf_conda_env = "tf_env")},
-                         args = list(cells))
-    dawnn_out_2 <- sep_r(function(cells) {
-                             dawnn::run_dawnn(cells = cells, label_names = "label",
-                                label_1 = "Condition1", label_2 = "Condition2",
-                                reduced_dim = "pca", recalculate_graph = FALSE,
-                                alpha = 0.1, verbosity = 0, da_mode = "pda",
-                                tf_conda_env = "tf_env")},
-                         args = list(cells))
+    dawnn_out <- sep_r(function(cells) {
+                           devtools::load_all()
+                           dawnn::run_dawnn(cells = cells, label_names = "label",
+                                            label_pos_lfc = "Condition1",
+                                            reduced_dim = "pca", recalculate_graph = FALSE,
+                                            alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
+                       args = list(cells))
 
-    expect_equal(dawnn_out_1, dawnn_out_2)
+    expect_equal(dawnn_out$dawnn_lda_verdict, dawnn_out$dawnn_gda_verdict)
+    expect_equal(dawnn_out$dawnn_p_vals_lda, dawnn_out$dawnn_p_vals_gda)
 })

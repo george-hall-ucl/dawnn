@@ -3,6 +3,7 @@
 
 test_that("generate_null_distribution returns vector of correct length", {
               out <- sep_r(function() {
+                        devtools::load_all()
                         reticulate::use_condaenv("tf_env")
                         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
                         set.seed(123)
@@ -13,8 +14,7 @@ test_that("generate_null_distribution returns vector of correct length", {
                         model <- dawnn:::load_model_from_python(model_file)
                         out <- suppressMessages(dawnn:::generate_null_dist(cells, model,
                                                                           label_names = "label",
-                                                                          label_1 = "Condition1",
-                                                                          label_2 = "Condition2",
+                                                                          label_pos_lfc = "Condition1",
                                                                           verbosity = 1,
                                                                           da_mode = "ada"))
                 })

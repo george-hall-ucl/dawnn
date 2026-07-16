@@ -17,7 +17,7 @@ test_that("generate_neighbor_labels check correctness and class", {
     cells@neighbors$RNA.nn@nn.idx <- mat
 
     actual <- generate_neighbor_labels(cells, label_names = "label",
-                                       label_1 = "Condition1", verbose = FALSE)
+                                       label_pos_lfc = "Condition1", verbose = FALSE)
     # Should be:
     #      [,1] [,2] [,3] [,4] [,5]
     # [1,]    1    0    1    0    1
@@ -49,6 +49,8 @@ test_that("generate_neighbor_labels chooses first graph if there are multiple", 
     # > names(cells@neighbors)
     # [1] "graph_1" "graph_2"
 
-    expect_message(generate_neighbor_labels(cells, label_names = "label", label_1 = "Condition1", verbose = FALSE),
+    expect_message(generate_neighbor_labels(cells, label_names = "label",
+                                            label_pos_lfc = "Condition1",
+                                            verbose = FALSE),
                    "Multiple available graph names. Choosing the first one: graph_1")
 })

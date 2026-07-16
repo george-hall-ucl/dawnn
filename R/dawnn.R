@@ -486,7 +486,7 @@ run_dawnn <- function(cells, label_names, label_1, label_2, reduced_dim,
             message("... Generating p-values.")
         }
         p_vals <- generate_p_vals(scores, null_dist)
-        cells@meta.data[[paste0("dawnn_p_values_", da_mode)]] <- p_vals
+        cells@meta.data[[paste0("dawnn_p_vals_", da_mode)]] <- p_vals
 
         if (verbosity > 0) {
             message("... Determining significance.")

@@ -3,3 +3,5 @@ tests/.tmp_home
 inst/doc
 doc
 Meta
+/doc/
+/Meta/

@@ -51,7 +51,7 @@ After `run_dawnn()`, the object `cells` has additional `meta.data` slots:
 | `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether it is in a region of [local/global] differential abundance.              |
 
 Dawnn's
-[vignette](https://github.com/george-hall-ucl/dawnn_vignette/blob/main/dawnn.md)
+[vignette](https://github.com/george-hall-ucl/dawnn/blob/main/vignettes/dawnn.md)
 explains these outputs in more detail.
 
 ### Optional parameters
@@ -66,7 +66,7 @@ cells <- run_dawnn(cells = cells, label_names = "condition_name",
                    verbosity = 0, seed = 42)
 ```
 
-These parameters are defined in the [vignette](https://github.com/george-hall-ucl/dawnn_vignette/blob/main/dawnn.md).
+These parameters are defined in the [vignette](https://github.com/george-hall-ucl/dawnn/blob/main/vignettes/dawnn.md).
 
 ### Citation
 

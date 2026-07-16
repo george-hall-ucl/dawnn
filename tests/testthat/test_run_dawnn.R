@@ -56,8 +56,8 @@ test_that("run_dawnn respects alpha parameter", {
                          args = list(cells))
 
     # DA verdicts should differ due to different alphas
-    expect_failure(expect_equal(dawnn_out_1$dawnn_da_verdict,
-                                dawnn_out_2$dawnn_da_verdict))
+    expect_failure(expect_equal(dawnn_out_1$dawnn_lda_verdict,
+                                dawnn_out_2$dawnn_lda_verdict))
 })
 
 test_that("run_dawnn reproducible recalculate_graph = TRUE", {

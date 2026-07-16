@@ -9,7 +9,7 @@ test_that("Can change conda env to one containing TensorFlow", {
                          recalculate_graph = FALSE, alpha = 0.1, verbosity = 0,
                          tf_conda_env = "tf_env")
     })
-    expect_equal(sum(result$dawnn_p_vals), 269.095362)
+    expect_equal(sum(result$dawnn_p_vals_lda), 269.095362)
 })
 
 

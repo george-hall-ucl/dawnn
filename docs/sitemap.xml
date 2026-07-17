@@ -1,0 +1,19 @@
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/dawnn.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/reference/beta_method_of_moments.html</loc></url>
+<url><loc>/reference/determine_if_region_da.html</loc></url>
+<url><loc>/reference/download_model.html</loc></url>
+<url><loc>/reference/generate_neighbor_labels.html</loc></url>
+<url><loc>/reference/generate_null_dist.html</loc></url>
+<url><loc>/reference/generate_p_vals.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/load_model_from_python.html</loc></url>
+<url><loc>/reference/param_check.html</loc></url>
+<url><loc>/reference/run_dawnn.html</loc></url>
+</urlset>
+

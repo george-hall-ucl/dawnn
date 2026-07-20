@@ -2,4 +2,5 @@
 
 ### All vignettes
 
-- [Dawnn vignette](dawnn.md):
+- [Dawnn
+  vignette](https://george-hall-ucl.github.io/dawnn/articles/dawnn.md):

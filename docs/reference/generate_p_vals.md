@@ -1,8 +1,8 @@
 # Generate p-values for observed Dawnn model outputs.
 
-[`generate_null_dist()`](generate_null_dist.md) takes Dawnn model
-outputs and a null distribution and returns p-values of the observed
-outputs.
+[`generate_null_dist()`](https://george-hall-ucl.github.io/dawnn/reference/generate_null_dist.md)
+takes Dawnn model outputs and a null distribution and returns p-values
+of the observed outputs.
 
 ## Usage
 

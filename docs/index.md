@@ -1,6 +1,6 @@
-# Step 2: Download Dawnn’s model
+  
 
-![](reference/figures/dawnn_logo.png)  
+![](reference/figures/logo_hires.png)  
   
 Dawnn is a method to detect differential abundance in a single-cell
 transcriptomic dataset.
@@ -9,38 +9,41 @@ transcriptomic dataset.
 
 Dawnn is currently only available from Github.
 
-\`\``{r} # Step 1: Install Dawnn package (may need to install`remotes\`
-package first) remotes::install_github(“george-hall-ucl/dawnn”)
+``` r
+# Step 1: Install Dawnn package (may need to install `remotes` package first)
+remotes::install_github("george-hall-ucl/dawnn")
 
+# Step 2: Download Dawnn's model
 # By default, model stored at ~/.dawnn/dawnn_nn_model.h5
-
 dawnn::download_model()
 
 # Step 3: Install Tensorflow in own conda environment
+conda create -y -n tf_env -c conda-forge python=3.12.4 \
+    && conda run -n tf_env pip install tensorflow
+```
 
-conda create -y -n tf_env -c conda-forge python=3.12.4  
-&& conda run -n tf_env pip install tensorflow
+### Quick start
 
+Assume that `cells` is a Seurat dataset with a PCA reduction, and a
+`meta.data` slot `condition_name` that contains the name of the
+condition to which each cell belongs (either `Condition1` or
+`Condition2`) and where we want the label `Condition1` to be associated
+with positive log-fold change. Dawnn requires at least 1,001 cells. We
+assume that TensorFlow is installed in the `tf_env` conda environment.
 
-    ### Quick start
+``` r
 
-    Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`
-    slot `condition_name` that contains the name of the condition to which each
-    cell belongs (either `Condition1` or `Condition2`) and where we want the label
-    `Condition1` to be associated with positive log-fold change. Dawnn requires at
-    least 1,001 cells. We assume that TensorFlow is installed in the `tf_env` conda
-    environment.
+library(Seurat)
+library(dawnn)
 
-    ```{r}
-    library(Seurat)
-    library(dawnn)
+cells <- run_dawnn(cells, label_names = "condition_name",
+                   label_pos_lfc = "Condition1", reduced_dim = "pca",
+                   tf_conda_env = "tf_env")
+```
 
-    cells <- run_dawnn(cells, label_names = "condition_name",
-                       label_pos_lfc = "Condition1", reduced_dim = "pca",
-                       tf_conda_env = "tf_env")
-
-After [`run_dawnn()`](reference/run_dawnn.md), the object `cells` has
-additional `meta.data` slots:
+After
+[`run_dawnn()`](https://george-hall-ucl.github.io/dawnn/reference/run_dawnn.md),
+the object `cells` has additional `meta.data` slots:
 
 | Dawnn output | Description |
 |----|----|
@@ -58,7 +61,13 @@ explains these outputs in more detail.
 The above example only specifies the required parameters. Dawnn can be
 run in more complex scenarios by setting the following parameters:
 
-`{r} cells <- run_dawnn(cells = cells, label_names = "condition_name", label_pos_lfc = "Condition1", reduced_dim = "pca", n_dims = 20, nn_model = "~/Documents/another_nn_model.h5, recalculate_graph = FALSE, alpha = 0.025, verbosity = 0, seed = 42, tf_conda_env = "tf_env")`
+``` r
+cells <- run_dawnn(cells = cells, label_names = "condition_name",
+                   label_pos_lfc = "Condition1", reduced_dim = "pca",
+                   n_dims = 20, nn_model = "~/Documents/another_nn_model.h5,
+                   recalculate_graph = FALSE, alpha = 0.025,
+                   verbosity = 0, seed = 42, tf_conda_env = "tf_env")
+```
 
 These parameters are defined in the
 [vignette](https://github.com/george-hall-ucl/dawnn/blob/main/vignettes/dawnn.md).

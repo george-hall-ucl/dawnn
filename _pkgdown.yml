@@ -1,0 +1,10 @@
+url: https://george-hall-ucl.github.io/dawnn/
+template:
+  bootstrap: 5
+  logo: man/figures/logo.png
+
+# navbar:
+#   structure:
+#     left: [reference, articles]
+#     right: [github]
+

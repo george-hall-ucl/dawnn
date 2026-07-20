@@ -5,6 +5,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Differential Abundance with Neural Networks • dawnn</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -12,6 +17,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Differential Abundance with Neural Networks">
 <meta name="description" content="Dawnn detects regions of differential abundance in single-cell transcriptomic data by applying a pre-trained neural network model.">
 <meta property="og:description" content="Dawnn detects regions of differential abundance in single-cell transcriptomic data by applying a pre-trained neural network model.">
+<meta property="og:image" content="https://george-hall-ucl.github.io/dawnn/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -44,46 +50,35 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><p align="center">
-<img src="reference/figures/dawnn_logo.png" width="150"><br><br> Dawnn is a method to detect differential abundance in a single-cell transcriptomic dataset.
+  <main id="main" class="col-md-9"><br><p align="center">
+<img src="reference/figures/logo_hires.png" width="150"><br><br> Dawnn is a method to detect differential abundance in a single-cell transcriptomic dataset.
 </p>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
 <p>Dawnn is currently only available from Github.</p>
-<p>``<code>{r} # Step 1: Install Dawnn package (may need to install</code>remotes` package first) remotes::install_github(“george-hall-ucl/dawnn”)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Step 1: Install Dawnn package (may need to install `remotes` package first)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"george-hall-ucl/dawnn"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Step 2: Download Dawnn's model</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># By default, model stored at ~/.dawnn/dawnn_nn_model.h5</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>dawnn<span class="sc">::</span><span class="fu">download_model</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># Step 3: Install Tensorflow in own conda environment</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>conda create <span class="sc">-</span>y <span class="sc">-</span>n tf_env <span class="sc">-</span>c conda<span class="sc">-</span>forge python<span class="ot">=</span><span class="dv">3</span>.<span class="fl">12.4</span> \</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="sc">&amp;&amp;</span> conda run <span class="sc">-</span>n tf_env pip install tensorflow</span></code></pre></div>
 </div>
-<div class="section level1">
-<div class="page-header"><h1 id="step-2-download-dawnns-model">Step 2: Download Dawnn’s model<a class="anchor" aria-label="anchor" href="#step-2-download-dawnns-model"></a>
-</h1></div>
-</div>
-<div class="section level1">
-<h1 id="by-default-model-stored-at-dawnndawnn_nn_modelh5">By default, model stored at ~/.dawnn/dawnn_nn_model.h5<a class="anchor" aria-label="anchor" href="#by-default-model-stored-at-dawnndawnn_nn_modelh5"></a>
-</h1>
-<p>dawnn::download_model()</p>
-</div>
-<div class="section level1">
-<h1 id="step-3-install-tensorflow-in-own-conda-environment">Step 3: Install Tensorflow in own conda environment<a class="anchor" aria-label="anchor" href="#step-3-install-tensorflow-in-own-conda-environment"></a>
-</h1>
-<p>conda create -y -n tf_env -c conda-forge python=3.12.4<br>
-&amp;&amp; conda run -n tf_env pip install tensorflow</p>
-<pre><code>
-### Quick start
-
-Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`
-slot `condition_name` that contains the name of the condition to which each
-cell belongs (either `Condition1` or `Condition2`) and where we want the label
-`Condition1` to be associated with positive log-fold change. Dawnn requires at
-least 1,001 cells. We assume that TensorFlow is installed in the `tf_env` conda
-environment.
-
-```{r}
-library(Seurat)
-library(dawnn)
-
-cells &lt;- run_dawnn(cells, label_names = "condition_name",
-                   label_pos_lfc = "Condition1", reduced_dim = "pca",
-                   tf_conda_env = "tf_env")</code></pre>
+<div class="section level3">
+<h3 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h3>
+<p>Assume that <code>cells</code> is a Seurat dataset with a PCA reduction, and a <code>meta.data</code> slot <code>condition_name</code> that contains the name of the condition to which each cell belongs (either <code>Condition1</code> or <code>Condition2</code>) and where we want the label <code>Condition1</code> to be associated with positive log-fold change. Dawnn requires at least 1,001 cells. We assume that TensorFlow is installed in the <code>tf_env</code> conda environment.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">dawnn</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_dawnn.html">run_dawnn</a></span><span class="op">(</span><span class="va">cells</span>, label_names <span class="op">=</span> <span class="st">"condition_name"</span>,</span>
+<span>                   label_pos_lfc <span class="op">=</span> <span class="st">"Condition1"</span>, reduced_dim <span class="op">=</span> <span class="st">"pca"</span>,</span>
+<span>                   tf_conda_env <span class="op">=</span> <span class="st">"tf_env"</span><span class="op">)</span></span></code></pre></div>
 <p>After <code><a href="reference/run_dawnn.html">run_dawnn()</a></code>, the object <code>cells</code> has additional <code>meta.data</code> slots:</p>
 <table class="table">
 <colgroup>
@@ -114,11 +109,16 @@ cells &lt;- run_dawnn(cells, label_names = "condition_name",
 </tbody>
 </table>
 <p>Dawnn’s <a href="https://github.com/george-hall-ucl/dawnn/blob/main/vignettes/dawnn.md" class="external-link">vignette</a> explains these outputs in more detail.</p>
+</div>
 <div class="section level3">
 <h3 id="optional-parameters">Optional parameters<a class="anchor" aria-label="anchor" href="#optional-parameters"></a>
 </h3>
 <p>The above example only specifies the required parameters. Dawnn can be run in more complex scenarios by setting the following parameters:</p>
-<p><code>{r} cells &lt;- run_dawnn(cells = cells, label_names = "condition_name",                    label_pos_lfc = "Condition1", reduced_dim = "pca",                    n_dims = 20, nn_model = "~/Documents/another_nn_model.h5,                    recalculate_graph = FALSE, alpha = 0.025,                    verbosity = 0, seed = 42, tf_conda_env = "tf_env")</code></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>cells <span class="ot">&lt;-</span> <span class="fu">run_dawnn</span>(<span class="at">cells =</span> cells, <span class="at">label_names =</span> <span class="st">"condition_name"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                   <span class="at">label_pos_lfc =</span> <span class="st">"Condition1"</span>, <span class="at">reduced_dim =</span> <span class="st">"pca"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                   <span class="at">n_dims =</span> <span class="dv">20</span>, <span class="at">nn_model =</span> <span class="st">"~/Documents/another_nn_model.h5,</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="st">                   recalculate_graph = FALSE, alpha = 0.025,</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="st">                   verbosity = 0, seed = 42, tf_conda_env = "</span>tf_env<span class="st">")</span></span></code></pre></div>
 <p>These parameters are defined in the <a href="https://github.com/george-hall-ucl/dawnn/blob/main/vignettes/dawnn.md" class="external-link">vignette</a>.</p>
 </div>
 <div class="section level3">
@@ -157,7 +157,6 @@ cells &lt;- run_dawnn(cells, label_names = "condition_name",
 <p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</p>
 <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</p>
 <p>You should have received a copy of the GNU General Public License along with this program. If not, see <a href="http://www.gnu.org/licenses/" class="external-link uri">http://www.gnu.org/licenses/</a>.</p>
-</div>
 </div>
 
   </main><aside class="col-md-3"><div class="license">

@@ -1,5 +1,6 @@
+<br>
 <p align="center">
-  <img src="man/figures/dawnn_logo.png" width="150">
+  <img src="man/figures/logo_hires.png" width="150">
   <br><br>
   Dawnn is a method to detect differential abundance in a single-cell
   transcriptomic dataset.
@@ -9,7 +10,7 @@
 
 Dawnn is currently only available from Github.
 
-```{r}
+```r
 # Step 1: Install Dawnn package (may need to install `remotes` package first)
 remotes::install_github("george-hall-ucl/dawnn")
 
@@ -17,13 +18,10 @@ remotes::install_github("george-hall-ucl/dawnn")
 # By default, model stored at ~/.dawnn/dawnn_nn_model.h5
 dawnn::download_model()
 
-# Step 3: Install Tensorflow Python package in Reticulate environment
-reticulate::py_install("tensorflow")
+# Step 3: Install Tensorflow in own conda environment
+conda create -y -n tf_env -c conda-forge python=3.12.4 \
+    && conda run -n tf_env pip install tensorflow
 ```
-
-Note: We are currently experiencing some installation issues on Apple-silicon
-(i.e. M1, M2, M3 chip) Macs, which we are trying to fix. See
-[here](https://github.com/george-hall-ucl/dawnn/issues/4).
 
 ### Quick start
 
@@ -31,13 +29,16 @@ Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`
 slot `condition_name` that contains the name of the condition to which each
 cell belongs (either `Condition1` or `Condition2`) and where we want the label
 `Condition1` to be associated with positive log-fold change. Dawnn requires at
-least 1,001 cells.
+least 1,001 cells. We assume that TensorFlow is installed in the `tf_env` conda
+environment.
 
-```{r}
+```r
+library(Seurat)
 library(dawnn)
 
 cells <- run_dawnn(cells, label_names = "condition_name",
-                   label_pos_lfc = "Condition1", reduced_dim = "pca")
+                   label_pos_lfc = "Condition1", reduced_dim = "pca",
+                   tf_conda_env = "tf_env")
 ```
 
 
@@ -58,12 +59,12 @@ explains these outputs in more detail.
 
 The above example only specifies the required parameters. Dawnn can be run in more complex scenarios by setting the following parameters:
 
-```{r}
+```r
 cells <- run_dawnn(cells = cells, label_names = "condition_name",
                    label_pos_lfc = "Condition1", reduced_dim = "pca",
                    n_dims = 20, nn_model = "~/Documents/another_nn_model.h5,
                    recalculate_graph = FALSE, alpha = 0.025,
-                   verbosity = 0, seed = 42)
+                   verbosity = 0, seed = 42, tf_conda_env = "tf_env")
 ```
 
 These parameters are defined in the [vignette](https://github.com/george-hall-ucl/dawnn/blob/main/vignettes/dawnn.md).

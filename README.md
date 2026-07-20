@@ -6,4 +6,4 @@
   transcriptomic dataset.
 </p>
 
-<center>For installation and usage instructions, see Dawnn's [documentation](https://george-hall-ucl.github.io/dawnn/).</center>
+<p align=center>For installation and usage instructions, see Dawnn's <a href=https://george-hall-ucl.github.io/dawnn/>documentation.</a></p>

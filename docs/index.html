@@ -53,73 +53,70 @@
   <main id="main" class="col-md-9"><br><p align="center">
 <img src="reference/figures/logo_hires.png" width="150"><br><br> Dawnn is a method to detect differential abundance in a single-cell transcriptomic dataset.
 </p>
-<div class="section level3">
-<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h3>
-<p>Dawnn is currently only available from Github.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Step 1: Install Dawnn package (may need to install `remotes` package first)</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"george-hall-ucl/dawnn"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Step 2: Download Dawnn's model</span></span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># By default, model stored at ~/.dawnn/dawnn_nn_model.h5</span></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>dawnn<span class="sc">::</span><span class="fu">download_model</span>()</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># Step 3: Install Tensorflow in own conda environment</span></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>conda create <span class="sc">-</span>y <span class="sc">-</span>n tf_env <span class="sc">-</span>c conda<span class="sc">-</span>forge python<span class="ot">=</span><span class="dv">3</span>.<span class="fl">12.4</span> \</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="sc">&amp;&amp;</span> conda run <span class="sc">-</span>n tf_env pip install tensorflow</span></code></pre></div>
-</div>
+<p><br></p>
 <div class="section level3">
 <h3 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h3>
+<p>The easiest way to use Dawnn is with Docker. This avoids you needing to install the R package or its Python dependencies.</p>
+<div class="section level4">
+<h4 id="step-0">Step 0<a class="anchor" aria-label="anchor" href="#step-0"></a>
+</h4>
+<p><a href="https://docs.docker.com/get-started/get-docker/" class="external-link">Install Docker</a> and start Docker Desktop.</p>
+</div>
+<div class="section level4">
+<h4 id="step-1">Step 1<a class="anchor" aria-label="anchor" href="#step-1"></a>
+</h4>
+<p>In R, save your Seurat dataset as an <code>.rds</code> object:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">my_cells</span>, <span class="st">"my_cells.rds"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="step-2">Step 2<a class="anchor" aria-label="anchor" href="#step-2"></a>
+</h4>
+<p>In the terminal, run Dawnn though Docker:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">--volume</span> <span class="st">"</span><span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span><span class="st">:/tmp/in_mnt"</span> <span class="at">--workdir</span> /tmp/in_mnt <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    dawnn_standalone <span class="st">'</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="st">    run_dawnn(cells = readRDS("my_cells.rds"), label_names = "label",</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="st">              label_pos_lfc = "Condition1", reduced_dim = "pca",</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="st">              tf_conda_env = "tf_env", verbosity = 1)</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="st">'</span> <span class="op">&gt;</span> dawnn_out.csv</span></code></pre></div>
+<p>Dawnn’s outputs will be written to <code>dawnn_out.csv</code>.</p>
+</div>
+<div class="section level4">
+<h4 id="step-3">Step 3<a class="anchor" aria-label="anchor" href="#step-3"></a>
+</h4>
+<p>Back in R, load Dawnn’s outputs in to your Seurat object’s metadata:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dawnn_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"dawnn_out.csv"</span><span class="op">)</span></span>
+<span><span class="va">my_cells</span><span class="op">@</span><span class="va">meta.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">my_cells</span><span class="op">@</span><span class="va">meta.data</span>,</span>
+<span>                            <span class="va">dawnn_out</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">my_cells</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<p>You can now use Dawnn’s outputs to measure differential abundance in your data. See <code><a href="reference/run_dawnn.html">run_dawnn()</a></code> and <code><a href="articles/dawnn.html">vignette("dawnn")</a></code> for more details about its parameters and outputs.</p>
+<p><br></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="using-dawnn-in-r">Using Dawnn in R<a class="anchor" aria-label="anchor" href="#using-dawnn-in-r"></a>
+</h3>
+<p>If you don’t want to use Docker, you can install and run Dawnn within R. The Dawnn package is currently only available from Github. Note that you will need to install <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html#regular-installation" class="external-link">conda</a> for Step 3.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Step 1: Install Dawnn package (may need to install `remotes` package first)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"george-hall-ucl/dawnn"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Step 2: Download Dawnn's model</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># By default, model stored at ~/.dawnn/dawnn_nn_model.h5</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>dawnn<span class="sc">::</span><span class="fu">download_model</span>()</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># Step 3: Install Tensorflow in own conda environment</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>conda create <span class="sc">-</span>y <span class="sc">-</span>n tf_env <span class="sc">-</span>c conda<span class="sc">-</span>forge python<span class="ot">=</span><span class="dv">3</span>.<span class="fl">12.4</span> \</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>    <span class="sc">&amp;&amp;</span> conda run <span class="sc">-</span>n tf_env pip install tensorflow</span></code></pre></div>
 <p>Assume that <code>cells</code> is a Seurat dataset with a PCA reduction, and a <code>meta.data</code> slot <code>condition_name</code> that contains the name of the condition to which each cell belongs (either <code>Condition1</code> or <code>Condition2</code>) and where we want the label <code>Condition1</code> to be associated with positive log-fold change. Dawnn requires at least 1,001 cells. We assume that TensorFlow is installed in the <code>tf_env</code> conda environment.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://george-hall-ucl.github.io/dawnn/">dawnn</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_dawnn.html">run_dawnn</a></span><span class="op">(</span><span class="va">cells</span>, label_names <span class="op">=</span> <span class="st">"condition_name"</span>,</span>
 <span>                   label_pos_lfc <span class="op">=</span> <span class="st">"Condition1"</span>, reduced_dim <span class="op">=</span> <span class="st">"pca"</span>,</span>
 <span>                   tf_conda_env <span class="op">=</span> <span class="st">"tf_env"</span><span class="op">)</span></span></code></pre></div>
-<p>After <code><a href="reference/run_dawnn.html">run_dawnn()</a></code>, the object <code>cells</code> has additional <code>meta.data</code> slots:</p>
-<table class="table">
-<colgroup>
-<col width="21%">
-<col width="78%">
-</colgroup>
-<thead><tr>
-<th>Dawnn output</th>
-<th>Description</th>
-</tr></thead>
-<tbody>
-<tr>
-<td><code>cells$dawnn_scores</code></td>
-<td>Output of Dawnn’s model (estimated probability that a cell was drawn from sample with <code>label_pos_lfc</code>)</td>
-</tr>
-<tr>
-<td><code>cells$dawnn_lfc</code></td>
-<td>Estimated log2-fold change in its neighbourhood.</td>
-</tr>
-<tr>
-<td><code>cells$dawnn_p_vals_[lda/gda]</code></td>
-<td>P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance.</td>
-</tr>
-<tr>
-<td><code>cells$dawnn_[lda/gda]_verdict</code></td>
-<td>Boolean output of Dawnn for whether it is in a region of [local/global] differential abundance.</td>
-</tr>
-</tbody>
-</table>
-<p><code><a href="articles/dawnn.html">vignette("dawnn")</a></code> explains these outputs in more detail.</p>
-</div>
-<div class="section level3">
-<h3 id="optional-parameters">Optional parameters<a class="anchor" aria-label="anchor" href="#optional-parameters"></a>
-</h3>
-<p>The above example only specifies the required parameters. Dawnn can be run in more complex scenarios by setting the following parameters:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>cells <span class="ot">&lt;-</span> <span class="fu">run_dawnn</span>(<span class="at">cells =</span> cells, <span class="at">label_names =</span> <span class="st">"condition_name"</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>                   <span class="at">label_pos_lfc =</span> <span class="st">"Condition1"</span>, <span class="at">reduced_dim =</span> <span class="st">"pca"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>                   <span class="at">n_dims =</span> <span class="dv">20</span>, <span class="at">nn_model =</span> <span class="st">"~/Documents/another_nn_model.h5,</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="st">                   recalculate_graph = FALSE, alpha = 0.025,</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="st">                   verbosity = 0, seed = 42, tf_conda_env = "</span>tf_env<span class="st">")</span></span></code></pre></div>
-<p>These parameters are defined in <code><a href="articles/dawnn.html">vignette("dawnn")</a></code>.</p>
+<p>Dawnn has other parameters not listed here. For more details, see <code><a href="reference/run_dawnn.html">run_dawnn()</a></code> and <code><a href="articles/dawnn.html">vignette("dawnn")</a></code>.</p>
 </div>
 <div class="section level3">
 <h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>

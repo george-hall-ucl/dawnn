@@ -32,7 +32,7 @@ In the terminal, run Dawnn though Docker:
 
 ``` bash
 docker run --rm --volume "$(pwd):/tmp/in_mnt" --workdir /tmp/in_mnt \
-    dawnn_standalone '
+    georgehallucl/dawnn_standalone '
     run_dawnn(cells = readRDS("my_cells.rds"), label_names = "label",
               label_pos_lfc = "Condition1", reduced_dim = "pca",
               tf_conda_env = "tf_env", verbosity = 1)

@@ -6,9 +6,63 @@
   transcriptomic dataset.
 </p>
 
-### Installation
+<br>
 
-Dawnn is currently only available from Github.
+### Quick start
+
+The easiest way to use Dawnn is with Docker. This avoids you needing to install
+the R package or its Python dependencies.
+
+#### Step 0
+
+[Install Docker](https://docs.docker.com/get-started/get-docker/) and start Docker Desktop.
+
+#### Step 1
+
+In R, save your Seurat dataset as an `.rds` object:
+
+```r
+saveRDS(my_cells, "my_cells.rds")
+```
+
+#### Step 2
+
+In the terminal, run Dawnn though Docker:
+
+```bash
+docker run --rm --volume "$(pwd):/tmp/in_mnt" --workdir /tmp/in_mnt \
+    dawnn_standalone '
+    run_dawnn(cells = readRDS("my_cells.rds"), label_names = "label",
+              label_pos_lfc = "Condition1", reduced_dim = "pca",
+              tf_conda_env = "tf_env", verbosity = 1)
+' > dawnn_out.csv
+```
+
+Dawnn's outputs will be written to `dawnn_out.csv`.
+
+#### Step 3
+
+Back in R, load Dawnn's outputs in to your Seurat object's metadata:
+
+```r
+dawnn_out <- read.csv("dawnn_out.csv")
+my_cells@meta.data <- cbind(my_cells@meta.data,
+                            dawnn_out[rownames(my_cells@meta.data), ])
+```
+
+You can now use Dawnn's outputs to measure differential abundance in your data.
+See `run_dawnn()` and `vignette("dawnn")` for more details about its parameters
+and outputs.
+
+<br>
+
+### Using Dawnn in R
+
+If you don't want to use Docker, you can install and run Dawnn within R. The
+Dawnn package is currently only available from Github. Note that you will need to
+install
+[conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html#regular-installation)
+for Step 3.
 
 ```r
 # Step 1: Install Dawnn package (may need to install `remotes` package first)
@@ -22,8 +76,6 @@ dawnn::download_model()
 conda create -y -n tf_env -c conda-forge python=3.12.4 \
     && conda run -n tf_env pip install tensorflow
 ```
-
-### Quick start
 
 Assume that `cells` is a Seurat dataset with a PCA reduction, and a `meta.data`
 slot `condition_name` that contains the name of the condition to which each
@@ -41,31 +93,8 @@ cells <- run_dawnn(cells, label_names = "condition_name",
                    tf_conda_env = "tf_env")
 ```
 
-
-After `run_dawnn()`, the object `cells` has additional `meta.data` slots:
-
-| Dawnn output             | Description                                                                                   |
-|--------------------------|-----------------------------------------------------------------------------------------------|
-| `cells$dawnn_scores`     | Output of Dawnn's model (estimated probability that a cell was drawn from sample with `label_pos_lfc`)                                                                      |
-| `cells$dawnn_lfc`        | Estimated log2-fold change in its neighbourhood.                                              |
-| `cells$dawnn_p_vals_[lda/gda]`     | P-value associated with the hypothesis test that it is in a region of [local/global] differential abundance. |
-| `cells$dawnn_[lda/gda]_verdict` | Boolean output of Dawnn for whether it is in a region of [local/global] differential abundance.              |
-
-`vignette("dawnn")` explains these outputs in more detail.
-
-### Optional parameters
-
-The above example only specifies the required parameters. Dawnn can be run in more complex scenarios by setting the following parameters:
-
-```r
-cells <- run_dawnn(cells = cells, label_names = "condition_name",
-                   label_pos_lfc = "Condition1", reduced_dim = "pca",
-                   n_dims = 20, nn_model = "~/Documents/another_nn_model.h5,
-                   recalculate_graph = FALSE, alpha = 0.025,
-                   verbosity = 0, seed = 42, tf_conda_env = "tf_env")
-```
-
-These parameters are defined in `vignette("dawnn")`.
+Dawnn has other parameters not listed here. For more details, see `run_dawnn()`
+and `vignette("dawnn")`.
 
 ### Citation
 

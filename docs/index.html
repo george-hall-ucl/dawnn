@@ -80,7 +80,7 @@
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="st">              label_pos_lfc = "Condition1", reduced_dim = "pca",</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="st">              tf_conda_env = "tf_env", verbosity = 1)</span></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="st">'</span> <span class="op">&gt;</span> dawnn_out.csv</span></code></pre></div>
-<p>Dawnn’s outputs will be written to <code>dawnn_out.csv</code>.</p>
+<p>Dawnn’s outputs will be written to <code>dawnn_out.csv</code>. Note that Docker will first automatically download the image the first time it is used.</p>
 </div>
 <div class="section level4">
 <h4 id="step-3">Step 3<a class="anchor" aria-label="anchor" href="#step-3"></a>
@@ -91,7 +91,9 @@
 <span><span class="va">my_cells</span><span class="op">@</span><span class="va">meta.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">my_cells</span><span class="op">@</span><span class="va">meta.data</span>,</span>
 <span>                            <span class="va">dawnn_out</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">my_cells</span><span class="op">@</span><span class="va">meta.data</span><span class="op">)</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>You can now use Dawnn’s outputs to measure differential abundance in your data. See <code><a href="reference/run_dawnn.html">run_dawnn()</a></code> and <code><a href="articles/dawnn.html">vignette("dawnn")</a></code> for more details about its parameters and outputs.</p>
-<p><br></p>
+<p>The following video shows the steps to run Dawnn in Docker:</p>
+<video width="800" controls><source src="dawnn_demo_vid.mp4" type="video/mp4" srcset="NA">
+<p>Your browser does not support the video tag. </p></video><p><br></p>
 </div>
 </div>
 <div class="section level3">

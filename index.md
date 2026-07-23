@@ -54,6 +54,13 @@ You can now use Dawnn's outputs to measure differential abundance in your data.
 See `run_dawnn()` and `vignette("dawnn")` for more details about its parameters
 and outputs.
 
+The following video shows the steps to run Dawnn in Docker:
+
+<video width="800" controls>
+  <source src="dawnn_demo_vid.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 <br>
 
 ### Using Dawnn in R

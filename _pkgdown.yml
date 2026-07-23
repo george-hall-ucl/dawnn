@@ -2,6 +2,8 @@ url: https://george-hall-ucl.github.io/dawnn/
 template:
   bootstrap: 5
   logo: man/figures/logo.png
+  assets:
+    - pkgdown/assets/dawnn_demo_vid.mp4
 
 # navbar:
 #   structure:

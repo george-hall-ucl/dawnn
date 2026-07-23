@@ -38,7 +38,8 @@ docker run --rm --volume "$(pwd):/tmp/in_mnt" --workdir /tmp/in_mnt \
 ' > dawnn_out.csv
 ```
 
-Dawnn's outputs will be written to `dawnn_out.csv`.
+Dawnn's outputs will be written to `dawnn_out.csv`. Note that Docker will first
+automatically download the image the first time it is used.
 
 #### Step 3
 

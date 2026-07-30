@@ -15,8 +15,9 @@
 
 #' Estimate the parameters of a beta distribution using the method of moments.
 #'
-#' @param data Vector of numbers to which for which to estimate the parameters.
-#' @return A list containing the two parameters of the fitted beta ditribution.
+#' @param data Vector of numbers for which to estimate the parameters.
+#' @return A list containing the two parameters of the fitted beta distribution.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' set.seed(123)
@@ -44,11 +45,12 @@ beta_method_of_moments <- function(data) {
 #' @param cells Seurat object containing the dataset.
 #' @param verbose Boolean verbosity.
 #' @param label_names String containing the name of the meta.data slot in
-#' `cells' containing the labels of each cell.
+#' `cells` containing the labels of each cell.
 #' @param label_pos_lfc String containing the name of the label associated with
 #' positive log-fold change.
 #' @return A data frame containing the labels of the 1000 nearest neighbors of
 #' each cell.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
@@ -80,6 +82,7 @@ generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc)
 #'
 #' @param model_path String containing the path to the model's .hdf5 file.
 #' @return The loaded model.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' nn_model <- load_model_from_python("/path/to/the/model.hdf5")
@@ -111,15 +114,16 @@ load_model_from_python <- function(model_path) {
 #' @param cells Seurat object containing the dataset.
 #' @param model Loaded neural network model to use.
 #' @param label_names String containing the name of the meta.data slot in
-#' `cells' containing the labels of each cell.
+#' `cells` containing the labels of each cell.
 #' @param label_pos_lfc String containing the name of the label associated with
 #' positive log-fold change.
 #' @param verbosity Integer how much output to print. 0: silent; 1: normal
 #' output; 2: display messages from predict() function.
 #' @param da_mode String containing the type of differential abundance being
-#' seeked, either "lda" (local DA) or "gda" (global DA).
+#' sought, either "lda" (local DA) or "gda" (global DA).
 #' @return A vector containing a null distribution of Dawnn's model outputs for
 #' shuffled sample labels.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' generate_null_dist(cells = cell_object, model = nn_model, label_names =
@@ -166,6 +170,7 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
 #' @return Numeric vector containing a p-value for each cell, i.e. the
 #' probability of observing at least such an extreme score for a cell given the
 #' beta distribution fitted to the null distribution of scores.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' generate_p_vals(scores = score_vect, null_dist = null_scores)
@@ -203,6 +208,7 @@ generate_p_vals <- function(scores, null_dist) {
 #' @param alpha Numeric target false discovery rate supplied to the
 #' Benjamini–Yekutieli procedure.
 #' @return Boolean vector containing Dawnn's verdict for each cell.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
@@ -239,7 +245,7 @@ determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
 
 #' Download the neural network model used by Dawnn.
 #'
-#' @description `download_model()' downloads the neural network model used by
+#' @description `download_model()` downloads the neural network model used by
 #' Dawnn, which is too large to be bundled with the package. This function must
 #' be used once before run_dawnn() can be executed. After this, the path to the
 #' model can be passed to this function.
@@ -330,12 +336,12 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
 
 #' Sanity check input parameters
 #'
-#' @description `param_check()' verifies that the parameters passed to
+#' @description `param_check()` verifies that the parameters passed to
 #' run_dawnn() are sane.
 #'
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
-#' `cells' containing the labels of each cell.
+#' `cells` containing the labels of each cell.
 #' @param label_pos_lfc String containing the name of the label associated with
 #' positive log-fold change.
 #' @param reduced_dim String containing the name of the dimensionality
@@ -345,6 +351,7 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
 #' default = TRUE).
 #' @return TRUE if all parameters sane, otherwise stop execution with error
 #' message.
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
@@ -384,7 +391,7 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 #'
 #' @param cells Seurat object containing the dataset.
 #' @param label_names String containing the name of the meta.data slot in
-#' `cells' containing the labels of each cell.
+#' `cells` containing the labels of each cell.
 #' @param label_pos_lfc String containing the name of the label associated with
 #' positive log-fold change.
 #' @param reduced_dim String containing the name of the dimensionality

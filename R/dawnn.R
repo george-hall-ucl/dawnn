@@ -211,24 +211,20 @@ generate_p_vals <- function(scores, null_dist) {
 
 #' Determine whether each cell is in a region of differential abundance.
 #'
-#' @description `determine_if_region_da()` takes vectors of p-values,
-#' observed scores, and the null distribution of scores and uses the
-#' Benjamini–Yekutieli procedure to determine whether a cell is in a region of
-#' differential abundance.
+#' @description `determine_if_region_da()` takes a vector of p-values and uses
+#' the Benjamini–Yekutieli procedure to determine whether a cell is in a
+#' region of differential abundance.
 #'
 #' @param p_vals Numeric vector of p-values.
-#' @param scores Numeric vector containing observed output of Dawnn.
-#' @param null_dist Numeric vector containing the null distribution of scores.
 #' @param alpha Numeric target false discovery rate supplied to the
 #' Benjamini–Yekutieli procedure.
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @keywords internal
 #' @examples
 #' \dontrun{
-#' determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
-#' alpha = 0.2)
+#' determine_if_region_da(p_vals = p_value_vector, alpha = 0.2)
 #' }
-determine_if_region_da <- function(p_vals, scores, null_dist, alpha) {
+determine_if_region_da <- function(p_vals, alpha) {
     num_cells <- length(p_vals)
 
     c <- 0
@@ -508,8 +504,7 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
         if (verbosity > 0) {
             message("... Determining significance.")
         }
-        verdicts <- determine_if_region_da(p_vals, scores, null_dist,
-                                           alpha = alpha)
+        verdicts <- determine_if_region_da(p_vals, alpha = alpha)
         cells@meta.data[[paste0("dawnn_", da_mode, "_verdict")]] <- verdicts
     }
 

@@ -10,7 +10,7 @@ generate_null_dist(
   label_names,
   label_pos_lfc,
   verbosity,
-  da_mode
+  da_mode = c("lda", "gda")
 )
 }
 \arguments{

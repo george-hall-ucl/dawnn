@@ -56,10 +56,10 @@ Seurat dataset \code{cells} with added metadata: \code{dawnn_scores} (output
 of Dawnn's model for each cell); \code{dawnn_lfc} (estimated log2-fold change in
 the neighbourhood of each cell); \code{dawnn_p_vals_lda} and \code{dawnn_p_vals_gda}
 (p-values associated with the hypothesis tests for whether a cell is in a
-region of local and global differential abundance respectively);
+region of local or global differential abundance, respectively);
 \code{dawnn_lda_verdict} and \code{dawnn_gda_verdict} (Boolean output of Dawnn
-indicating whether it considers a cell to be in a region of local and
-global differential abundance respectively).
+indicating whether it considers a cell to be in a region of local or
+global differential abundance, respectively).
 }
 \description{
 \code{run_dawnn()} is the main function used to run Dawnn. It takes

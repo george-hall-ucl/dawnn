@@ -11,8 +11,15 @@ Authors@R:
              family = "Castellano",
              role = c("aut"),
              email = "s.castellano@ucl.ac.uk",
-             comment = c(ORCID = "0000-0002-5819-4210")))
-Description: Dawnn detects regions of differential abundance in single-cell transcriptomic data by applying a pre-trained neural network model.
+             comment = c(ORCID = "0000-0002-5819-4210")),
+      person(given = "University College London",
+             role = c("cph")))
+Description: Detects regions of differential abundance in single-cell
+    transcriptomic data by applying a pre-trained neural network model to the
+    labels of each cell's nearest neighbours. Tests for both local and global
+    differential abundance, controlling the false discovery rate with the
+    Benjamini-Yekutieli procedure. The method is described in Hall and
+    Castellano (2023) <doi:10.1101/2023.05.05.539427>.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -30,4 +37,10 @@ Suggests:
     viridis
 Config/testthat/edition: 3
 VignetteBuilder: knitr
-URL: https://george-hall-ucl.github.io/dawnn/
+URL: https://george-hall-ucl.github.io/dawnn/,
+    https://github.com/george-hall-ucl/dawnn
+BugReports: https://github.com/george-hall-ucl/dawnn/issues
+SystemRequirements: Python (>= 3.9) with TensorFlow (>= 2.0), typically
+    installed in a conda environment and selected via the 'tf_conda_env'
+    argument of run_dawnn(). See the package documentation for setup
+    instructions.

@@ -17,7 +17,7 @@ probability of observing at least such an extreme score for a cell given the
 beta distribution fitted to the null distribution of scores.
 }
 \description{
-\code{generate_null_dist()} takes Dawnn model outputs and a null
+\code{generate_p_vals()} takes Dawnn model outputs and a null
 distribution and returns p-values of the observed outputs.
 }
 \examples{
@@ -25,3 +25,4 @@ distribution and returns p-values of the observed outputs.
 generate_p_vals(scores = score_vect, null_dist = null_scores)
 }
 }
+\keyword{internal}

@@ -7,8 +7,7 @@
 run_dawnn(
   cells,
   label_names,
-  label_1,
-  label_2,
+  label_pos_lfc,
   reduced_dim,
   n_dims = 10,
   nn_model = "~/.dawnn/dawnn_nn_model.h5",
@@ -23,11 +22,10 @@ run_dawnn(
 \item{cells}{Seurat object containing the dataset.}
 
 \item{label_names}{String containing the name of the meta.data slot in
-`cells' containing the labels of each cell.}
+\code{cells} containing the labels of each cell.}
 
-\item{label_1}{String containing the name of one of the labels.}
-
-\item{label_2}{String containing the name of the other label.}
+\item{label_pos_lfc}{String containing the name of the label associated with
+positive log-fold change.}
 
 \item{reduced_dim}{String containing the name of the dimensionality
 reduction to use.}
@@ -54,12 +52,14 @@ output; 2: display messages from predict() function.}
 it is unavailable in the current environment (optional, default NULL).}
 }
 \value{
-Seurat dataset `cells' with added metadata: dawnn_scores (output of
-Dawnn's model for each cell); dawnn_lfc (estimated log2-fold change in the
-neighbourhood of each cell); dawnn_p_vals (p-values associated with the
-hypothesis tests for whether a cell is in a region of differential
-abundance; dawnn_da_verdict (Boolean output of Dawnn indicating whether it
-considers a cell to be in a region of differential abundance).
+Seurat dataset \code{cells} with added metadata: \code{dawnn_scores} (output
+of Dawnn's model for each cell); \code{dawnn_lfc} (estimated log2-fold change in
+the neighbourhood of each cell); \code{dawnn_p_vals_lda} and \code{dawnn_p_vals_gda}
+(p-values associated with the hypothesis tests for whether a cell is in a
+region of local and global differential abundance respectively);
+\code{dawnn_lda_verdict} and \code{dawnn_gda_verdict} (Boolean output of Dawnn
+indicating whether it considers a cell to be in a region of local and
+global differential abundance respectively).
 }
 \description{
 \code{run_dawnn()} is the main function used to run Dawnn. It takes
@@ -68,8 +68,9 @@ abundance. Dawnn requires at least 1,001 cells.
 }
 \examples{
 \dontrun{
-run_dawnn(cells = dataset, label_names = "condition", nn_model =
-"my_model.h5", reduced_dim = "pca", n_dims = 50, recalculate_graph = FALSE,
-alpha = 0.2, verbosity = 0, seed = 42, tf_conda_env = "my_tensorflow_env")
+run_dawnn(cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",
+nn_model = "my_model.h5", reduced_dim = "pca", n_dims = 50,
+recalculate_graph = FALSE, alpha = 0.2, verbosity = 0, seed = 42,
+tf_conda_env = "my_tensorflow_env")
 }
 }

@@ -8,8 +8,7 @@ generate_null_dist(
   cells,
   model,
   label_names,
-  label_1,
-  label_2,
+  label_pos_lfc,
   verbosity,
   da_mode
 )
@@ -20,17 +19,16 @@ generate_null_dist(
 \item{model}{Loaded neural network model to use.}
 
 \item{label_names}{String containing the name of the meta.data slot in
-`cells' containing the labels of each cell.}
+\code{cells} containing the labels of each cell.}
 
-\item{label_1}{String containing the name of one of the labels.}
-
-\item{label_2}{String containing the name of the other label.}
+\item{label_pos_lfc}{String containing the name of the label associated with
+positive log-fold change.}
 
 \item{verbosity}{Integer how much output to print. 0: silent; 1: normal
 output; 2: display messages from predict() function.}
 
 \item{da_mode}{String containing the type of differential abundance being
-seeked, either "lda" (local DA) or "gda" (global DA).}
+sought, either "lda" (local DA) or "gda" (global DA).}
 }
 \value{
 A vector containing a null distribution of Dawnn's model outputs for
@@ -43,6 +41,7 @@ and returns the estimates of P(Condition_1) for each shuffled dataset.
 \examples{
 \dontrun{
 generate_null_dist(cells = cell_object, model = nn_model, label_names =
-"synth_labels", verbosity = 1, da_mode = "lda")
+"synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda")
 }
 }
+\keyword{internal}

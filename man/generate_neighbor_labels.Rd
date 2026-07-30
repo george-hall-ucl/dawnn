@@ -4,7 +4,7 @@
 \alias{generate_neighbor_labels}
 \title{Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.}
 \usage{
-generate_neighbor_labels(cells, verbose, label_names, label_1)
+generate_neighbor_labels(cells, verbose, label_names, label_pos_lfc)
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
@@ -12,9 +12,10 @@ generate_neighbor_labels(cells, verbose, label_names, label_1)
 \item{verbose}{Boolean verbosity.}
 
 \item{label_names}{String containing the name of the meta.data slot in
-`cells' containing the labels of each cell.}
+\code{cells} containing the labels of each cell.}
 
-\item{label_1}{String containing the name of one of the labels.}
+\item{label_pos_lfc}{String containing the name of the label associated with
+positive log-fold change.}
 }
 \value{
 A data frame containing the labels of the 1000 nearest neighbors of
@@ -26,6 +27,7 @@ Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 \examples{
 \dontrun{
 generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
-"sample_names", label_1 = "Condition1")
+"sample_names", label_pos_lfc = "Condition1")
 }
 }
+\keyword{internal}

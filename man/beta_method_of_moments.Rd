@@ -7,10 +7,10 @@
 beta_method_of_moments(data)
 }
 \arguments{
-\item{data}{Vector of numbers to which for which to estimate the parameters.}
+\item{data}{Vector of numbers for which to estimate the parameters.}
 }
 \value{
-A list containing the two parameters of the fitted beta ditribution.
+A list containing the two parameters of the fitted beta distribution.
 }
 \description{
 Estimate the parameters of a beta distribution using the method of moments.
@@ -27,3 +27,4 @@ beta_method_of_moments(beta_sample)
 # [1] 4.942666
 }
 }
+\keyword{internal}

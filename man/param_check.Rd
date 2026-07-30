@@ -4,24 +4,16 @@
 \alias{param_check}
 \title{Sanity check input parameters}
 \usage{
-param_check(
-  cells,
-  label_names,
-  label_1,
-  label_2,
-  reduced_dim,
-  recalculate_graph
-)
+param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
 }
 \arguments{
 \item{cells}{Seurat object containing the dataset.}
 
 \item{label_names}{String containing the name of the meta.data slot in
-`cells' containing the labels of each cell.}
+\code{cells} containing the labels of each cell.}
 
-\item{label_1}{String containing the name of one of the labels.}
-
-\item{label_2}{String containing the name of the other label.}
+\item{label_pos_lfc}{String containing the name of the label associated with
+positive log-fold change.}
 
 \item{reduced_dim}{String containing the name of the dimensionality
 reduction to use.}
@@ -35,12 +27,12 @@ TRUE if all parameters sane, otherwise stop execution with error
 message.
 }
 \description{
-`param_check()' verifies that the parameters passed to
+\code{param_check()} verifies that the parameters passed to
 run_dawnn() are sane.
 }
 \examples{
 \dontrun{
-param_check(cells, label_names, label_1, label_2, reduced_dim,
-recalculate_graph)
+param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
 }
 }
+\keyword{internal}

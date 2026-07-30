@@ -310,28 +310,32 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         model_url <- paste0("http://", model_url)
     }
 
-    # Set blank user agent to prevent "403: Forbidden" error in `open.connection`
-    old_user_agent = options("HTTPUserAgent")
-    options("HTTPUserAgent" = "")
+    # Set a blank user agent to prevent a "403: Forbidden" error in
+    # `open.connection`, and raise the timeout for the (large) download.
+    # `local_options()` restores both when this function exits, including when
+    # it exits via an error.
+    withr::local_options(list(HTTPUserAgent = "", timeout = download_timeout))
 
-    con <- url(model_url, headers = list("test"="test"))
-    open.connection(con, open = "rt", timeout = 2)
-    close(con, silent = TRUE)
+    # Check that the URL can be reached before starting the download. The
+    # connection is closed on both the success and the failure path.
+    con <- url(model_url)
+    con_status <- tryCatch(open.connection(con, open = "rt", timeout = 2),
+                           error = function(e) e)
+    try(close(con), silent = TRUE)
+    if (inherits(con_status, "error")) {
+        stop(conditionMessage(con_status))
+    }
 
-    # Increase timeout to 10 minutes
-    old_timeout <- getOption("timeout")
-    options(timeout = download_timeout)
-
-    tryCatch(download_ret <- download.file(model_url, model_file_path, method = download_method),
-             error = function(c) {
-                 options(timeout = old_timeout)
-                 stop("Error in model download, perhaps due to timeout? Try increasing download_timeout parameter.")
-             })
-
-    options(timeout = old_timeout)
-
-    # Restore old user agent
-    options("HTTPUserAgent" = old_user_agent)
+    # mode = "wb" is required for the model to survive the download on
+    # Windows: ".h5" is not one of the extensions for which download.file()
+    # selects binary mode automatically.
+    download_ret <- tryCatch(
+        download.file(model_url, model_file_path, method = download_method,
+                      mode = "wb"),
+        error = function(e) {
+            stop(paste("Error in model download, perhaps due to timeout?",
+                       "Try increasing download_timeout parameter."))
+        })
 
     if (download_ret != 0) {
         stop(paste("Download finished with non-zero exit code:", download_ret))
@@ -501,7 +505,11 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
     scores <- nn_model$predict(neighbor_labels,
                                verbose = ifelse(verbosity == 2, 1, 0))
     cells$dawnn_scores <- scores
-    cells$dawnn_lfc <- log2(scores / (1 - scores))
+    # Clamp away from 0 and 1 so that a saturated model output gives a large
+    # but finite log-fold change rather than -Inf or Inf.
+    eps <- .Machine$double.eps
+    clamped_scores <- pmin(pmax(scores, eps), 1 - eps)
+    cells$dawnn_lfc <- log2(clamped_scores / (1 - clamped_scores))
 
     for (da_mode in c("lda", "gda")) {
         if (verbosity > 0) {

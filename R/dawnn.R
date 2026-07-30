@@ -274,7 +274,12 @@ determine_if_region_da <- function(p_vals, alpha) {
 #' @export
 download_model <- function(model_url = NULL, model_file_path = NULL,
                            download_method = "auto", download_timeout = 600) {
-    if (is.null(model_url)) {
+    # Size in bytes of the model hosted at the default URL. Used as sanity
+    # check of default model.
+    expected_model_size <- 255225824
+
+    using_default_url <- is.null(model_url)
+    if (using_default_url) {
         model_url <- "https://rdr.ucl.ac.uk/ndownloader/files/40162366"
     }
 
@@ -332,8 +337,11 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         stop(paste("Download finished with non-zero exit code:", download_ret))
     }
 
-    if (file.info(model_file_path)$size != 255225824) {
-        warning("Downloaded model file is different to expected size: wrong file?")
+    if (using_default_url) {
+        downloaded_size <- file.info(model_file_path)$size
+        if (is.na(downloaded_size) || downloaded_size != expected_model_size) {
+            warning("Downloaded model file is different to expected size: wrong file?")
+        }
     }
 
     return_msg <- paste("Model was downloaded to:",

@@ -430,7 +430,9 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
                       n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123, tf_conda_env = NULL) {
-    set.seed(seed)
+    # Seed locally: this is as reproducible as set.seed(), but restores the
+    # caller's RNG state on exit instead of silently resetting their stream.
+    withr::local_seed(seed)
 
     if (!is.null(tf_conda_env)) {
         reticulate::use_condaenv(tf_conda_env)

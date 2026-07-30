@@ -284,7 +284,7 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
                   model_file_path))
 
     # Check if url exists
-    if (substr(model_url, 1, 4) != "http") {
+    if (!grepl("^[a-z][a-z0-9+.-]*://", model_url)) {
         # Prevent error with url() if protocol is unspecified
         model_url <- paste0("http://", model_url)
     }

@@ -376,6 +376,16 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
 #' }
 param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
                         recalculate_graph) {
+    # Does label_names name a meta.data column?
+    if (!label_names %in% colnames(cells@meta.data)) {
+        stop(paste("No meta.data column:", label_names))
+    }
+
+    # Are any labels missing?
+    if (any(is.na(cells[[label_names]][, 1]))) {
+        stop("Labels must not contain NA.")
+    }
+
     # Are there two unique labels?
     if (length(unique(cells[[label_names]][, 1])) != 2) {
         stop("There must be exactly two distinct labels.")

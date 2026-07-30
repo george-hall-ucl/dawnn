@@ -34,6 +34,16 @@ beta_method_of_moments <- function(data) {
     sample_var <- var(data)
     common_factor <- ((sample_mean * (1 - sample_mean)) / sample_var) - 1
 
+    # A beta distribution can only be fitted by the method of moments when the
+    # sample variance is smaller than mean * (1 - mean). Otherwise both shape
+    # parameters come out non-positive and every subsequent pbeta() call
+    # silently returns NaN.
+    if (!is.finite(common_factor) || common_factor <= 0) {
+        stop(paste("Cannot fit a beta distribution to these data by the",
+                   "method of moments: the sample variance is too large",
+                   "relative to the sample mean."))
+    }
+
     alpha <- sample_mean * common_factor
     beta <- (1 - sample_mean) * common_factor
 

@@ -410,12 +410,14 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 #' @param seed Integer random seed (optional, default 123).
 #' @param tf_conda_env Conda environment with TensorFlow installed, useful if
 #' it is unavailable in the current environment (optional, default NULL).
-#' @return Seurat dataset `cells' with added metadata: dawnn_scores (output of
-#' Dawnn's model for each cell); dawnn_lfc (estimated log2-fold change in the
-#' neighbourhood of each cell); dawnn_p_vals (p-values associated with the
-#' hypothesis tests for whether a cell is in a region of differential
-#' abundance; dawnn_da_verdict (Boolean output of Dawnn indicating whether it
-#' considers a cell to be in a region of differential abundance).
+#' @return Seurat dataset `cells` with added metadata: `dawnn_scores` (output
+#' of Dawnn's model for each cell); `dawnn_lfc` (estimated log2-fold change in
+#' the neighbourhood of each cell); `dawnn_p_vals_lda` and `dawnn_p_vals_gda`
+#' (p-values associated with the hypothesis tests for whether a cell is in a
+#' region of local or global differential abundance, respectively);
+#' `dawnn_lda_verdict` and `dawnn_gda_verdict` (Boolean output of Dawnn
+#' indicating whether it considers a cell to be in a region of local or
+#' global differential abundance, respectively).
 #' @examples
 #' \dontrun{
 #' run_dawnn(cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",

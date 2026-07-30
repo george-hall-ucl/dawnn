@@ -16,7 +16,7 @@ test_that("generate_null_distribution returns vector of correct length", {
                                                                           label_names = "label",
                                                                           label_pos_lfc = "Condition1",
                                                                           verbosity = 1,
-                                                                          da_mode = "ada"))
+                                                                          da_mode = "lda"))
                 })
               expect_vector(out, ptype = double(), size = 3600)
 })

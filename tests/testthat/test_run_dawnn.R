@@ -144,7 +144,7 @@ test_that("run_dawnn different results if different da_mode", {
 
 test_that("run_dawnn same results if different da_mode but exactly even labels", {
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
-    # Make exacetly 600 labels with each condition:
+    # Make exactly 600 labels with each condition:
     cells$label[which(cells$label == "Condition2")[1:5]] <- "Condition1"
 
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,

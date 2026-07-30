@@ -140,7 +140,11 @@ load_model_from_python <- function(model_path) {
 #' "synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda")
 #' }
 generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosity,
-                               da_mode) {
+                               da_mode = c("lda", "gda")) {
+    # Without this, an unrecognised da_mode silently falls through to the
+    # "gda" branch below rather than erroring.
+    da_mode <- match.arg(da_mode)
+
     null_dist <- c()
     for (i in 1:3) {
         num_cells <- ncol(cells)

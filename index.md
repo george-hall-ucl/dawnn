@@ -77,7 +77,7 @@ for Step 3.
 remotes::install_github("george-hall-ucl/dawnn")
 
 # Step 2: Download Dawnn's model
-# By default, model stored at ~/.dawnn/dawnn_nn_model.h5
+# By default, model stored in tools::R_user_dir("dawnn", "cache")
 dawnn::download_model()
 
 # Step 3: Install Tensorflow in own conda environment

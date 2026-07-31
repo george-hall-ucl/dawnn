@@ -2,6 +2,11 @@
 title: "Dawnn vignette"
 author: "George T. Hall and Sergi Castellano"
 date: "Compiled on `r format(Sys.time(), '%d %B %Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dawnn vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 > Copyright (C) 2023- University College London <br>
@@ -13,7 +18,8 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   fig.align = "center",
-  comment = "#>"
+  comment = "#>",
+  fig.path = "figures/"
 )
 ```
 

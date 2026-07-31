@@ -107,7 +107,8 @@ load_model_from_python <- function(model_path) {
     }
 
     if (!file.exists(model_path)) {
-        stop(paste("No model available at", model_path))
+        stop(paste0("No model available at ", model_path,
+                    ": run download_model() to download it."))
     }
     # load model trained with Python
     model <- load_model_hdf5(model_path, compile = FALSE)
@@ -253,6 +254,16 @@ determine_if_region_da <- function(p_vals, alpha) {
 }
 
 
+#' Default path where Dawnn stores its downloaded model.
+#'
+#' @return String path to the model file.
+#' @keywords internal
+dawnn_default_model_file <- function() {
+    file.path(tools::R_user_dir("dawnn", which = "cache"),
+              "dawnn_nn_model.h5")
+}
+
+
 #' Download the neural network model used by Dawnn.
 #'
 #' @description `download_model()` downloads the neural network model used by
@@ -283,22 +294,28 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         model_url <- "https://rdr.ucl.ac.uk/ndownloader/files/40162366"
     }
 
-    if (is.null(model_file_path)) {
-        # Unless told otherwise, save model in directory ".dawnn" in user's
-        # home directory
-        home_dir <- Sys.getenv("HOME")
-        dawnn_dir_path <- paste0(home_dir, "/.dawnn")
-        model_file_path <- paste0(dawnn_dir_path, "/dawnn_nn_model.h5")
+    using_default_path <- is.null(model_file_path)
+    if (using_default_path) {
+        model_file_path <- dawnn_default_model_file()
+        dawnn_dir_path <- dirname(model_file_path)
     } else {
         dawnn_dir_path <- dirname(normalizePath(model_file_path,
                                                 mustWork = FALSE))
     }
 
     if (dir.exists(dawnn_dir_path) == FALSE) {
-        # If necessary, create model directory (by default, "~/.dawnn")
+        # Get consent before creating directory
+        if (using_default_path && interactive()) {
+            answer <- readline(paste0("Create ", dawnn_dir_path,
+                                      " to store Dawnn's model? [y/N] "))
+            if (!identical(tolower(substr(answer, 1, 1)), "y")) {
+                stop("Not downloading as permission to create ",
+                     dawnn_dir_path, " was declined")
+            }
+        }
         dir_create_ret <- dir.create(dawnn_dir_path, recursive = TRUE)
         if (dir_create_ret != TRUE) {
-            stop("Not downloading as cannot create ~/.dawnn directory")
+            stop("Not downloading as cannot create directory ", dawnn_dir_path)
         }
     }
     message(paste("Downloading Dawnn's neural network model to",
@@ -427,7 +444,7 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 #' @param n_dims Integer number of dimensions to use if computing graph
 #' (optional, default 10).
 #' @param nn_model String containing the path to the model's .hdf5 file
-#' (optional, default "~/.dawnn/dawnn_nn_model.h5").
+#' (optional, defaults to the location used by [download_model()]).
 #' @param recalculate_graph Boolean whether to recalculate the KNN graph. If
 #' FALSE, then the one stored in the `cells` object will be used (optional,
 #' default = TRUE).
@@ -455,7 +472,7 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
-                      n_dims = 10, nn_model = "~/.dawnn/dawnn_nn_model.h5",
+                      n_dims = 10, nn_model = dawnn_default_model_file(),
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123, tf_conda_env = NULL) {
     # Seed locally: this is as reproducible as set.seed(), but restores the

@@ -36,10 +36,7 @@ test_that("download_model downloads successfully to default location", {
                                                 mustWork = FALSE),
                                   "/.dawnn/dawnn_nn_model.h5")
     expected_msg <- paste("Model was downloaded to:", expected_model_path)
-    # suppressWarnings(): the test source file is not 255225824 bytes, which
-    # triggers the (here irrelevant) file size warning tested separately below
-    expect_message(suppressWarnings(
-                       download_model(model_url = create_tmp_source_file())),
+    expect_message(download_model(model_url = create_tmp_source_file()),
                    expected_msg)
     expect_equal(file.exists(expected_model_path), TRUE)
 })
@@ -54,9 +51,8 @@ test_that("download_model saves model in correct location", {
 
     expected_msg <- paste("Model was downloaded to:",
                           normalizePath(desired_model_path, mustWork = FALSE))
-    expect_message(suppressWarnings(
-                       download_model(model_url = create_tmp_source_file(),
-                                      model_file_path = desired_model_path)),
+    expect_message(download_model(model_url = create_tmp_source_file(),
+                                  model_file_path = desired_model_path),
                    expected_msg)
     expect_equal(file.exists(desired_model_path), TRUE)
 })
@@ -69,11 +65,9 @@ test_that("download_model stops if cannot create .dawnn", {
 })
 
 
-test_that("download_model warns if downloaded file is different to expected size", {
+test_that("download_model does not size-check a user-supplied model_url", {
     local_envvar(c("HOME" = create_tmp_home_dir()))
-
-    expect_warning(download_model(model_url = create_tmp_source_file()),
-                   "Downloaded model file is different to expected size: wrong file?")
+    expect_no_warning(download_model(model_url = create_tmp_source_file()))
 })
 
 

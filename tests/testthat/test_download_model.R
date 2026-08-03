@@ -51,10 +51,18 @@ test_that("download_model saves model in correct location", {
 })
 
 
-test_that("download_model stops if cannot create .dawnn", {
-    local_envvar(c("HOME" = create_tmp_home_dir(writable = FALSE)))
-    expect_error(suppressWarnings(download_model()),
-                 "Not downloading as cannot create ~/.dawnn directory")
+test_that("download_model stops if it cannot create the model directory", {
+    # A regular file blocks dir.create() for root too, unlike chmod.
+    blocker <- tempfile()
+    file.create(blocker)
+    withr::defer(unlink(blocker))
+
+    # model_url is local so a regression cannot start a real download.
+    expect_error(suppressWarnings(
+                     download_model(model_url = create_tmp_source_file(),
+                                    model_file_path = file.path(blocker,
+                                                                "model.h5"))),
+                 "cannot create")
 })
 
 

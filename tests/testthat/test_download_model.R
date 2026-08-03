@@ -1,13 +1,12 @@
 # Copyright (C) 2023 University College London
 # Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
-create_tmp_home_dir <- function(writable = TRUE, env = parent.frame()) {
-    # Create a new directory at "tempdir()/home_dir"
-    dir_path <- file.path(tempdir(), "home_dir")
-    dir.create(dir_path)
-    if (writable == FALSE) {
-        Sys.chmod(dir_path, mode = "577") # Make unwritable
-    }
+# download_model() stores the model under tools::R_user_dir("dawnn", "cache"),
+# which reads R_USER_CACHE_DIR. Point that at a temporary directory so the
+# tests never touch the real cache.
+create_tmp_cache_dir <- function(env = parent.frame()) {
+    dir_path <- file.path(tempdir(), "cache_dir")
+    dir.create(dir_path, showWarnings = FALSE)
     withr::defer(unlink(dir_path, recursive = TRUE), envir = env)
 
     return(dir_path)
@@ -30,7 +29,7 @@ create_tmp_source_file <- function(contents = "dawnn test model contents",
 
 
 test_that("download_model downloads successfully to default location", {
-    local_envvar(c("HOME" = create_tmp_home_dir()))
+    local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
 
     expected_model_path <- paste0(normalizePath(Sys.getenv("HOME"),
                                                 mustWork = FALSE),
@@ -66,13 +65,13 @@ test_that("download_model stops if cannot create .dawnn", {
 
 
 test_that("download_model does not size-check a user-supplied model_url", {
-    local_envvar(c("HOME" = create_tmp_home_dir()))
+    local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
     expect_no_warning(download_model(model_url = create_tmp_source_file()))
 })
 
 
 test_that("download_model stops if URL is faulty", {
-    local_envvar(c("HOME" = create_tmp_home_dir()))
+    local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
     faulty_url <- paste0("file://", tempfile())
 
     expect_error(suppressWarnings(download_model(model_url = faulty_url)),
@@ -81,7 +80,7 @@ test_that("download_model stops if URL is faulty", {
 
 
 test_that("download_model detects if timeout too small", {
-    local_envvar(c("HOME" = create_tmp_home_dir()))
+    local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
     # A real network timeout can't be simulated with a local file:// URL, so
     # this test alone keeps a narrow mock of download.file() -- the only one
     # of the two network-facing calls that is actually mockable, since it is

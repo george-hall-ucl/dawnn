@@ -28,7 +28,15 @@ sep_r <- function(x, args = list(), print_stdout = TRUE, print_stderr = FALSE, .
     err_path <- tempfile("callr_stderr_")
     on.exit(unlink(c(out_path, err_path)), add = TRUE)
 
-    res <- callr::r(x, args = args, stdout = out_path, stderr = err_path)
+    # callr's package=TRUE doesn't load source when an older version is
+    # installed, so we wrap x to call pkgload::load_all() explicitly first.
+    wrapper <- function(.fn, ...) {
+        pkgload::load_all(".")
+        .fn(...)
+    }
+
+    res <- callr::r(wrapper, args = c(list(.fn = x), args),
+                    stdout = out_path, stderr = err_path)
     if (print_stdout) {
         outs <- readLines(out_path)
         if (!identical(outs, character(0))) {

@@ -5,7 +5,6 @@ test_that("Can change conda env to one containing TensorFlow", {
     skip_if_no_dawnn_deps()
 
     result <- sep_r(function() {
-        devtools::load_all("../..")
         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
         cells <- Seurat::FindNeighbors(cells, reduction = "pca", k.param = 1001,
                                        dims = 1:2, return.neighbor = TRUE)
@@ -22,7 +21,6 @@ test_that("Crashes if no conda env specified and correct packages not installed 
     skip_if_no_dawnn_deps()
 
     result <- try(sep_r(function() {
-        devtools::load_all("../..")
         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
         cells <- Seurat::FindNeighbors(cells, reduction = "pca", k.param = 1001,
                                        dims = 1:2, return.neighbor = TRUE)
@@ -37,7 +35,6 @@ test_that("Dawnn crashes if change conda env to one without TensorFlow", {
     skip_if_no_dawnn_deps()
 
     result <- try(sep_r(function() {
-        devtools::load_all("../..")
         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
         cells <- Seurat::FindNeighbors(cells, reduction = "pca", k.param = 1001,
                                        dims = 1:2, return.neighbor = TRUE)

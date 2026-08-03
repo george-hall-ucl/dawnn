@@ -1,3 +1,6 @@
+# Copyright (C) 2023 University College London
+# Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
+
 test_that("Can change conda env to one containing TensorFlow", {
     skip_if_no_dawnn_deps()
 

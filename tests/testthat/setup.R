@@ -24,15 +24,19 @@ skip_if_no_dawnn_deps <- function(env = "tf_env",
 
 
 sep_r <- function(x, args = list(), print_stdout = TRUE, print_stderr = FALSE, ...) {
-    res <- callr::r(x, args = args, stdout = "/tmp/out", stderr = "/tmp/err")
+    out_path <- tempfile("callr_stdout_")
+    err_path <- tempfile("callr_stderr_")
+    on.exit(unlink(c(out_path, err_path)), add = TRUE)
+
+    res <- callr::r(x, args = args, stdout = out_path, stderr = err_path)
     if (print_stdout) {
-        outs <- readLines("/tmp/out")
+        outs <- readLines(out_path)
         if (!identical(outs, character(0))) {
             print(outs)
         }
     }
     if (print_stderr) {
-        outs <- readLines("/tmp/err")
+        outs <- readLines(err_path)
         if (!identical(outs, character(0))) {
             print(outs)
         }

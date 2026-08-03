@@ -31,10 +31,8 @@ create_tmp_source_file <- function(contents = "dawnn test model contents",
 test_that("download_model downloads successfully to default location", {
     local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
 
-    expected_model_path <- paste0(normalizePath(Sys.getenv("HOME"),
-                                                mustWork = FALSE),
-                                  "/.dawnn/dawnn_nn_model.h5")
-    expected_msg <- paste("Model was downloaded to:", expected_model_path)
+    expected_model_path <- file.path(tools::R_user_dir("dawnn", "cache"),
+                                     "dawnn_nn_model.h5")
     expect_message(download_model(model_url = create_tmp_source_file()),
                    expected_msg)
     expect_equal(file.exists(expected_model_path), TRUE)
@@ -42,11 +40,7 @@ test_that("download_model downloads successfully to default location", {
 
 
 test_that("download_model saves model in correct location", {
-    local_envvar(c("HOME" = create_tmp_home_dir()))
-
-    desired_model_path <- paste0(normalizePath(Sys.getenv("HOME"),
-                                               mustWork = FALSE),
-                                 "/.dawnn/my_path.h5")
+    desired_model_path <- file.path(create_tmp_cache_dir(), "my_path.h5")
 
     expected_msg <- paste("Model was downloaded to:",
                           normalizePath(desired_model_path, mustWork = FALSE))

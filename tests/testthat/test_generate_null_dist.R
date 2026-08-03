@@ -12,7 +12,7 @@ test_that("generate_null_distribution returns vector of correct length", {
                         cells <- Seurat::FindNeighbors(cells, reduction = "pca",
                                                        k.param = 1001, dims = 1:2,
                                                        return.neighbor = TRUE)
-                        model_file <- "~/.dawnn/dawnn_nn_model.h5"
+                        model_file <- dawnn:::dawnn_default_model_file()
                         model <- dawnn:::load_model_from_python(model_file)
                         out <- suppressMessages(dawnn:::generate_null_dist(cells, model,
                                                                           label_names = "label",

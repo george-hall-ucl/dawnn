@@ -48,7 +48,7 @@ test_that("Loaded model has correct structure and weights", {
 
               actual_model_summary_sum <- sep_r(function() {
                 reticulate::use_condaenv("tf_env")
-                model <- dawnn:::load_model_from_python("~/.dawnn/dawnn_nn_model.h5")
+                model <- dawnn:::load_model_from_python(dawnn:::dawnn_default_model_file())
                 actual_model_summary <- keras:::format.keras.engine.training.Model(model)
                 actual_model_sum <- sum(unlist(lapply(model$weights,
                                                       function(x) {

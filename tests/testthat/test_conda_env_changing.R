@@ -1,4 +1,6 @@
 test_that("Can change conda env to one containing TensorFlow", {
+    skip_if_no_dawnn_deps()
+
     result <- sep_r(function() {
         devtools::load_all("../..")
         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
@@ -14,6 +16,8 @@ test_that("Can change conda env to one containing TensorFlow", {
 
 
 test_that("Crashes if no conda env specified and correct packages not installed in base", {
+    skip_if_no_dawnn_deps()
+
     result <- try(sep_r(function() {
         devtools::load_all("../..")
         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
@@ -27,6 +31,8 @@ test_that("Crashes if no conda env specified and correct packages not installed 
 })
 
 test_that("Dawnn crashes if change conda env to one without TensorFlow", {
+    skip_if_no_dawnn_deps()
+
     result <- try(sep_r(function() {
         devtools::load_all("../..")
         cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")

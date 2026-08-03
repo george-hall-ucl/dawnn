@@ -2,6 +2,8 @@
 # Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
 test_that("run_dawnn reproducible recalculate_graph = FALSE", {
+    skip_if_no_dawnn_deps()
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
@@ -29,6 +31,8 @@ test_that("run_dawnn reproducible recalculate_graph = FALSE", {
 })
 
 test_that("run_dawnn respects alpha parameter", {
+    skip_if_no_dawnn_deps()
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
@@ -59,6 +63,8 @@ test_that("run_dawnn respects alpha parameter", {
 })
 
 test_that("run_dawnn reproducible recalculate_graph = TRUE", {
+    skip_if_no_dawnn_deps()
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
@@ -85,6 +91,8 @@ test_that("run_dawnn reproducible recalculate_graph = TRUE", {
 })
 
 test_that("run_dawnn returns Seurat", {
+    skip_if_no_dawnn_deps()
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
@@ -100,6 +108,8 @@ test_that("run_dawnn returns Seurat", {
 })
 
 test_that("run_dawnn fails if too few cells", {
+    skip_if_no_dawnn_deps()
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
@@ -115,6 +125,8 @@ test_that("run_dawnn fails if too few cells", {
 })
 
 test_that("run_dawnn different results if different da_mode", {
+    skip_if_no_dawnn_deps()
+
     # Note that the labels are distributed as follows:
     #   Condition1 Condition2
     #          595        605
@@ -143,6 +155,8 @@ test_that("run_dawnn different results if different da_mode", {
 })
 
 test_that("run_dawnn same results if different da_mode but exactly even labels", {
+    skip_if_no_dawnn_deps()
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     # Make exactly 600 labels with each condition:
     cells$label[which(cells$label == "Condition2")[1:5]] <- "Condition1"

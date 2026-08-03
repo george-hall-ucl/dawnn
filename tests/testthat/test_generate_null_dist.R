@@ -2,6 +2,8 @@
 # Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
 test_that("generate_null_distribution returns vector of correct length", {
+              skip_if_no_dawnn_deps()
+
               out <- sep_r(function() {
                         devtools::load_all()
                         reticulate::use_condaenv("tf_env")

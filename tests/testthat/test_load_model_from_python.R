@@ -2,6 +2,8 @@
 # Licensed under GNU GPL Version 3 <https://www.gnu.org/licenses/gpl-3.0.html>
 
 test_that("Incorrect model_path leads to error", {
+              skip_if_no_dawnn_deps()
+
               results <- try(sep_r(function() {
                                        reticulate::use_condaenv("tf_env")
                                        dawnn:::load_model_from_python("this_model_does_not_exist.h5")},
@@ -12,6 +14,8 @@ test_that("Incorrect model_path leads to error", {
 })
 
 test_that("Loaded model has correct structure and weights", {
+              skip_if_no_dawnn_deps()
+
               # Ideally, we would be able to compute a checksum of all weights
               # in each tensor, but I can't find a way of doing this. For now,
               # summing them seems sufficient.

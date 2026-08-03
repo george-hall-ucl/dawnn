@@ -124,7 +124,7 @@ test_that("run_dawnn fails if too few cells", {
                  "Dawnn requires at least 1001 cells. Your dataset contains 1000.")
 })
 
-test_that("run_dawnn different results if different da_mode", {
+test_that("run_dawnn gives different results for lda and gda", {
     skip_if_no_dawnn_deps()
 
     # Note that the labels are distributed as follows:
@@ -132,26 +132,21 @@ test_that("run_dawnn different results if different da_mode", {
     #          595        605
     # run_dawnn with da_mode set to "ada" should therefore return a different
     # object to if da_mode is "pda" (since the p-values should be different).
+
     cells <- readRDS("../data/dawnn_test_data_1200_cells_discrete_clusters_1gene_2pc.rds")
     cells <- FindNeighbors(cells, reduction = "pca", k.param = 1001,
                            dims = 1:2, return.neighbor = TRUE)
 
-    dawnn_out_1 <- sep_r(function(cells) {
-                             devtools::load_all()
-                             dawnn::run_dawnn(cells = cells, label_names = "label",
-                                label_pos_lfc = "Condition1",
-                                reduced_dim = "pca", recalculate_graph = FALSE,
-                                alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
-                         args = list(cells))
-    dawnn_out_2 <- sep_r(function(cells) {
-                             devtools::load_all()
-                             dawnn::run_dawnn(cells = cells, label_names = "label",
-                                label_pos_lfc = "Condition1",
-                                reduced_dim = "pca", recalculate_graph = FALSE,
-                                alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
-                         args = list(cells))
+    dawnn_out <- sep_r(function(cells) {
+                           devtools::load_all()
+                           dawnn::run_dawnn(cells = cells, label_names = "label",
+                              label_pos_lfc = "Condition1",
+                              reduced_dim = "pca", recalculate_graph = FALSE,
+                              alpha = 0.1, verbosity = 0, tf_conda_env = "tf_env")},
+                       args = list(cells))
 
-    expect_failure(expect_equal(dawnn_out_1, dawnn_out_2))
+    expect_failure(expect_equal(dawnn_out$dawnn_p_vals_lda,
+                                dawnn_out$dawnn_p_vals_gda))
 })
 
 test_that("run_dawnn same results if different da_mode but exactly even labels", {

@@ -10,7 +10,7 @@ test_that("Incorrect model_path leads to error", {
                                        print_stdout = FALSE))
               error_msg <- strsplit((results[[1]]), "\n")[[1]][3]
               expect_s3_class(results, "try-error")
-              expect_equal(error_msg, "! No model available at this_model_does_not_exist.h5")
+              expect_equal(error_msg, "! No model available at this_model_does_not_exist.h5: run download_model() to download it.")
 })
 
 test_that("Loaded model has correct structure and weights", {

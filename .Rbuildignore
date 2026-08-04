@@ -6,3 +6,5 @@
 ^pkgdown$
 ^\.github$
 ^\.claude$
+^vignettes/dawnn\.Rmd\.edit_me$
+^vignettes/precompute\.R$

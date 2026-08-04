@@ -34,7 +34,7 @@ test_that("download_model downloads successfully to default location", {
     expected_model_path <- file.path(tools::R_user_dir("dawnn", "cache"),
                                      "dawnn_nn_model.h5")
     expect_message(download_model(model_url = create_tmp_source_file()),
-                   expected_msg)
+                   "Model was downloaded to:")
     expect_equal(file.exists(expected_model_path), TRUE)
 })
 

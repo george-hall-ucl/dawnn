@@ -349,7 +349,9 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     old_timeout <- getOption("timeout")
     options(timeout = download_timeout)
 
-    tryCatch(download_ret <- download.file(model_url, model_file_path, method = download_method),
+    tryCatch(download_ret <- download.file(model_url, model_file_path,
+                                           method = download_method,
+                                           mode = "wb"),
              error = function(c) {
                  options(timeout = old_timeout)
                  stop("Error in model download, perhaps due to timeout? Try increasing download_timeout parameter.")

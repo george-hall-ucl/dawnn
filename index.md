@@ -112,6 +112,57 @@ _Dawnn: single-cell differential abundance with neural networks_. George T. Hall
 
 Any contributions are warmly welcomed! Please feel free to submit an issue or pull request on this repository.
 
+### Building the package
+
+If you want to develop Dawnn yourself, you need to be able to build it from
+source.
+
+#### Step 1: Regenerate the vignette
+
+`vignettes/dawnn.Rmd` is generated: do not edit it directly. It it generated
+from `vignettes/dawnn.Rmd.edit_me`, which `vignettes/precompute.R` knits into
+`dawnn.Rmd` with the code already evaluated. This allows the vignette to be
+"generated" with figures in an environment with TensorFlow or the model
+available (such as CRAN).
+
+```bash
+Rscript vignettes/precompute.R
+```
+
+Commit the regenerated `vignettes/dawnn.Rmd` and `vignettes/figures/`. Re-run
+it whenever the code the vignette calls changes.
+
+#### Step 2: Regenerate the documentation
+
+```r
+roxygen2::roxygenise()
+```
+
+Required after any change to a roxygen block, including `@param` text. Commit
+the resulting `man/*.Rd`s.
+
+#### Step 3: Build the tarball
+
+```bash
+R CMD build .
+```
+
+#### Step 4: Check the tarball
+
+```bash
+R CMD check --as-cran dawnn_*.tar.gz
+```
+
+#### Step 5: Run the test suite
+
+```r
+devtools::test()
+```
+
+Some tests are skipped by the check above, due to `--as-cran`. This is
+necessary for CRAN submission due to its environment constraints, but it leaves
+parts of the code untested. Running `devtools::test()` runs _all_ tests.
+
 ### Releases
 
 See [NEWS.md](NEWS.md) for the release notes.

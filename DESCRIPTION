@@ -34,6 +34,7 @@ Suggests:
     callr,
     devtools,
     dplyr,
+    pkgload,
     viridis
 Config/testthat/edition: 3
 VignetteBuilder: knitr

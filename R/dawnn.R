@@ -166,7 +166,7 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
                         rep(label_neg_lfc, num_cells - round(num_cells / 2)))
         }
         # Sort the labels to ensure that the same result is returned for both
-        # ADA and PDA if Condition1 and Condition2 are in equal proportions.
+        # LDA and GDA if Condition1 and Condition2 are in equal proportions.
         # Since we then shuffle them, this does not make the result any more or
         # less correct than not sorting them, but it ensures the above goal is
         # satisfied if the labels are not arranged identically in both cases.

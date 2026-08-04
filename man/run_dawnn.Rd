@@ -10,7 +10,7 @@ run_dawnn(
   label_pos_lfc,
   reduced_dim,
   n_dims = 10,
-  nn_model = "~/.dawnn/dawnn_nn_model.h5",
+  nn_model = dawnn_default_model_file(),
   recalculate_graph = TRUE,
   alpha = 0.1,
   verbosity = 2,
@@ -34,7 +34,7 @@ reduction to use.}
 (optional, default 10).}
 
 \item{nn_model}{String containing the path to the model's .hdf5 file
-(optional, default "~/.dawnn/dawnn_nn_model.h5").}
+(optional, defaults to the location used by \code{\link[=download_model]{download_model()}}).}
 
 \item{recalculate_graph}{Boolean whether to recalculate the KNN graph. If
 FALSE, then the one stored in the \code{cells} object will be used (optional,

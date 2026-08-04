@@ -114,16 +114,7 @@ Any contributions are warmly welcomed! Please feel free to submit an issue or pu
 
 ### Releases
 
-#### v2.0.0 (16 July 2026)
-
-* Simultaneously test for local and global differential abundance.
-* Only take single label from user (since two labels are assumed, the other
-  need not be passed).
-
-#### v1.2.0 (15 July 2026)
-
-* Fixed a bug where the `alpha` parameter was not being respected (the default
-  value of 0.1 was always being used).
+See [NEWS.md](NEWS.md) for the release notes.
 
 ### Licence
 

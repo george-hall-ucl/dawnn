@@ -295,9 +295,10 @@ dawnn_default_model_file <- function() {
 #' @export
 download_model <- function(model_url = NULL, model_file_path = NULL,
                            download_method = "auto", download_timeout = 600) {
-    # Size in bytes of the model hosted at the default URL. Used as sanity
-    # check of default model.
+    # Size in bytes and MD5 checksum of the model hosted at the default URL.
+    # Used as sanity check of default model.
     expected_model_size <- 255225824
+    expected_model_md5 <- "e40f36e2a625f137a865e806a188b6aa"
 
     using_default_url <- is.null(model_url)
     if (using_default_url) {
@@ -370,6 +371,9 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         downloaded_size <- file.info(model_file_path)$size
         if (is.na(downloaded_size) || downloaded_size != expected_model_size) {
             warning("Downloaded model file is different to expected size: wrong file?")
+        } else if (!identical(unname(tools::md5sum(model_file_path)),
+                              expected_model_md5)) {
+            warning("Downloaded model does not have the expected MD5 checksum: wrong file?")
         }
     }
 

@@ -475,8 +475,6 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
                       n_dims = 10, nn_model = dawnn_default_model_file(),
                       recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
                       seed = 123, tf_conda_env = NULL) {
-    # Seed locally: this is as reproducible as set.seed(), but restores the
-    # caller's RNG state on exit instead of silently resetting their stream.
     withr::local_seed(seed)
 
     if (!is.null(tf_conda_env)) {
@@ -527,6 +525,7 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
                           "differential abundance."))
             message("... Generating null distribution.")
         }
+        withr::local_seed(seed)
         null_dist <- generate_null_dist(cells, nn_model, label_names, label_pos_lfc,
                                         verbosity = verbosity, da_mode = da_mode)
 

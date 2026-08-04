@@ -76,7 +76,17 @@ generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc)
         message(paste("Multiple available graph names. Choosing the first one:",
                       graph_name))
     }
-    nhbor_labels_mtx <- apply(cells@neighbors[[graph_name]]@nn.idx, 1,
+    nn_idx <- cells@neighbors[[graph_name]]@nn.idx
+    # The [-1] in the anonymous function below drops each cell's first
+    # neighbor. This approach is only correct if the first neighbor is the cell
+    # itself. This should be the case in the graph constructed by Seurat's
+    # FindNeighbors, but may not be true in general. We check that this
+    # assumption is satisfied before proceeding.
+    if (!identical(as.integer(nn_idx[, 1]), seq_len(nrow(nn_idx)))) {
+        stop(paste("Dawnn requires each cell to be its own first nearest",
+                   "neighbor, which is not the case in this graph."))
+    }
+    nhbor_labels_mtx <- apply(nn_idx, 1,
                               function(x) {
                                   cells@meta.data[[label_names]][x][-1]
                               })

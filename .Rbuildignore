@@ -2,6 +2,7 @@
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
+^index\.md$
 ^docs$
 ^pkgdown$
 ^\.github$

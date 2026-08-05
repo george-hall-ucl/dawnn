@@ -28,6 +28,66 @@ create_tmp_source_file <- function(contents = "dawnn test model contents",
 }
 
 
+# Creates a small local file and returns its path, size and MD5 checksum, so
+# that check_model_file() can be tested against values that really describe it.
+create_tmp_model_file <- function(contents = "dawnn test model contents",
+                                  env = parent.frame()) {
+    file_path <- tempfile()
+    writeLines(contents, file_path)
+    withr::defer(unlink(file_path), envir = env)
+
+    return(list(path = file_path,
+                size = file.info(file_path)$size,
+                md5 = unname(tools::md5sum(file_path))))
+}
+
+
+test_that("check_model_file accepts a matching file", {
+    model <- create_tmp_model_file()
+
+    expect_no_warning(result <- dawnn:::check_model_file(model$path,
+                                                         model$size,
+                                                         model$md5))
+    expect_true(result)
+})
+
+
+test_that("check_model_file warns if the size is wrong", {
+    model <- create_tmp_model_file()
+
+    expect_warning(result <- dawnn:::check_model_file(model$path,
+                                                      model$size + 1,
+                                                      model$md5),
+                   "different to expected size")
+    expect_false(result)
+})
+
+
+test_that("check_model_file warns if the checksum is wrong", {
+    model <- create_tmp_model_file()
+    # The size is deliberately correct, so that reaching the checksum warning
+    # proves the checksum itself was compared.
+    wrong_md5 <- paste(rep("0", nchar(model$md5)), collapse = "")
+
+    expect_warning(result <- dawnn:::check_model_file(model$path, model$size,
+                                                      wrong_md5),
+                   "MD5 checksum")
+    expect_false(result)
+})
+
+
+test_that("check_model_file warns if the file is absent", {
+    model <- create_tmp_model_file()
+    unlink(model$path)
+
+    # file.info()$size is NA here, so this also covers the is.na() guard.
+    expect_warning(result <- dawnn:::check_model_file(model$path, model$size,
+                                                      model$md5),
+                   "different to expected size")
+    expect_false(result)
+})
+
+
 test_that("download_model downloads successfully to default location", {
     local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
 

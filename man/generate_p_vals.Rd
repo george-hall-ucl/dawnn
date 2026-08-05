@@ -21,8 +21,8 @@ beta distribution fitted to the null distribution of scores.
 distribution and returns p-values of the observed outputs.
 }
 \examples{
-\dontrun{
-generate_p_vals(scores = score_vect, null_dist = null_scores)
-}
+set.seed(123)
+null_dist <- rbeta(1000, shape1 = 20, shape2 = 20)
+dawnn:::generate_p_vals(scores = c(0.1, 0.5, 0.9), null_dist = null_dist)
 }
 \keyword{internal}

@@ -68,9 +68,11 @@ abundance. Dawnn requires at least 1,001 cells.
 }
 \examples{
 \dontrun{
-run_dawnn(cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",
-nn_model = "my_model.h5", reduced_dim = "pca", n_dims = 50,
-recalculate_graph = FALSE, alpha = 0.2, verbosity = 0, seed = 42,
-tf_conda_env = "my_tensorflow_env")
+run_dawnn(
+    cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",
+    nn_model = "my_model.h5", reduced_dim = "pca", n_dims = 50,
+    recalculate_graph = FALSE, alpha = 0.2, verbosity = 0, seed = 42,
+    tf_conda_env = "my_tensorflow_env"
+)
 }
 }

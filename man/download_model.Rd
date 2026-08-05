@@ -32,7 +32,6 @@ model can be passed to this function.
 }
 \examples{
 \dontrun{
-model_path <- download_model(model_url = "http://example.com/model.h5")
-cells <- run_dawnn(cells, nn_model = model_path, [...])
+model_path <- download_model()
 }
 }

@@ -40,8 +40,10 @@ and returns the estimates of P(Condition_1) for each shuffled dataset.
 }
 \examples{
 \dontrun{
-generate_null_dist(cells = cell_object, model = nn_model, label_names =
-"synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda")
+generate_null_dist(
+    cells = cell_object, model = nn_model, label_names =
+        "synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda"
+)
 }
 }
 \keyword{internal}

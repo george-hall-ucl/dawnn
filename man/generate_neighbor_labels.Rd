@@ -26,8 +26,10 @@ Generate a matrix of the labels of the 1,000 nearest neighbors of each cell.
 }
 \examples{
 \dontrun{
-generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
-"sample_names", label_pos_lfc = "Condition1")
+generate_neighbor_labels(cell_object,
+    verbose = TRUE, label_names =
+        "sample_names", label_pos_lfc = "Condition1"
+)
 }
 }
 \keyword{internal}

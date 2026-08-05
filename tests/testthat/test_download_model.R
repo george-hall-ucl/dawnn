@@ -152,8 +152,8 @@ test_that("download_model stops if URL is faulty", {
     local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
     faulty_url <- as_file_url(tempfile())
 
-    expect_error(suppressWarnings(download_model(model_url = faulty_url)),
-                 "cannot open the connection")
+    expect_error(download_model(model_url = faulty_url),
+                 "Cannot access Dawnn's model at")
 })
 
 

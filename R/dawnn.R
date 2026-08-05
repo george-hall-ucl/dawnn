@@ -562,7 +562,7 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
 
     param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
 
-    if (class(nn_model)[1] == "character") {
+    if (is.character(nn_model)) {
         nn_model <- load_model_from_python(nn_model)
     }
 

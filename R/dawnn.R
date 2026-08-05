@@ -546,7 +546,7 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 #' @export
 run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
                       n_dims = 10, nn_model = dawnn_default_model_file(),
-                      recalculate_graph = TRUE, alpha = 0.1, verbosity = 2,
+                      recalculate_graph = TRUE, alpha = 0.1, verbosity = 1,
                       seed = 123, tf_conda_env = NULL) {
     withr::local_seed(seed)
 

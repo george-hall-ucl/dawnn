@@ -218,15 +218,9 @@ generate_p_vals <- function(scores, null_dist) {
     null_beta <- null_dist_est_params$beta
     null_mode <- (null_alpha - 1) / (null_alpha + null_beta - 2)
 
-    p_vals <- c()
-
-    for (score in scores) {
-        if (score <= null_mode) {
-            p_vals <- c(p_vals, pbeta(score, null_alpha, null_beta))
-        } else {
-            p_vals <- c(p_vals, 1 - pbeta(score, null_alpha, null_beta))
-        }
-    }
+    scores <- as.vector(scores)
+    lower_tail_probs <- pbeta(scores, null_alpha, null_beta)
+    p_vals <- ifelse(scores <= null_mode, lower_tail_probs, 1 - lower_tail_probs)
 
     return(p_vals)
 }

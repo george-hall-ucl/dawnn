@@ -126,6 +126,7 @@ from `vignettes/dawnn.Rmd.edit_me`, which `vignettes/precompute.R` knits into
 available (such as CRAN).
 
 ```bash
+# In an R environment with the modified dawnn installed.
 Rscript vignettes/precompute.R
 ```
 

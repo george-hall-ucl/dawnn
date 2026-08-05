@@ -193,7 +193,7 @@ The main function `run_dawnn` has a number of optional parameters:
 |`nn_model` | String containing the path to the model's .hdf5 file (default `~/.dawnn/dawnn_nn_model.h5`). |
 |`recalculate_graph`| Boolean whether to recalculate the KNN graph. If FALSE, then the one stored in the ‘cells’ object will be used (default `TRUE`). |
 |`alpha`| Numeric target false discovery rate supplied to the Benjamini–Yekutieli procedure (default 0.1, i.e.  10%). |
-| `verbosity` | Integer how much output to print. 0: silent; 1: normal output; 2: display messages from predict() function. (default `2`)|
+| `verbosity` | Integer how much output to print. 0: silent; 1: normal output; 2: display messages from predict() function. (default `1`)|
 | `seed` | Integer random seed (default `123`). |
 
 These options can be set as follow:

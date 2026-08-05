@@ -63,39 +63,35 @@ test_that("check_model_file accepts a matching file", {
 })
 
 
-test_that("check_model_file warns if the size is wrong", {
+test_that("check_model_file stops and deletes the file if the size is wrong", {
     model <- create_tmp_model_file()
 
-    expect_warning(result <- dawnn:::check_model_file(model$path,
-                                                      model$size + 1,
-                                                      model$md5),
-                   "different to expected size")
-    expect_false(result)
+    expect_error(dawnn:::check_model_file(model$path, model$size + 1,
+                                          model$md5),
+                 "different to expected size")
+    expect_false(file.exists(model$path))
 })
 
 
-test_that("check_model_file warns if the checksum is wrong", {
+test_that("check_model_file stops and deletes the file if the checksum is wrong", {
     model <- create_tmp_model_file()
-    # The size is deliberately correct, so that reaching the checksum warning
+    # The size is deliberately correct, so that reaching the checksum error
     # proves the checksum itself was compared.
     wrong_md5 <- paste(rep("0", nchar(model$md5)), collapse = "")
 
-    expect_warning(result <- dawnn:::check_model_file(model$path, model$size,
-                                                      wrong_md5),
-                   "MD5 checksum")
-    expect_false(result)
+    expect_error(dawnn:::check_model_file(model$path, model$size, wrong_md5),
+                 "MD5 checksum")
+    expect_false(file.exists(model$path))
 })
 
 
-test_that("check_model_file warns if the file is absent", {
+test_that("check_model_file stops if the file is absent", {
     model <- create_tmp_model_file()
     unlink(model$path)
 
     # file.info()$size is NA here, so this also covers the is.na() guard.
-    expect_warning(result <- dawnn:::check_model_file(model$path, model$size,
-                                                      model$md5),
-                   "different to expected size")
-    expect_false(result)
+    expect_error(dawnn:::check_model_file(model$path, model$size, model$md5),
+                 "different to expected size")
 })
 
 
@@ -144,7 +140,8 @@ test_that("download_model stops if it cannot create the model directory", {
 
 test_that("download_model does not size-check a user-supplied model_url", {
     local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
-    expect_no_warning(download_model(model_url = create_tmp_source_file()))
+    expect_no_error(suppressMessages(
+        download_model(model_url = create_tmp_source_file())))
 })
 
 

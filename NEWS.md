@@ -3,8 +3,8 @@
 Mainly changes with a view to submitting to CRAN.
 
 * Model now hosted on Zenodo.
-* `download_model()` verifies the size and MD5 checksum of the model downloaded
-  from the default URL.
+* `download_model()` verifies the size and MD5 checksum of a model downloaded
+  from the default URL, deleting it and failing if either does not match.
 * `download_model()` now saves the model to the user cache directory
   (`tools::R_user_dir("dawnn", "cache")`) by default. Other functions updated
   accordingly.

@@ -291,26 +291,34 @@ dawnn_default_model_file <- function() {
 
 #' Check a downloaded model against its expected size and checksum.
 #'
-#' @description `check_model_file()` warns if the file at `model_file_path` is
-#' not the model expected at Dawnn's default URL. The checksum is only compared
-#' when the size matches, so a truncated download produces one warning rather
-#' than two.
+#' @description `check_model_file()` stops if the file at `model_file_path` is
+#' not the model expected at Dawnn's default URL. The offending file is deleted,
+#' so that a corrupt model cannot later be loaded by `run_dawnn()`. The checksum
+#' is only compared when the size matches, so a truncated download is reported
+#' once rather than twice.
 #'
 #' @param model_file_path String path to the downloaded model.
 #' @param expected_size Integer expected size of the model, in bytes.
 #' @param expected_md5 String expected MD5 checksum of the model.
-#' @return Invisibly, `TRUE` if the file matches and `FALSE` otherwise.
+#' @return Invisibly, `TRUE` if the file matches, otherwise stop execution with
+#' an error message.
 #' @keywords internal
 check_model_file <- function(model_file_path, expected_size, expected_md5) {
     downloaded_size <- file.info(model_file_path)$size
     if (is.na(downloaded_size) || downloaded_size != expected_size) {
-        warning("Downloaded model file is different to expected size: wrong file?")
-        return(invisible(FALSE))
+        unlink(model_file_path)
+        stop(paste(
+            "Downloaded model file is different to expected size: wrong file?",
+            "It has been deleted; please try downloading it again."
+        ))
     }
 
     if (!identical(unname(tools::md5sum(model_file_path)), expected_md5)) {
-        warning("Downloaded model does not have the expected MD5 checksum: wrong file?")
-        return(invisible(FALSE))
+        unlink(model_file_path)
+        stop(paste(
+            "Downloaded model does not have the expected MD5 checksum: wrong",
+            "file? It has been deleted; please try downloading it again."
+        ))
     }
 
     return(invisible(TRUE))

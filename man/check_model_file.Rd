@@ -14,12 +14,14 @@ check_model_file(model_file_path, expected_size, expected_md5)
 \item{expected_md5}{String expected MD5 checksum of the model.}
 }
 \value{
-Invisibly, \code{TRUE} if the file matches and \code{FALSE} otherwise.
+Invisibly, \code{TRUE} if the file matches, otherwise stop execution with
+an error message.
 }
 \description{
-\code{check_model_file()} warns if the file at \code{model_file_path} is
-not the model expected at Dawnn's default URL. The checksum is only compared
-when the size matches, so a truncated download produces one warning rather
-than two.
+\code{check_model_file()} stops if the file at \code{model_file_path} is
+not the model expected at Dawnn's default URL. The offending file is deleted,
+so that a corrupt model cannot later be loaded by \code{run_dawnn()}. The checksum
+is only compared when the size matches, so a truncated download is reported
+once rather than twice.
 }
 \keyword{internal}

@@ -102,11 +102,16 @@ test_that("download_model downloads successfully to default location", {
 test_that("download_model saves model in correct location", {
     desired_model_path <- file.path(create_tmp_cache_dir(), "my_path.h5")
 
+    # Run once to ensure model file in correct location (needed to test message).
+    suppressMessages(download_model(model_url = create_tmp_source_file(),
+                                    model_file_path = desired_model_path))
+
+    # "fixed = TRUE" ensures that the path is not treated as a regex.
     expected_msg <- paste("Model was downloaded to:",
                           normalizePath(desired_model_path, mustWork = FALSE))
     expect_message(download_model(model_url = create_tmp_source_file(),
                                   model_file_path = desired_model_path),
-                   expected_msg)
+                   expected_msg, fixed = TRUE)
     expect_equal(file.exists(desired_model_path), TRUE)
 })
 

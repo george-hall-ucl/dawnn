@@ -97,7 +97,6 @@ thus be associated with negative).
 ``` r
 cells <- run_dawnn(cells, label_names = "label", label_pos_lfc = "Condition1",
                    reduced_dim = "pca", tf_conda_env = "tf_env", verbosity = 0)
-#> Error in run_dawnn(cells, label_names = "label", label_pos_lfc = "Condition1", : unused argument (label_pos_lfc = "Condition1")
 ```
 
 ### Required parameters
@@ -155,9 +154,12 @@ detected this by colouring the UMAP according to Dawnn's verdict of local differ
 ``` r
 DimPlot(cells, group.by = "dawnn_lda_verdict", pt.size = 0.1,
         cols = c("#FFC107", "#D81B60"))
-#> Error in `FetchData()`:
-#> ! None of the requested variables were found: dawnn_lda_verdict
 ```
+
+<div class="figure" style="text-align: center">
+<img src="figures/plot_dawnn_verdict-1.png" alt="plot of chunk plot_dawnn_verdict"  />
+<p class="caption">plot of chunk plot_dawnn_verdict</p>
+</div>
 
 As expected, Dawnn detects that there is no differential abundance in the
 bottom cluster and that there is in the other two.
@@ -169,9 +171,12 @@ If we want to investigate the estimated log2-fold change in the abundance of
 
 ``` r
 FeaturePlot(cells, "dawnn_lfc") + viridis::scale_color_viridis(option = "cividis")
-#> Error in `FeaturePlot()`:
-#> ! None of the requested features were found: dawnn_lfc in slot  data
 ```
+
+<div class="figure" style="text-align: center">
+<img src="figures/plot_dawnn_lfc-1.png" alt="plot of chunk plot_dawnn_lfc"  />
+<p class="caption">plot of chunk plot_dawnn_lfc</p>
+</div>
 
 As expected, the two clusters identified as generally exhibiting local differential
 abundance have estimated log2-fold changes far from 0, whereas for the cluster
@@ -185,9 +190,12 @@ into `dawnn_lfc` with `log2(cells$dawnn_scores / (1 - cells$dawnn_scores))`.
 
 ``` r
 FeaturePlot(cells, "dawnn_scores") + viridis::scale_color_viridis(option = "cividis")
-#> Error in `FeaturePlot()`:
-#> ! None of the requested features were found: dawnn_scores in slot  data
 ```
+
+<div class="figure" style="text-align: center">
+<img src="figures/plot_dawnn_scores-1.png" alt="plot of chunk plot_dawnn_scores"  />
+<p class="caption">plot of chunk plot_dawnn_scores</p>
+</div>
 
 Finally, `dawnn_p_vals_[lda|gda]` contains, for each cell, the p-value
 associated with testing the null hypothesis of "this cell is not in a region of
@@ -198,9 +206,12 @@ the test of whether it is in a region of local differential abundance.
 
 ``` r
 FeaturePlot(cells, "dawnn_p_vals_lda") + viridis::scale_color_viridis(option = "cividis")
-#> Error in `FeaturePlot()`:
-#> ! None of the requested features were found: dawnn_p_vals_lda in slot  data
 ```
+
+<div class="figure" style="text-align: center">
+<img src="figures/plot_dawnn_p_vals-1.png" alt="plot of chunk plot_dawnn_p_vals"  />
+<p class="caption">plot of chunk plot_dawnn_p_vals</p>
+</div>
 
 ## Optional parameters
 
@@ -274,8 +285,8 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] dawnn_1.1.0        Seurat_5.3.1       SeuratObject_5.2.0 sp_2.2-0          
-#> [5] dplyr_1.1.4       
+#> [1] future_1.67.0      dawnn_2.1.0        Seurat_5.3.1       SeuratObject_5.2.0
+#> [5] sp_2.2-0           dplyr_1.1.4       
 #> 
 #> loaded via a namespace (and not attached):
 #>   [1] deldir_2.0-4           pbapply_1.7-4          gridExtra_2.3         
@@ -295,12 +306,12 @@ sessionInfo()
 #>  [43] tensor_1.5.1           future.apply_1.20.0    zoo_1.8-14            
 #>  [46] base64enc_0.1-3        sctransform_0.4.2      httpuv_1.6.16         
 #>  [49] Matrix_1.7-4           splines_4.4.3          igraph_2.1.4          
-#>  [52] tidyselect_1.2.1       abind_1.4-8            spatstat.random_3.4-2 
-#>  [55] codetools_0.2-20       miniUI_0.1.2           spatstat.explore_3.5-3
-#>  [58] listenv_0.10.0         lattice_0.22-7         tibble_3.3.0          
-#>  [61] plyr_1.8.9             withr_3.0.2            shiny_1.11.1          
-#>  [64] S7_0.2.0               ROCR_1.0-11            evaluate_1.0.5        
-#>  [67] Rtsne_0.17             future_1.67.0          fastDummies_1.7.5     
+#>  [52] tidyselect_1.2.1       viridis_0.6.5          abind_1.4-8           
+#>  [55] spatstat.random_3.4-2  codetools_0.2-20       miniUI_0.1.2          
+#>  [58] spatstat.explore_3.5-3 listenv_0.10.0         lattice_0.22-7        
+#>  [61] tibble_3.3.0           plyr_1.8.9             withr_3.0.2           
+#>  [64] shiny_1.11.1           S7_0.2.0               ROCR_1.0-11           
+#>  [67] evaluate_1.0.5         Rtsne_0.17             fastDummies_1.7.5     
 #>  [70] survival_3.8-3         polyclip_1.10-7        fitdistrplus_1.2-4    
 #>  [73] pillar_1.11.1          whisker_0.4.1          KernSmooth_2.23-26    
 #>  [76] plotly_4.11.0          generics_0.1.4         RcppHNSW_0.6.0        
@@ -309,13 +320,13 @@ sessionInfo()
 #>  [85] tools_4.4.3            data.table_1.17.8      RSpectra_0.16-2       
 #>  [88] RANN_2.6.2             dotCall64_1.2          cowplot_1.2.0         
 #>  [91] grid_4.4.3             tidyr_1.3.1            nlme_3.1-168          
-#>  [94] patchwork_1.3.2        cli_3.6.5              spatstat.sparse_3.1-0 
-#>  [97] tfruns_1.5.4           spam_2.11-1            viridisLite_0.4.2     
-#> [100] uwot_0.2.4             gtable_0.3.6           zeallot_0.2.0         
-#> [103] digest_0.6.38          progressr_0.18.0       ggrepel_0.9.6         
-#> [106] htmlwidgets_1.6.4      farver_2.1.2           htmltools_0.5.8.1     
-#> [109] lifecycle_1.0.4        httr_1.4.7             mime_0.13             
-#> [112] MASS_7.3-65
+#>  [94] patchwork_1.3.2        cli_3.6.5              rappdirs_0.3.3        
+#>  [97] spatstat.sparse_3.1-0  tfruns_1.5.4           spam_2.11-1           
+#> [100] viridisLite_0.4.2      uwot_0.2.4             gtable_0.3.6          
+#> [103] zeallot_0.2.0          digest_0.6.38          progressr_0.18.0      
+#> [106] ggrepel_0.9.6          htmlwidgets_1.6.4      farver_2.1.2          
+#> [109] htmltools_0.5.8.1      lifecycle_1.0.4        httr_1.4.7            
+#> [112] mime_0.13              MASS_7.3-65
 ```
 
 </details>

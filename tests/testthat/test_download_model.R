@@ -13,6 +13,17 @@ create_tmp_cache_dir <- function(env = parent.frame()) {
 }
 
 
+# Builds a "file://" URL from a local path. Windows paths use backslashes and
+# start with a drive letter, so they need converting to forward slashes and an
+# extra leading slash ("file:///C:/..."); on Unix the leading "/" of the path
+# supplies that third slash itself.
+as_file_url <- function(path) {
+    normalized <- normalizePath(path, winslash = "/", mustWork = FALSE)
+
+    return(paste0("file:///", sub("^/", "", normalized)))
+}
+
+
 # Creates a small local file to stand in for the real (~255MB) production
 # model, and returns a "file://" URL pointing at it. Passing this as
 # `model_url` exercises the entire real download_model() code path (url(),
@@ -24,7 +35,7 @@ create_tmp_source_file <- function(contents = "dawnn test model contents",
     writeLines(contents, file_path)
     withr::defer(unlink(file_path), envir = env)
 
-    return(paste0("file://", file_path))
+    return(as_file_url(file_path))
 }
 
 
@@ -139,7 +150,7 @@ test_that("download_model does not size-check a user-supplied model_url", {
 
 test_that("download_model stops if URL is faulty", {
     local_envvar(c("R_USER_CACHE_DIR" = create_tmp_cache_dir()))
-    faulty_url <- paste0("file://", tempfile())
+    faulty_url <- as_file_url(tempfile())
 
     expect_error(suppressWarnings(download_model(model_url = faulty_url)),
                  "cannot open the connection")

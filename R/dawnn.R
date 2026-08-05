@@ -244,8 +244,10 @@ generate_p_vals <- function(scores, null_dist) {
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @keywords internal
 #' @examples
-#' dawnn:::determine_if_region_da(p_vals = c(1e-6, 1e-4, 0.02, 0.5, 0.9),
-#'                                alpha = 0.2)
+#' dawnn:::determine_if_region_da(
+#'     p_vals = c(1e-6, 1e-4, 0.02, 0.5, 0.9),
+#'     alpha = 0.2
+#' )
 determine_if_region_da <- function(p_vals, alpha) {
     num_cells <- length(p_vals)
 

@@ -39,9 +39,11 @@ beta_method_of_moments <- function(data) {
     # parameters come out non-positive and every subsequent pbeta() call
     # silently returns NaN.
     if (!is.finite(common_factor) || common_factor <= 0) {
-        stop(paste("Cannot fit a beta distribution to these data by the",
-                   "method of moments: the sample variance is too large",
-                   "relative to the sample mean."))
+        stop(paste(
+            "Cannot fit a beta distribution to these data by the",
+            "method of moments: the sample variance is too large",
+            "relative to the sample mean."
+        ))
     }
 
     alpha <- sample_mean * common_factor
@@ -63,18 +65,21 @@ beta_method_of_moments <- function(data) {
 #' @keywords internal
 #' @examples
 #' \dontrun{
-#' generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
-#' "sample_names", label_pos_lfc = "Condition1")
+#' generate_neighbor_labels(cell_object,
+#'     verbose = TRUE, label_names =
+#'         "sample_names", label_pos_lfc = "Condition1"
+#' )
 #' }
 generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc) {
-
     if (verbose) {
         message("Creating adjacency matrix.")
     }
     graph_name <- names(cells@neighbors)[1]
     if (length(names(cells@neighbors)) > 1) {
-        message(paste("Multiple available graph names. Choosing the first one:",
-                      graph_name))
+        message(paste(
+            "Multiple available graph names. Choosing the first one:",
+            graph_name
+        ))
     }
     nn_idx <- cells@neighbors[[graph_name]]@nn.idx
     # The [-1] in the anonymous function below drops each cell's first
@@ -83,13 +88,17 @@ generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc)
     # FindNeighbors, but may not be true in general. We check that this
     # assumption is satisfied before proceeding.
     if (!identical(as.integer(nn_idx[, 1]), seq_len(nrow(nn_idx)))) {
-        stop(paste("Dawnn requires each cell to be its own first nearest",
-                   "neighbor, which is not the case in this graph."))
+        stop(paste(
+            "Dawnn requires each cell to be its own first nearest",
+            "neighbor, which is not the case in this graph."
+        ))
     }
-    nhbor_labels_mtx <- apply(nn_idx, 1,
-                              function(x) {
-                                  cells@meta.data[[label_names]][x][-1]
-                              })
+    nhbor_labels_mtx <- apply(
+        nn_idx, 1,
+        function(x) {
+            cells@meta.data[[label_names]][x][-1]
+        }
+    )
     nhbor_labels_df <- data.frame(nhbor_labels_mtx)
     nhbor_labels_binary_df <- nhbor_labels_df == label_pos_lfc
     nhbor_labels_binary_mtx <- apply(nhbor_labels_binary_df, 1, as.numeric)
@@ -111,14 +120,18 @@ load_model_from_python <- function(model_path) {
     # Need to have tensorflow installed in the reticulate environment. Check
     # whether it is installed:
     if (!py_module_available("tensorflow")) {
-        stop(paste("Tensorflow not installed. If you have Tensorflow installed in a",
-                   "conda environment, you can make Dawnn use this with the",
-                   "`tf_conda_env` parameter of `run_dawnn`."))
+        stop(paste(
+            "Tensorflow not installed. If you have Tensorflow installed in a",
+            "conda environment, you can make Dawnn use this with the",
+            "`tf_conda_env` parameter of `run_dawnn`."
+        ))
     }
 
     if (!file.exists(model_path)) {
-        stop(paste0("No model available at ", model_path,
-                    ": run download_model() to download it."))
+        stop(paste0(
+            "No model available at ", model_path,
+            ": run download_model() to download it."
+        ))
     }
     # load model trained with Python
     model <- load_model_hdf5(model_path, compile = FALSE)
@@ -147,8 +160,10 @@ load_model_from_python <- function(model_path) {
 #' @keywords internal
 #' @examples
 #' \dontrun{
-#' generate_null_dist(cells = cell_object, model = nn_model, label_names =
-#' "synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda")
+#' generate_null_dist(
+#'     cells = cell_object, model = nn_model, label_names =
+#'         "synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda"
+#' )
 #' }
 generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosity,
                                da_mode = c("lda", "gda")) {
@@ -162,8 +177,10 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
         labels <- cells@meta.data[, label_names]
         if (da_mode == "lda") {
             label_neg_lfc <- setdiff(unique(labels), label_pos_lfc)
-            labels <- c(rep(label_pos_lfc, round(num_cells / 2)),
-                        rep(label_neg_lfc, num_cells - round(num_cells / 2)))
+            labels <- c(
+                rep(label_pos_lfc, round(num_cells / 2)),
+                rep(label_neg_lfc, num_cells - round(num_cells / 2))
+            )
         }
         # Sort the labels to ensure that the same result is returned for both
         # LDA and GDA if Condition1 and Condition2 are in equal proportions.
@@ -173,11 +190,13 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
         labels <- sort(labels)
         cells$shuff_labels <- sample(labels)
         shuff_nbor_labs <- generate_neighbor_labels(cells,
-                                                    label_names = "shuff_labels",
-                                                    label_pos_lfc = label_pos_lfc,
-                                                    verbose = verbosity > 0)
+            label_names = "shuff_labels",
+            label_pos_lfc = label_pos_lfc,
+            verbose = verbosity > 0
+        )
         shuff_scores <- model$predict(shuff_nbor_labs,
-                                      verbose = ifelse(verbosity == 2, 1, 0))
+            verbose = ifelse(verbosity == 2, 1, 0)
+        )
         null_dist <- c(null_dist, shuff_scores)
     }
 
@@ -269,8 +288,10 @@ determine_if_region_da <- function(p_vals, alpha) {
 #' @return String path to the model file.
 #' @keywords internal
 dawnn_default_model_file <- function() {
-    file.path(tools::R_user_dir("dawnn", which = "cache"),
-              "dawnn_nn_model.h5")
+    file.path(
+        tools::R_user_dir("dawnn", which = "cache"),
+        "dawnn_nn_model.h5"
+    )
 }
 
 
@@ -338,17 +359,22 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         dawnn_dir_path <- dirname(model_file_path)
     } else {
         dawnn_dir_path <- dirname(normalizePath(model_file_path,
-                                                mustWork = FALSE))
+            mustWork = FALSE
+        ))
     }
 
     if (dir.exists(dawnn_dir_path) == FALSE) {
         # Get consent before creating directory
         if (using_default_path && interactive()) {
-            answer <- readline(paste0("Create ", dawnn_dir_path,
-                                      " to store Dawnn's model? [y/N] "))
+            answer <- readline(paste0(
+                "Create ", dawnn_dir_path,
+                " to store Dawnn's model? [y/N] "
+            ))
             if (!identical(tolower(substr(answer, 1, 1)), "y")) {
-                stop("Not downloading as permission to create ",
-                     dawnn_dir_path, " was declined")
+                stop(
+                    "Not downloading as permission to create ",
+                    dawnn_dir_path, " was declined"
+                )
             }
         }
         dir_create_ret <- dir.create(dawnn_dir_path, recursive = TRUE)
@@ -356,8 +382,10 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
             stop("Not downloading as cannot create directory ", dawnn_dir_path)
         }
     }
-    message(paste("Downloading Dawnn's neural network model to",
-                  model_file_path))
+    message(paste(
+        "Downloading Dawnn's neural network model to",
+        model_file_path
+    ))
 
     # Check if url exists
     if (!grepl("^[a-z][a-z0-9+.-]*://", model_url)) {
@@ -365,7 +393,7 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         model_url <- paste0("http://", model_url)
     }
 
-    con <- url(model_url, headers = list("test"="test"))
+    con <- url(model_url, headers = list("test" = "test"))
     open.connection(con, open = "rt", timeout = 2)
     close(con, silent = TRUE)
 
@@ -373,13 +401,16 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     old_timeout <- getOption("timeout")
     options(timeout = download_timeout)
 
-    tryCatch(download_ret <- download.file(model_url, model_file_path,
-                                           method = download_method,
-                                           mode = "wb"),
-             error = function(c) {
-                 options(timeout = old_timeout)
-                 stop("Error in model download, perhaps due to timeout? Try increasing download_timeout parameter.")
-             })
+    tryCatch(
+        download_ret <- download.file(model_url, model_file_path,
+            method = download_method,
+            mode = "wb"
+        ),
+        error = function(c) {
+            options(timeout = old_timeout)
+            stop("Error in model download, perhaps due to timeout? Try increasing download_timeout parameter.")
+        }
+    )
 
     options(timeout = old_timeout)
 
@@ -388,12 +419,16 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     }
 
     if (using_default_url) {
-        check_model_file(model_file_path, expected_model_size,
-                         expected_model_md5)
+        check_model_file(
+            model_file_path, expected_model_size,
+            expected_model_md5
+        )
     }
 
-    return_msg <- paste("Model was downloaded to:",
-                        normalizePath(model_file_path))
+    return_msg <- paste(
+        "Model was downloaded to:",
+        normalizePath(model_file_path)
+    )
     message(return_msg)
 
     return(return_msg)
@@ -451,8 +486,10 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 
     # Does a KNN graph exist?
     if ((recalculate_graph == FALSE) & (length(cells@neighbors) == 0)) {
-        stop(paste("No K-nearest-neighbor graph but recalculate_graph is",
-                   "FALSE. Set to TRUE or run Seurat::FindNeighbors()."))
+        stop(paste(
+            "No K-nearest-neighbor graph but recalculate_graph is",
+            "FALSE. Set to TRUE or run Seurat::FindNeighbors()."
+        ))
     }
 
     return(TRUE)
@@ -496,10 +533,12 @@ param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
 #' global differential abundance, respectively).
 #' @examples
 #' \dontrun{
-#' run_dawnn(cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",
-#' nn_model = "my_model.h5", reduced_dim = "pca", n_dims = 50,
-#' recalculate_graph = FALSE, alpha = 0.2, verbosity = 0, seed = 42,
-#' tf_conda_env = "my_tensorflow_env")
+#' run_dawnn(
+#'     cells = dataset, label_names = "condition", label_pos_lfc = "Condition_1",
+#'     nn_model = "my_model.h5", reduced_dim = "pca", n_dims = 50,
+#'     recalculate_graph = FALSE, alpha = 0.2, verbosity = 0, seed = 42,
+#'     tf_conda_env = "my_tensorflow_env"
+#' )
 #' }
 #' @export
 run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
@@ -514,8 +553,10 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
 
     num_cells <- ncol(cells)
     if (num_cells < 1001) {
-        stop(paste0("Dawnn requires at least 1001 cells. Your dataset contains ",
-                    num_cells, "."))
+        stop(paste0(
+            "Dawnn requires at least 1001 cells. Your dataset contains ",
+            num_cells, "."
+        ))
     }
 
     param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
@@ -528,37 +569,44 @@ run_dawnn <- function(cells, label_names, label_pos_lfc, reduced_dim,
         if (verbosity > 0) {
             message("Finding neighbors.")
         }
-        cells <- FindNeighbors(cells, dims = (1:n_dims),
-                               return.neighbor = TRUE, k.param = 1001,
-                               reduction = reduced_dim)
+        cells <- FindNeighbors(cells,
+            dims = (1:n_dims),
+            return.neighbor = TRUE, k.param = 1001,
+            reduction = reduced_dim
+        )
     }
 
     if (verbosity > 0) {
         message("Generating neighbor labels.")
     }
     neighbor_labels <- generate_neighbor_labels(cells,
-                                                label_names = label_names,
-                                                label_pos_lfc = label_pos_lfc,
-                                                verbose = verbosity > 0)
+        label_names = label_names,
+        label_pos_lfc = label_pos_lfc,
+        verbose = verbosity > 0
+    )
 
     if (verbosity > 0) {
         message("Generating scores.")
     }
     scores <- nn_model$predict(neighbor_labels,
-                               verbose = ifelse(verbosity == 2, 1, 0))
+        verbose = ifelse(verbosity == 2, 1, 0)
+    )
     cells$dawnn_scores <- scores
     cells$dawnn_lfc <- log2(scores / (1 - scores))
 
     for (da_mode in c("lda", "gda")) {
         if (verbosity > 0) {
-            message(paste("Testing for",
-                          ifelse(da_mode == "lda", "local", "global"),
-                          "differential abundance."))
+            message(paste(
+                "Testing for",
+                ifelse(da_mode == "lda", "local", "global"),
+                "differential abundance."
+            ))
             message("... Generating null distribution.")
         }
         withr::local_seed(seed)
         null_dist <- generate_null_dist(cells, nn_model, label_names, label_pos_lfc,
-                                        verbosity = verbosity, da_mode = da_mode)
+            verbosity = verbosity, da_mode = da_mode
+        )
 
         if (verbosity > 0) {
             message("... Generating p-values.")

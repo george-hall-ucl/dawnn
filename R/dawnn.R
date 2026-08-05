@@ -389,7 +389,7 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
         model_url <- paste0("http://", model_url)
     }
 
-    con <- url(model_url, headers = list("test" = "test"))
+    con <- url(model_url)
     open_err <- tryCatch(
         {
             suppressWarnings(open.connection(con, open = "rt", timeout = 2))

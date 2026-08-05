@@ -317,8 +317,7 @@ check_model_file <- function(model_file_path, expected_size, expected_md5) {
 #' @return Message confirming the absolute path to the downloaded model.
 #' @examples
 #' \dontrun{
-#' model_path <- download_model(model_url = "http://example.com/model.h5")
-#' cells <- run_dawnn(cells, nn_model = model_path, [...])
+#' model_path <- download_model()
 #' }
 #' @export
 download_model <- function(model_url = NULL, model_file_path = NULL,

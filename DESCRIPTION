@@ -23,7 +23,6 @@ Description: Detects regions of differential abundance in single-cell
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports: stats, Seurat, reticulate, keras, utils, withr, tools
 Depends:
     R (>= 4.0.0)
@@ -45,3 +44,4 @@ SystemRequirements: Python (>= 3.9) with TensorFlow (>= 2.0), typically
     installed in a conda environment and selected via the 'tf_conda_env'
     argument of run_dawnn(). See the package documentation for setup
     instructions.
+Config/roxygen2/version: 8.0.0

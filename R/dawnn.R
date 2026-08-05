@@ -386,25 +386,34 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
     }
 
     con <- url(model_url, headers = list("test" = "test"))
-    open.connection(con, open = "rt", timeout = 2)
-    close(con, silent = TRUE)
+    open_err <- tryCatch(
+        {
+            suppressWarnings(open.connection(con, open = "rt", timeout = 2))
+            NULL
+        },
+        error = function(c) conditionMessage(c)
+    )
+    try(close(con), silent = TRUE)
+    if (!is.null(open_err)) {
+        stop(paste0(
+            "Cannot access Dawnn's model at ", model_url,
+            ". Please check the URL and your internet connection. ",
+            "The underlying error was: ", open_err
+        ))
+    }
 
     # Increase timeout to 10 minutes
-    old_timeout <- getOption("timeout")
-    options(timeout = download_timeout)
+    withr::local_options(list(timeout = download_timeout))
 
-    tryCatch(
-        download_ret <- download.file(model_url, model_file_path,
+    download_ret <- tryCatch(
+        download.file(model_url, model_file_path,
             method = download_method,
             mode = "wb"
         ),
         error = function(c) {
-            options(timeout = old_timeout)
             stop("Error in model download, perhaps due to timeout? Try increasing download_timeout parameter.")
         }
     )
-
-    options(timeout = old_timeout)
 
     if (download_ret != 0) {
         stop(paste("Download finished with non-zero exit code:", download_ret))

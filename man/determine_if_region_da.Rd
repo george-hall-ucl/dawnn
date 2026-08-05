@@ -21,7 +21,9 @@ the Benjamini–Yekutieli procedure to determine whether a cell is in a
 region of differential abundance.
 }
 \examples{
-dawnn:::determine_if_region_da(p_vals = c(1e-6, 1e-4, 0.02, 0.5, 0.9),
-                               alpha = 0.2)
+dawnn:::determine_if_region_da(
+    p_vals = c(1e-6, 1e-4, 0.02, 0.5, 0.9),
+    alpha = 0.2
+)
 }
 \keyword{internal}

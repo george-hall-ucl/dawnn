@@ -13,7 +13,7 @@ run_dawnn(
   nn_model = dawnn_default_model_file(),
   recalculate_graph = TRUE,
   alpha = 0.1,
-  verbosity = 2,
+  verbosity = 1,
   seed = 123,
   tf_conda_env = NULL
 )

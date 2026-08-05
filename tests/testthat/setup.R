@@ -12,7 +12,9 @@ sm <- suppressMessages
 skip_if_no_dawnn_deps <- function(env = "tf_env",
                                   model = dawnn:::dawnn_default_model_file()) {
     skip_on_cran()
-    skip_if_not_installed("devtools")
+    # sep_r() uses callr + pkgload::load_all().
+    skip_if_not_installed("callr")
+    skip_if_not_installed("pkgload")
     skip_if_not_installed("reticulate")
     conda_envs <- tryCatch(reticulate::conda_list()$name,
                            error = function(e) character(0))

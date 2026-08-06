@@ -12,7 +12,7 @@ Mainly changes with a view to submitting to CRAN.
   and no longer leaves the `timeout` option modified if a download fails.
 * `run_dawnn()` no longer alters the global random number generator state.
 * The default `verbosity` of `run_dawnn()` is now 1 rather than 2, so the
-  progress output of the underlying `predict()` calls is supressed by default.
+  progress output of the underlying `predict()` calls is suppressed by default.
 * Added more sanity checks.
 * Vectorised p-value calculation.
 * Model now downloaded in binary mode, fixing corrupted downloads on Windows.

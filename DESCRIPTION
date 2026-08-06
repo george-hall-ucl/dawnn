@@ -42,3 +42,4 @@ SystemRequirements: Python (>= 3.9) with TensorFlow (>= 2.0), typically
     argument of run_dawnn(). See the package documentation for setup
     instructions.
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

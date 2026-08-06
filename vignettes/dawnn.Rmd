@@ -1,7 +1,7 @@
 ---
 title: "Dawnn vignette"
 author: "George T. Hall and Sergi Castellano"
-date: "Compiled on 05 August 2026"
+date: "Compiled on 06 August 2026"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Dawnn vignette}
@@ -107,7 +107,7 @@ cells <- run_dawnn(cells, label_names = "label", label_pos_lfc = "Condition1",
 |-----------|-------------|
 | `cells`   | Seurat object containing the dataset |
 | `label_names` | `meta.data` slot in `cells` containing labels |
-| `label_pos_lfc` | The label corresponding to posiive log-fold change |
+| `label_pos_lfc` | The label corresponding to positive log-fold change |
 | `reduced_dim` | Dimensionality reduction to use when calculating KNN graph |
 
 We outline the optional parameters later in this vignette.

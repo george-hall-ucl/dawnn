@@ -14,6 +14,7 @@ Mainly changes with a view to submitting to CRAN.
 * The default `verbosity` of `run_dawnn()` is now 1 rather than 2, so the
   progress output of the underlying `predict()` calls is supressed by default.
 * Added more sanity checks.
+* Vectorised p-value calculation.
 * Model now downloaded in binary mode, fixing corrupted downloads on Windows.
 * Added a vignette, a `CITATION` file, and package URLs.
 * R (>= 4.0.0) is now required, up from R (>= 3.5.0).

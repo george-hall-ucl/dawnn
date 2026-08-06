@@ -244,11 +244,7 @@ generate_p_vals <- function(scores, null_dist) {
 #' )
 determine_if_region_da <- function(p_vals, alpha) {
     num_cells <- length(p_vals)
-    harmonic_sum <- 0
-    for (k in seq_len(num_cells)) {
-        harmonic_sum <- (harmonic_sum + (1 / k))
-    }
-
+    harmonic_sum <- sum(1 / seq_len(num_cells))
     da_verdict <- rep(FALSE, num_cells)
     j <- 1
     for (i in order(p_vals)) {

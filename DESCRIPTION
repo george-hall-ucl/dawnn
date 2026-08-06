@@ -9,9 +9,11 @@ Authors@R:
              comment = c(ORCID = "0000-0002-4828-0668")),
       person(given = "Sergi",
              family = "Castellano",
-             role = c("aut", "cre"),
+             role = c("aut"),
              email = "s.castellano@ucl.ac.uk",
-             comment = c(ORCID = "0000-0002-5819-4210")))
+             comment = c(ORCID = "0000-0002-5819-4210")),
+      person(given = "University College London",
+             role = c("cph")))
 Description: Detects regions of differential abundance in single-cell
     transcriptomic data by applying a pre-trained neural network model to the
     labels of each cell's nearest neighbours. Tests for both local and global

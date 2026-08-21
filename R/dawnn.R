@@ -18,10 +18,6 @@
 #' @param data Vector of numbers for which to estimate the parameters.
 #' @return A list containing the two parameters of the fitted beta distribution.
 #' @keywords internal
-#' @examples
-#' set.seed(123)
-#' beta_sample <- rbeta(10000, shape1 = 2, shape2 = 5)
-#' dawnn:::beta_method_of_moments(beta_sample)
 beta_method_of_moments <- function(data) {
     sample_mean <- mean(data)
     sample_var <- var(data)
@@ -56,13 +52,6 @@ beta_method_of_moments <- function(data) {
 #' @return A data frame containing the labels of the 1000 nearest neighbors of
 #' each cell.
 #' @keywords internal
-#' @examples
-#' \dontrun{
-#' generate_neighbor_labels(cell_object,
-#'     verbose = TRUE, label_names =
-#'         "sample_names", label_pos_lfc = "Condition1"
-#' )
-#' }
 generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc) {
     if (verbose) {
         message("Creating adjacency matrix.")
@@ -105,10 +94,6 @@ generate_neighbor_labels <- function(cells, verbose, label_names, label_pos_lfc)
 #' @param model_path String containing the path to the model's .hdf5 file.
 #' @return The loaded model.
 #' @keywords internal
-#' @examples
-#' \dontrun{
-#' nn_model <- load_model_from_python("/path/to/the/model.hdf5")
-#' }
 load_model_from_python <- function(model_path) {
     # Need to have tensorflow installed in the reticulate environment. Check
     # whether it is installed:
@@ -151,13 +136,6 @@ load_model_from_python <- function(model_path) {
 #' @return A vector containing a null distribution of Dawnn's model outputs for
 #' shuffled sample labels.
 #' @keywords internal
-#' @examples
-#' \dontrun{
-#' generate_null_dist(
-#'     cells = cell_object, model = nn_model, label_names =
-#'         "synth_labels", label_pos_lfc = "Condition_1", verbosity = 1, da_mode = "lda"
-#' )
-#' }
 generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosity,
                                da_mode = c("lda", "gda")) {
     # Without this, an unrecognised da_mode silently falls through to the
@@ -208,10 +186,6 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
 #' probability of observing at least such an extreme score for a cell given the
 #' beta distribution fitted to the null distribution of scores.
 #' @keywords internal
-#' @examples
-#' set.seed(123)
-#' null_dist <- rbeta(1000, shape1 = 20, shape2 = 20)
-#' dawnn:::generate_p_vals(scores = c(0.1, 0.5, 0.9), null_dist = null_dist)
 generate_p_vals <- function(scores, null_dist) {
     null_dist_est_params <- beta_method_of_moments(null_dist)
     null_alpha <- null_dist_est_params$alpha
@@ -237,11 +211,6 @@ generate_p_vals <- function(scores, null_dist) {
 #' Benjamini–Yekutieli procedure.
 #' @return Boolean vector containing Dawnn's verdict for each cell.
 #' @keywords internal
-#' @examples
-#' dawnn:::determine_if_region_da(
-#'     p_vals = c(1e-6, 1e-4, 0.02, 0.5, 0.9),
-#'     alpha = 0.2
-#' )
 determine_if_region_da <- function(p_vals, alpha) {
     num_cells <- length(p_vals)
     harmonic_sum <- sum(1 / seq_len(num_cells))
@@ -453,10 +422,6 @@ download_model <- function(model_url = NULL, model_file_path = NULL,
 #' @return TRUE if all parameters sane, otherwise stop execution with error
 #' message.
 #' @keywords internal
-#' @examples
-#' \dontrun{
-#' param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
-#' }
 param_check <- function(cells, label_names, label_pos_lfc, reduced_dim,
                         recalculate_graph) {
     # Does label_names name a meta.data column?

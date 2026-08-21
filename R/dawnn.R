@@ -297,8 +297,8 @@ check_model_file <- function(model_file_path, expected_size, expected_md5) {
 #' (optional, default = 600).
 #' @return Message confirming the absolute path to the downloaded model.
 #' @examples
-#' \dontrun{
-#' model_path <- download_model()
+#' \donttest{
+#' download_model()
 #' }
 #' @export
 download_model <- function(model_url = NULL, model_file_path = NULL,

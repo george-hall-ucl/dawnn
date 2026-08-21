@@ -1,3 +1,8 @@
+# dawnn 2.1.1 (21 August 2026)
+
+* Documentation changes requested by CRAN: removed examples for unexported
+  functions.
+
 # dawnn 2.1.0 (5 August 2026)
 
 Mainly changes with a view to submitting to CRAN.

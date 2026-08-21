@@ -30,9 +30,4 @@ message.
 \code{param_check()} verifies that the parameters passed to
 run_dawnn() are sane.
 }
-\examples{
-\dontrun{
-param_check(cells, label_names, label_pos_lfc, reduced_dim, recalculate_graph)
-}
-}
 \keyword{internal}

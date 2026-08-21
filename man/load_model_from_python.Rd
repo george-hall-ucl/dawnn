@@ -15,9 +15,4 @@ The loaded model.
 \description{
 Load the neural network model from its .hdf5 file.
 }
-\examples{
-\dontrun{
-nn_model <- load_model_from_python("/path/to/the/model.hdf5")
-}
-}
 \keyword{internal}

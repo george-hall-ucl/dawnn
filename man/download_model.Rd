@@ -31,7 +31,7 @@ be used once before run_dawnn() can be executed. After this, the path to the
 model can be passed to this function.
 }
 \examples{
-\dontrun{
-model_path <- download_model()
+\donttest{
+download_model()
 }
 }

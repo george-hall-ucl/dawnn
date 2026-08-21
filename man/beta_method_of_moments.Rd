@@ -15,9 +15,4 @@ A list containing the two parameters of the fitted beta distribution.
 \description{
 Estimate the parameters of a beta distribution using the method of moments.
 }
-\examples{
-set.seed(123)
-beta_sample <- rbeta(10000, shape1 = 2, shape2 = 5)
-dawnn:::beta_method_of_moments(beta_sample)
-}
 \keyword{internal}

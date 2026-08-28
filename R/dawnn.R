@@ -213,22 +213,23 @@ generate_p_vals <- function(scores, null_dist) {
 #' @keywords internal
 determine_if_region_da <- function(p_vals, alpha) {
     num_cells <- length(p_vals)
+
+    # This is the "Benjamini–Yekutieli procedure", which allows for arbitrary
+    # dependence assumptions. We can drop harmonic_sum if we assume that all
+    # tests are independent.
     harmonic_sum <- sum(1 / seq_len(num_cells))
+    ranking <- order(p_vals)
+    cutoffs <- (seq_len(num_cells) * alpha) / (num_cells * harmonic_sum)
+
+    # BY steps up: reject every cell up to the *largest* rank whose p-value is
+    # under its cutoff, including any that individually exceed theirs. Stopping
+    # at the first failure instead would discard every rejection beyond a
+    # p-value that dips back under the line.
+    under_cutoff <- which(p_vals[ranking] <= cutoffs)
+
     da_verdict <- rep(FALSE, num_cells)
-    j <- 1
-    for (i in order(p_vals)) {
-        # This is the "Benjamini–Yekutieli procedure", which allows for
-        # arbitrary dependence assumptions. We can drop harmonic_sum if we
-        # assume that all tests are independent.
-        cutoff <- (j * alpha) / (num_cells * harmonic_sum)
-
-        if (p_vals[i] <= cutoff) {
-            da_verdict[i] <- TRUE
-        } else {
-            break
-        }
-
-        j <- j + 1
+    if (length(under_cutoff) > 0) {
+        da_verdict[ranking[seq_len(max(under_cutoff))]] <- TRUE
     }
 
     return(da_verdict)

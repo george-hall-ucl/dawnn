@@ -1,3 +1,10 @@
+# dawnn 2.2.0 (pre-release)
+
+* The Benjamini-Yekutieli procedure now steps up correctly, rather than
+  stopping at the first p-value above its cutoff. This could alter results, but
+  in our testing it does not seem to affect which cells Dawnn calls as in
+  regions of DA whatsoever.
+
 # dawnn 2.1.1 (21 August 2026)
 
 * Documentation changes requested by CRAN: removed examples for unexported

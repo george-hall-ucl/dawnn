@@ -1,6 +1,6 @@
 Package: dawnn
 Title: Differential Abundance with Neural Networks
-Version: 2.1.1
+Version: 2.2.0-alpha
 Authors@R:
     c(person(given = "George",
              family = "Hall",

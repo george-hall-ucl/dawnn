@@ -18,6 +18,8 @@ beta distribution fitted to the null distribution of scores.
 }
 \description{
 \code{generate_p_vals()} takes Dawnn model outputs and a null
-distribution and returns p-values of the observed outputs.
+distribution and returns p-values of the observed outputs, testing an
+alternative hypothesis of "this cell is in a region of differential
+abundance".
 }
 \keyword{internal}

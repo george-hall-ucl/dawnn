@@ -178,7 +178,9 @@ generate_null_dist <- function(cells, model, label_names, label_pos_lfc, verbosi
 #' Generate p-values for observed Dawnn model outputs.
 #'
 #' @description `generate_p_vals()` takes Dawnn model outputs and a null
-#' distribution and returns p-values of the observed outputs.
+#' distribution and returns p-values of the observed outputs, testing an
+#' alternative hypothesis of "this cell is in a region of differential
+#' abundance".
 #'
 #' @param scores Numeric vector containing observed output of Dawnn.
 #' @param null_dist Numeric vector containing null distribution of scores.
@@ -190,11 +192,10 @@ generate_p_vals <- function(scores, null_dist) {
     null_dist_est_params <- beta_method_of_moments(null_dist)
     null_alpha <- null_dist_est_params$alpha
     null_beta <- null_dist_est_params$beta
-    null_mode <- (null_alpha - 1) / (null_alpha + null_beta - 2)
 
     scores <- as.vector(scores)
     lower_tail_probs <- pbeta(scores, null_alpha, null_beta)
-    p_vals <- ifelse(scores <= null_mode, lower_tail_probs, 1 - lower_tail_probs)
+    p_vals <- pmin(1, 2 * pmin(lower_tail_probs, 1 - lower_tail_probs))
 
     return(p_vals)
 }

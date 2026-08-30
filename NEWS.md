@@ -1,9 +1,14 @@
 # dawnn 2.2.0 (pre-release)
 
-* The Benjamini-Yekutieli procedure now steps up correctly, rather than
-  stopping at the first p-value above its cutoff. This could alter results, but
-  in our testing it does not seem to affect which cells Dawnn calls as in
-  regions of DA whatsoever.
+This release contains two major bugfixes, both of which can change results.
+
+* Bugfix in p-value computation. Previously, we were accidentally computing
+  one-tailed p-values but reporting them as two-tailed. Now, we actually
+  compute two-tailed p-values, as claimed. This will likely alter results.
+* Bugfix in Benjamini-Yekutieli procedure. It now steps up correctly, rather
+  than stopping at the first p-value above its cutoff. This could alter
+  results, but in our testing it does not seem to affect which cells Dawnn
+  calls as in regions of DA whatsoever.
 
 # dawnn 2.1.1 (21 August 2026)
 

@@ -1,4 +1,4 @@
-# dawnn 2.2.0 (pre-release)
+# dawnn 2.2.0
 
 This release contains two major bugfixes, both of which can change results.
 

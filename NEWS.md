@@ -1,4 +1,4 @@
-# dawnn 2.2.0
+# dawnn 2.2.0 (7 September 2026)
 
 This release contains two major bugfixes, both of which can change results.
 

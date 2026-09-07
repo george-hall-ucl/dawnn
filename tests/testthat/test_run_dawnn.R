@@ -81,6 +81,8 @@ test_that("run_dawnn reproducible recalculate_graph = TRUE", {
                                        verbosity = 0, tf_conda_env = "tf_env")},
                          args = list(cells))
 
+    dawnn_out_2@commands$FindNeighbors.RNA.pca@time.stamp <- dawnn_out_1@commands$FindNeighbors.RNA.pca@time.stamp
+
     expect_equal(dawnn_out_1, dawnn_out_2)
 })
 

@@ -66,15 +66,14 @@ The following video shows the steps to run Dawnn in Docker:
 
 ### Using Dawnn in R
 
-If you don't want to use Docker, you can install and run Dawnn within R. The
-Dawnn package is currently only available from Github. Note that you will need to
-install
+If you don't want to use Docker, you can install and run Dawnn within R. Note
+that you will need to install
 [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html#regular-installation)
 for Step 3.
 
 ```r
-# Step 1: Install Dawnn package (may need to install `remotes` package first)
-remotes::install_github("george-hall-ucl/dawnn")
+# Step 1: Install Dawnn package
+install.packages("dawnn")
 
 # Step 2: Download Dawnn's model
 # By default, model stored in tools::R_user_dir("dawnn", "cache")

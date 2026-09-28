@@ -17,11 +17,3 @@ load_model_from_python(model_path)
 ## Value
 
 The loaded model.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-nn_model <- load_model_from_python("/path/to/the/model.hdf5")
-} # }
-```

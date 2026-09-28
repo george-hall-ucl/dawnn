@@ -1,14 +1,13 @@
 # Determine whether each cell is in a region of differential abundance.
 
-`determine_if_region_da()` takes vectors of p-values, observed scores,
-and the null distribution of scores and uses the Benjamini–Yekutieli
-procedure to determine whether a cell is in a region of differential
-abundance.
+`determine_if_region_da()` takes a vector of p-values and uses the
+Benjamini–Yekutieli procedure to determine whether a cell is in a region
+of differential abundance.
 
 ## Usage
 
 ``` r
-determine_if_region_da(p_vals, scores, null_dist, alpha)
+determine_if_region_da(p_vals, alpha)
 ```
 
 ## Arguments
@@ -16,14 +15,6 @@ determine_if_region_da(p_vals, scores, null_dist, alpha)
 - p_vals:
 
   Numeric vector of p-values.
-
-- scores:
-
-  Numeric vector containing observed output of Dawnn.
-
-- null_dist:
-
-  Numeric vector containing the null distribution of scores.
 
 - alpha:
 
@@ -33,12 +24,3 @@ determine_if_region_da(p_vals, scores, null_dist, alpha)
 ## Value
 
 Boolean vector containing Dawnn's verdict for each cell.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-determine_if_region_da(p_vals = p_value_vector, null_dist = null_scores,
-alpha = 0.2)
-} # }
-```

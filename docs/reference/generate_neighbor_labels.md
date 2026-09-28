@@ -6,7 +6,7 @@ cell.
 ## Usage
 
 ``` r
-generate_neighbor_labels(cells, verbose, label_names, label_1)
+generate_neighbor_labels(cells, verbose, label_names, label_pos_lfc)
 ```
 
 ## Arguments
@@ -21,23 +21,15 @@ generate_neighbor_labels(cells, verbose, label_names, label_1)
 
 - label_names:
 
-  String containing the name of the meta.data slot in \`cells'
-  containing the labels of each cell.
+  String containing the name of the meta.data slot in `cells` containing
+  the labels of each cell.
 
-- label_1:
+- label_pos_lfc:
 
-  String containing the name of one of the labels.
+  String containing the name of the label associated with positive
+  log-fold change.
 
 ## Value
 
 A data frame containing the labels of the 1000 nearest neighbors of each
 cell.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-generate_neighbor_labels(cell_object, verbose = TRUE, label_names =
-"sample_names", label_1 = "Condition1")
-} # }
-```

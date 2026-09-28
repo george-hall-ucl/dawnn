@@ -13,23 +13,8 @@ beta_method_of_moments(data)
 
 - data:
 
-  Vector of numbers to which for which to estimate the parameters.
+  Vector of numbers for which to estimate the parameters.
 
 ## Value
 
-A list containing the two parameters of the fitted beta ditribution.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-set.seed(123)
-beta_sample <- rbeta(10000, shape1 = 2, shape2 = 5)
-beta_method_of_moments(beta_sample)
-# $alpha
-# [1] 1.982009
-#
-# $beta
-# [1] 4.942666
-} # }
-```
+A list containing the two parameters of the fitted beta distribution.

@@ -1,6 +1,6 @@
 # Download the neural network model used by Dawnn.
 
-\`download_model()' downloads the neural network model used by Dawnn,
+`download_model()` downloads the neural network model used by Dawnn,
 which is too large to be bundled with the package. This function must be
 used once before run_dawnn() can be executed. After this, the path to
 the model can be passed to this function.
@@ -40,3 +40,9 @@ download_model(
 Message confirming the absolute path to the downloaded model.
 
 ## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+download_model()
+} # }
+```

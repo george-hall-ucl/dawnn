@@ -2,6 +2,14 @@
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
+^index\.md$
 ^docs$
 ^pkgdown$
 ^\.github$
+^\.claude$
+^vignettes/dawnn\.Rmd\.edit_me$
+^vignettes/precompute\.R$
+^cran-comments\.md$
+\.Rcheck$
+\.DS_Store$
+^\.gitattributes$

@@ -1,0 +1,13 @@
+citHeader("To cite dawnn in publications, please use:")
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Dawnn: single-cell differential abundance with neural networks",
+  author   = c(person(given = c("George", "T."), family = "Hall"),
+               person(given = "Sergi", family = "Castellano")),
+  journal  = "bioRxiv",
+  year     = "2023",
+  doi      = "10.1101/2023.05.05.539427",
+  url      = "https://www.biorxiv.org/content/10.1101/2023.05.05.539427v2",
+  note     = "Preprint"
+)

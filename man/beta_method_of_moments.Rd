@@ -7,23 +7,12 @@
 beta_method_of_moments(data)
 }
 \arguments{
-\item{data}{Vector of numbers to which for which to estimate the parameters.}
+\item{data}{Vector of numbers for which to estimate the parameters.}
 }
 \value{
-A list containing the two parameters of the fitted beta ditribution.
+A list containing the two parameters of the fitted beta distribution.
 }
 \description{
 Estimate the parameters of a beta distribution using the method of moments.
 }
-\examples{
-\dontrun{
-set.seed(123)
-beta_sample <- rbeta(10000, shape1 = 2, shape2 = 5)
-beta_method_of_moments(beta_sample)
-# $alpha
-# [1] 1.982009
-#
-# $beta
-# [1] 4.942666
-}
-}
+\keyword{internal}

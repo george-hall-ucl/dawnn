@@ -10,10 +10,9 @@ generate_null_dist(
   cells,
   model,
   label_names,
-  label_1,
-  label_2,
+  label_pos_lfc,
   verbosity,
-  da_mode
+  da_mode = c("lda", "gda")
 )
 ```
 
@@ -29,16 +28,13 @@ generate_null_dist(
 
 - label_names:
 
-  String containing the name of the meta.data slot in \`cells'
-  containing the labels of each cell.
+  String containing the name of the meta.data slot in `cells` containing
+  the labels of each cell.
 
-- label_1:
+- label_pos_lfc:
 
-  String containing the name of one of the labels.
-
-- label_2:
-
-  String containing the name of the other label.
+  String containing the name of the label associated with positive
+  log-fold change.
 
 - verbosity:
 
@@ -47,19 +43,10 @@ generate_null_dist(
 
 - da_mode:
 
-  String containing the type of differential abundance being seeked,
+  String containing the type of differential abundance being sought,
   either "lda" (local DA) or "gda" (global DA).
 
 ## Value
 
 A vector containing a null distribution of Dawnn's model outputs for
 shuffled sample labels.
-
-## Examples
-
-``` r
-if (FALSE) { # \dontrun{
-generate_null_dist(cells = cell_object, model = nn_model, label_names =
-"synth_labels", verbosity = 1, da_mode = "lda")
-} # }
-```

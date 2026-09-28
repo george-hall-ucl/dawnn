@@ -66,18 +66,17 @@ The following video shows the steps to run Dawnn in Docker:
 
 ### Using Dawnn in R
 
-If you don't want to use Docker, you can install and run Dawnn within R. The
-Dawnn package is currently only available from Github. Note that you will need to
-install
+If you don't want to use Docker, you can install and run Dawnn within R. Note
+that you will need to install
 [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html#regular-installation)
 for Step 3.
 
 ```r
-# Step 1: Install Dawnn package (may need to install `remotes` package first)
-remotes::install_github("george-hall-ucl/dawnn")
+# Step 1: Install Dawnn package
+install.packages("dawnn")
 
 # Step 2: Download Dawnn's model
-# By default, model stored at ~/.dawnn/dawnn_nn_model.h5
+# By default, model stored in tools::R_user_dir("dawnn", "cache")
 dawnn::download_model()
 
 # Step 3: Install Tensorflow in own conda environment
@@ -112,18 +111,61 @@ _Dawnn: single-cell differential abundance with neural networks_. George T. Hall
 
 Any contributions are warmly welcomed! Please feel free to submit an issue or pull request on this repository.
 
+### Building the package
+
+If you want to develop Dawnn yourself, you need to be able to build it from
+source.
+
+#### Step 1: Regenerate the vignette
+
+`vignettes/dawnn.Rmd` is generated: do not edit it directly. It it generated
+from `vignettes/dawnn.Rmd.edit_me`, which `vignettes/precompute.R` knits into
+`dawnn.Rmd` with the code already evaluated. This allows the vignette to be
+"generated" with figures in an environment with TensorFlow or the model
+available (such as CRAN).
+
+```bash
+# In an R environment with the modified dawnn installed.
+Rscript vignettes/precompute.R
+```
+
+Commit the regenerated `vignettes/dawnn.Rmd` and `vignettes/figures/`. Re-run
+it whenever the code the vignette calls changes.
+
+#### Step 2: Regenerate the documentation
+
+```r
+roxygen2::roxygenise()
+```
+
+Required after any change to a roxygen block, including `@param` text. Commit
+the resulting `man/*.Rd`s.
+
+#### Step 3: Build the tarball
+
+```bash
+R CMD build .
+```
+
+#### Step 4: Check the tarball
+
+```bash
+R CMD check --as-cran dawnn_*.tar.gz
+```
+
+#### Step 5: Run the test suite
+
+```r
+devtools::test()
+```
+
+Some tests are skipped by the check above, due to `--as-cran`. This is
+necessary for CRAN submission due to its environment constraints, but it leaves
+parts of the code untested. Running `devtools::test()` runs _all_ tests.
+
 ### Releases
 
-#### v2.0.0 (16 July 2026)
-
-* Simultaneously test for local and global differential abundance.
-* Only take single label from user (since two labels are assumed, the other
-  need not be passed).
-
-#### v1.2.0 (15 July 2026)
-
-* Fixed a bug where the `alpha` parameter was not being respected (the default
-  value of 0.1 was always being used).
+See [NEWS.md](NEWS.md) for the release notes.
 
 ### Licence
 
